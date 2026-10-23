@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 900">
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ECE7E2"/><stop offset="1" stop-color="#DCD5CE"/></linearGradient>
+    <radialGradient id="light" cx="0.2" cy="0.15" r="0.9"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".5"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="400" height="900" fill="url(#wall)"/>
+  <rect width="400" height="900" fill="url(#light)"/>
+  <rect y="818" width="400" height="82" fill="#CEC6BD"/>
+  <ellipse cx="200" cy="826" rx="96" ry="10" fill="#000" opacity=".12"/>
+  <!-- hair back -->
+  <path d="M155 112 C150 60 178 44 200 44 C222 44 250 60 245 112 L254 255 C242 266 224 262 218 254 L182 254 C176 262 158 266 146 255 Z" fill="#40241A"/>
+  <!-- neck -->
+  <path d="M187 150 L186 200 Q200 208 214 200 L213 150 Z" fill="#D09A72"/>
+  <!-- trousers -->
+  <path d="M160 346 L240 346 C264 378 278 412 275 458 L263 802 L227 802 L204 522 L196 522 L173 802 L137 802 L125 458 C122 412 136 378 160 346 Z" fill="#6B4A3A"/>
+  <path d="M158 358 L242 358" stroke="#4E3328" stroke-width="5"/>
+  <path d="M200 362 L200 420" stroke="#5A3D30" stroke-width="2"/>
+  <!-- shoes -->
+  <path d="M135 800 L176 800 L181 820 L127 822 C126 812 129 804 135 800 Z" fill="#4A2E22"/>
+  <path d="M224 800 L265 800 C271 804 274 812 273 822 L219 820 Z" fill="#4A2E22"/>
+  <!-- top -->
+  <path d="M128 205 C150 196 170 192 200 192 C230 192 250 196 272 205 C274 262 252 308 242 350 L158 350 C148 308 126 262 128 205 Z" fill="#CBC3BA"/>
+  <path d="M182 196 Q200 212 218 196" fill="none" stroke="#B3AAA1" stroke-width="3"/>
+  <path d="M128 205 C112 226 106 300 104 360 L102 425 L121 427 C125 370 133 300 141 250 Z" fill="#C2BAB1"/>
+  <path d="M272 205 C288 226 294 300 296 360 L298 425 L279 427 C275 370 267 300 259 250 Z" fill="#C2BAB1"/>
+  <ellipse cx="111" cy="442" rx="9" ry="17" fill="#D09A72"/>
+  <ellipse cx="289" cy="442" rx="9" ry="17" fill="#D09A72"/>
+  <!-- hair strands over the shoulders -->
+  <path d="M160 120 C152 170 150 220 146 262 C160 258 170 240 174 222 C178 190 176 150 172 124 Z" fill="#43261A"/>
+  <path d="M240 120 C248 170 250 220 254 262 C240 258 230 240 226 222 C222 190 224 150 228 124 Z" fill="#43261A"/>
+  <!-- head -->
+  <ellipse cx="200" cy="108" rx="38" ry="49" fill="#E3B48C"/>
+  <path d="M176 98 Q186 92 196 96 M204 96 Q214 92 224 98" stroke="#3A2116" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M178 108 Q186 104 194 107 M206 107 Q214 104 222 108" stroke="#24140C" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <path d="M199 112 Q197 122 194 126 Q200 129 206 126" stroke="#B07A54" stroke-width="1.6" fill="none"/>
+  <path d="M190 138 Q200 134 210 138 Q200 145 190 138 Z" fill="#B0605A"/>
+  <ellipse cx="182" cy="124" rx="9" ry="5" fill="#D88F6E" opacity=".3"/><ellipse cx="218" cy="124" rx="9" ry="5" fill="#D88F6E" opacity=".3"/>
+  <!-- hair front with middle part -->
+  <path d="M158 116 C152 70 178 54 200 55 C222 54 248 70 242 116 C238 92 224 76 203 70 L200 66 L197 70 C176 76 162 92 158 116 Z" fill="#40241A"/>
+  <path d="M158 116 C157 140 160 160 164 172 C168 150 168 126 172 106 C175 92 184 80 196 72 C176 78 160 94 158 116 Z" fill="#43261A"/>
+  <path d="M242 116 C243 140 240 160 236 172 C232 150 232 126 228 106 C225 92 216 80 204 72 C224 78 240 94 242 116 Z" fill="#43261A"/>
+  <!-- height marks -->
+  <path d="M352 56 L352 822" stroke="#C2456E" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <path d="M342 56 L362 56 M342 822 L362 822" stroke="#C2456E" stroke-width="2"/>
+  <text x="358" y="446" font-family="Manrope, Arial, sans-serif" font-size="20" font-weight="700" fill="#C2456E" transform="rotate(-90 358 446)" text-anchor="middle">165 см</text>
+</svg>

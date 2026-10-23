@@ -1,0 +1,1337 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aru — личный стилист</title>
+<meta name="description" content="Aru — личный стилист в телефоне: цветотип, причёска, одежда и готовые образы в одной панели.">
+<meta name="theme-color" content="#6D2E46">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --berry:#6D2E46; --berry-deep:#4A1D30; --rose:#C2456E; --rose-soft:#E7A3BA;
+  --blush:#F7E6EC; --blush-2:#FCF5F7; --gold:#D9A441; --gold-soft:#F3DFB2;
+  --ink:#2B1A22; --muted:#7A6470; --line:#EED9E1; --white:#FFFFFF;
+  --ok:#3E8A68; --warn:#C98A2B; --bad:#B8434F;
+  --serif:'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --sans:'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --r-xl:28px; --r-lg:20px; --r-md:14px; --r-sm:10px;
+  --lift:0 14px 34px -18px rgba(109,46,70,.45);
+  --lift-sm:0 6px 18px -10px rgba(109,46,70,.35);
+  color-scheme: light;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--sans);color:var(--ink);background:#F1DCE4;-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.5}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2.5px solid var(--gold);outline-offset:2px;border-radius:8px}
+img{display:block;max-width:100%}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ---------- stage ---------- */
+.stage{min-height:100%;display:flex;align-items:center;justify-content:center;gap:56px;padding:0}
+.side{display:none}
+.phone{position:relative;width:100%;max-width:440px;height:100dvh;background:var(--blush-2);display:flex;flex-direction:column;overflow:hidden}
+@media (min-width:760px){
+  body{background:radial-gradient(1200px 700px at 15% 10%,#F7E6EC 0%,#EBCFDA 55%,#E2BFCD 100%)}
+  .stage{padding:3vh 24px}
+  .phone{height:min(900px,94vh);border-radius:44px;box-shadow:0 40px 80px -30px rgba(74,29,48,.55),0 0 0 10px #2B1A22,0 0 0 11px #4A1D30}
+}
+@media (min-width:1120px){
+  .side{display:block;max-width:330px;color:var(--berry-deep)}
+  .side .mark{font-family:var(--serif);font-size:92px;line-height:.9;font-weight:600;font-style:italic;color:var(--berry)}
+  .side .ver{margin:10px 0 26px;color:var(--muted);font-size:14px}
+  .side p{font-size:15px;margin-bottom:14px}
+  .side ul{list-style:none;display:grid;gap:12px;margin-top:8px}
+  .side li{display:flex;gap:10px;font-size:14.5px;line-height:1.45}
+  .side li .ic{flex:none;color:var(--rose);margin-top:2px}
+}
+
+/* ---------- chrome ---------- */
+.topbar{flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px 10px;background:var(--blush-2);position:relative;z-index:5}
+.logo{font-family:var(--serif);font-style:italic;font-weight:700;font-size:30px;line-height:1;color:var(--berry);letter-spacing:.5px}
+.logo small{font-family:var(--sans);font-style:normal;font-weight:700;font-size:10px;color:var(--white);background:var(--rose);border-radius:20px;padding:2px 7px;margin-left:8px;vertical-align:6px;letter-spacing:0}
+.top-right{display:flex;align-items:center;gap:8px}
+.langs{display:flex;background:var(--white);border-radius:30px;padding:3px;box-shadow:var(--lift-sm)}
+.langs button{font-size:12px;font-weight:700;padding:6px 9px;border-radius:30px;color:var(--muted)}
+.langs button.on{background:var(--berry);color:var(--white)}
+.icon-btn{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--white);box-shadow:var(--lift-sm);color:var(--berry)}
+.back{display:flex;align-items:center;gap:6px;font-weight:700;color:var(--berry)}
+.top-title{font-family:var(--serif);font-weight:700;font-size:24px;color:var(--berry);flex:1;text-align:left;margin-left:4px}
+.content{flex:1;overflow-y:auto;overflow-x:hidden;scroll-behavior:auto;-webkit-overflow-scrolling:touch}
+.content.has-tabs{padding-bottom:100px}
+.pad{padding:6px 18px 28px}
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:78px;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);align-items:center;padding:0 6px 8px;z-index:6}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:700;color:#A8919C}
+.tab.on{color:var(--berry)}
+.tab.fab .fab-c{width:58px;height:58px;margin-top:-30px;border-radius:50%;display:grid;place-items:center;color:var(--white);background:linear-gradient(145deg,var(--rose),var(--berry));box-shadow:0 12px 24px -10px rgba(109,46,70,.8);border:4px solid var(--white)}
+.tab.fab.on{color:var(--rose)}
+.toast{position:absolute;left:50%;bottom:96px;transform:translate(-50%,20px);background:var(--ink);color:var(--white);padding:11px 16px;border-radius:14px;font-size:13.5px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;width:max-content;max-width:86%;text-align:center;z-index:20}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.ic{display:inline-block;vertical-align:middle;flex:none}
+
+/* ---------- type ---------- */
+h2.h{font-family:var(--serif);font-size:32px;line-height:1.05;font-weight:700;color:var(--berry)}
+h3.h{font-family:var(--serif);font-size:24px;line-height:1.1;font-weight:700;color:var(--berry)}
+.sec{display:flex;align-items:baseline;justify-content:space-between;font-family:var(--serif);font-size:22px;font-weight:700;color:var(--berry);margin:24px 2px 10px}
+.sec .count{font-family:var(--sans);font-size:12px;font-weight:700;color:var(--muted)}
+.muted{color:var(--muted)} .small{font-size:13px} .tiny{font-size:12px}
+.lead{font-size:14.5px;color:var(--muted);margin-top:4px}
+
+/* ---------- blocks ---------- */
+.card{background:var(--white);border-radius:var(--r-lg);padding:16px;box-shadow:var(--lift-sm)}
+.card+.card{margin-top:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:50px;padding:0 22px;border-radius:16px;font-weight:800;font-size:15px;width:100%}
+.btn.primary{background:var(--berry);color:var(--white);box-shadow:0 12px 22px -14px rgba(74,29,48,.9)}
+.btn.gold{background:var(--gold);color:var(--berry-deep)}
+.btn.ghost{background:var(--blush);color:var(--berry)}
+.btn.sm{height:40px;font-size:13.5px;border-radius:12px;padding:0 14px;width:auto}
+.link{color:var(--rose);font-weight:800;text-decoration:underline;text-underline-offset:3px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:8px 13px;border-radius:30px;background:var(--white);border:1.5px solid var(--line);font-size:13.5px;font-weight:600;color:var(--ink)}
+.chip.on{background:var(--berry);border-color:var(--berry);color:var(--white)}
+.chip.static{cursor:default}
+.chip.yes{background:#EAF4EE;border-color:#CFE5D8;color:#24573F}
+.chip.no{background:#FBEAEC;border-color:#F1CDD2;color:#8D2F3A}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:20px}
+.pill.ok{background:#E3F2EA;color:#2B6B4E} .pill.bad{background:#FBE5E8;color:#9C2F3C} .pill.warn{background:#FCEFD9;color:#8A5A12}
+.row{display:flex;align-items:center;gap:12px}
+.dot{width:14px;height:14px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+.list-check{list-style:none;display:grid;gap:10px}
+.list-check li{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.list-check .ic{margin-top:1px}
+.ok-c{color:var(--ok)} .bad-c{color:var(--bad)} .warn-c{color:var(--warn)}
+
+/* ---------- welcome ---------- */
+.welcome{min-height:100%;display:flex;flex-direction:column;padding:16px 22px 26px;background:radial-gradient(520px 420px at 80% -10%,#9B4A6B 0%,transparent 70%),linear-gradient(170deg,#6D2E46 0%,#4A1D30 100%);color:var(--white)}
+.welcome .langs{align-self:flex-end;background:rgba(255,255,255,.12);box-shadow:none}
+.welcome .langs button{color:#F3D3DF}
+.welcome .langs button.on{background:var(--gold);color:var(--berry-deep)}
+.wm-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px 0 20px}
+.wm-av{width:170px;height:170px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 6px rgba(217,164,65,.35),0 0 0 14px rgba(217,164,65,.12)}
+.wordmark{font-family:var(--serif);font-style:italic;font-weight:700;font-size:96px;line-height:.95;margin-top:18px;color:var(--white)}
+.wordmark+p{font-family:var(--serif);font-size:23px;line-height:1.25;color:#F3D3DF;max-width:300px;margin-top:6px}
+.drape-strip{display:flex;gap:6px;margin-top:22px}
+.drape-strip i{width:22px;height:22px;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.25)}
+.key-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:var(--r-lg);padding:16px}
+.key-card label{font-size:13px;font-weight:700;color:#F3D3DF}
+.key-in{display:flex;align-items:center;gap:10px;background:var(--white);color:var(--ink);border-radius:14px;padding:0 14px;height:52px;margin:8px 0 12px}
+.key-in input{flex:1;border:0;outline:0;font-weight:800;letter-spacing:1.5px;font-size:16px;background:transparent;min-width:0}
+.welcome .btn.primary{background:var(--gold);color:var(--berry-deep)}
+.key-note{font-size:12.5px;color:#E8C3D1;margin-top:10px;text-align:center}
+.buy{margin-top:16px;text-align:center;font-size:14px;color:#F3D3DF}
+.buy .link{color:var(--gold-soft)}
+.fine{display:flex;justify-content:center;gap:6px;align-items:center;font-size:12px;color:#D9AFC0;margin-top:12px;text-align:center}
+
+/* ---------- onboarding ---------- */
+.progress{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin:4px 0 18px}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--rose),var(--gold));border-radius:6px;transition:width .4s}
+.drop{display:block;position:relative;border-radius:var(--r-xl);background:var(--white);border:2px dashed var(--rose-soft);padding:16px;text-align:center;cursor:pointer;margin-top:14px}
+.drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.drop .ph{height:250px;border-radius:20px;background:var(--blush);display:grid;place-items:center;overflow:hidden}
+.drop .ph img{width:100%;height:100%;object-fit:contain}
+.drop .cta{display:inline-flex;gap:8px;align-items:center;margin-top:14px;font-weight:800;color:var(--berry)}
+.tips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.tip{background:var(--white);border-radius:var(--r-md);padding:12px 8px;text-align:center;font-size:12.5px;font-weight:700;line-height:1.3;box-shadow:var(--lift-sm)}
+.tip .ic{color:var(--rose);margin-bottom:6px}
+.q{margin-top:18px}
+.q h4{font-size:14px;font-weight:800;margin-bottom:9px}
+.range-row{display:flex;align-items:center;gap:14px}
+.range-row input{flex:1;accent-color:var(--berry)}
+.range-row b{font-family:var(--serif);font-size:26px;color:var(--berry);min-width:84px;text-align:right}
+.text-in{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--white);outline:0}
+.text-in:focus{border-color:var(--rose)}
+.ob-foot{display:grid;gap:10px;margin-top:22px}
+.ob-foot .link{justify-self:center;font-size:14px}
+
+/* ---------- analyzing ---------- */
+.scan{display:flex;flex-direction:column;align-items:center;padding:30px 22px}
+.scan-face{position:relative;width:220px;height:220px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 8px var(--white),var(--lift)}
+.scan-face img,.scan-face svg{width:100%;height:100%;object-fit:cover}
+.scan-face::after{content:"";position:absolute;left:0;right:0;height:46px;background:linear-gradient(180deg,transparent,rgba(217,164,65,.55),transparent);animation:scan 1.6s ease-in-out infinite}
+@keyframes scan{0%{top:-50px}100%{top:230px}}
+.steps{list-style:none;width:100%;margin-top:30px;display:grid;gap:12px}
+.steps li{display:flex;align-items:center;gap:12px;background:var(--white);border-radius:var(--r-md);padding:13px 14px;font-weight:700;color:var(--muted);box-shadow:var(--lift-sm);transition:.3s}
+.steps li .st{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--blush);color:var(--rose)}
+.steps li.done{color:var(--ink)} .steps li.done .st{background:var(--ok);color:var(--white)}
+.steps li.now .st{background:var(--gold);color:var(--white);animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.12)}}
+
+/* ---------- home ---------- */
+.greet{display:flex;align-items:flex-end;justify-content:space-between;margin:4px 2px 14px}
+.hero{position:relative;border-radius:var(--r-xl);padding:20px;color:var(--white);background:linear-gradient(150deg,#7E3654 0%,#4A1D30 100%);overflow:hidden;box-shadow:var(--lift)}
+.hero .hero-av{position:absolute;right:-18px;top:-6px;width:150px;height:150px;opacity:.95}
+.hero .k{font-size:13px;color:#EAC3D2;font-weight:700}
+.hero .t{font-family:var(--serif);font-style:italic;font-size:42px;line-height:1;font-weight:700;margin:6px 0 8px;max-width:230px}
+.hero p{font-size:13.5px;color:#F3D3DF;max-width:250px}
+.hero .strip{display:flex;margin-top:16px;border-radius:10px;overflow:hidden;height:22px}
+.hero .strip i{flex:1}
+.hero .match{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:12.5px;font-weight:800;background:rgba(217,164,65,.22);color:var(--gold-soft);padding:5px 10px;border-radius:20px}
+.ind{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ind .card{display:flex;align-items:center;gap:12px;padding:13px;margin:0}
+.ind .card b{display:block;font-size:15px;line-height:1.2}
+.ind .card span{font-size:12px;color:var(--muted);font-weight:600}
+.ind button.card{text-align:left}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:var(--white);border-radius:var(--r-lg);padding:14px;text-align:left;box-shadow:var(--lift-sm);display:flex;flex-direction:column;gap:10px;min-height:118px;transition:transform .15s}
+.tile:active{transform:scale(.98)}
+.tile .ti{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;color:var(--white)}
+.tile b{font-size:15px;line-height:1.2}
+.tile span{font-size:12.5px;color:var(--muted);font-weight:600;margin-top:-6px}
+.tipcard{display:flex;gap:12px;align-items:flex-start;background:var(--gold-soft);border-radius:var(--r-lg);padding:16px;margin-top:14px}
+.tipcard .ic{color:var(--berry)}
+.tipcard p{font-size:14px;font-weight:600;color:var(--berry-deep)}
+.tipcard button{margin-top:8px;font-size:12.5px;font-weight:800;color:var(--berry);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- avatars & swatches ---------- */
+.av svg{display:block;width:100%;height:100%}
+.drape{position:sticky;top:0;z-index:3;display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center;background:var(--white);border-radius:0 0 var(--r-xl) var(--r-xl);padding:12px 16px 16px;margin:0 -18px 6px;box-shadow:0 14px 24px -22px rgba(74,29,48,.8)}
+.drape .av{width:150px;height:150px;border-radius:50%;overflow:hidden;transition:filter .3s}
+.verdict{display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:14px;padding:6px 11px;border-radius:20px;margin-top:8px}
+.verdict.ok{background:#E3F2EA;color:#2B6B4E} .verdict.bad{background:#FBE5E8;color:#9C2F3C}
+.cname{font-family:var(--serif);font-size:24px;font-weight:700;color:var(--berry);line-height:1.1}
+.sw-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 8px}
+.sw{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11.5px;font-weight:700;line-height:1.2;text-align:center;color:var(--ink)}
+.sw i{width:100%;aspect-ratio:1;border-radius:18px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);transition:transform .15s}
+.sw.on i{box-shadow:0 0 0 3px var(--white),0 0 0 5.5px var(--berry);transform:scale(.94)}
+.sw-grid.not i{position:relative}
+.sw-grid.not .sw i::after{content:"";position:absolute;inset:0}
+.neutrals{display:flex;gap:8px;margin-top:12px}
+.neutrals div{flex:1;text-align:center;font-size:11.5px;font-weight:700}
+.neutrals i{display:block;height:56px;border-radius:14px;margin-bottom:6px}
+.metal{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.metal div{border-radius:var(--r-md);padding:14px;text-align:center;font-weight:800;font-size:14px}
+.metal .disc{width:56px;height:56px;border-radius:50%;margin:0 auto 8px}
+.seg{display:flex;background:var(--blush);border-radius:14px;padding:4px;gap:4px}
+.seg button{flex:1;padding:9px 6px;border-radius:11px;font-size:12.5px;font-weight:800;color:var(--muted);line-height:1.2}
+.seg button.on{background:var(--white);color:var(--berry);box-shadow:var(--lift-sm)}
+.hairc{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.hairc button{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;font-weight:700;width:58px;text-align:center;line-height:1.15}
+.hairc button i{width:40px;height:40px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.1)}
+.hairc button.on i{box-shadow:0 0 0 3px var(--white),0 0 0 5px var(--berry)}
+.hairc button.avoid i{position:relative}
+.hairc button.avoid i::after{content:"";position:absolute;right:-2px;top:-2px;width:14px;height:14px;border-radius:50%;background:var(--bad);border:2px solid var(--white)}
+.cut-card{display:grid;grid-template-columns:84px 1fr;gap:14px;align-items:center}
+.cut-card .av{width:84px;height:84px;border-radius:50%;overflow:hidden}
+.cut-card b{font-size:15px;display:block;margin-bottom:3px}
+.cut-card p{font-size:13px;color:var(--muted)}
+.cut-card.on{box-shadow:0 0 0 2px var(--berry),var(--lift-sm)}
+
+/* ---------- clothes ---------- */
+.body-card{display:grid;grid-template-columns:96px 1fr;gap:16px;align-items:center}
+.meas{display:grid;gap:7px;margin-top:10px}
+.meas div{display:grid;grid-template-columns:62px 1fr 34px;gap:8px;align-items:center;font-size:12px;font-weight:700}
+.meas .bar{height:7px;background:var(--blush);border-radius:6px;overflow:hidden}
+.meas .bar i{display:block;height:100%;background:var(--rose);border-radius:6px}
+.gar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.gar{background:var(--white);border-radius:var(--r-md);padding:10px 8px;text-align:center;font-size:12px;font-weight:700;line-height:1.25;box-shadow:var(--lift-sm)}
+.gar svg:not(.ic){width:56px;height:56px;margin:0 auto 6px;display:block}
+.gar.no{opacity:.92}
+.gar.no svg:not(.ic){opacity:.55}
+.gar .mk{display:block;margin:0 auto 4px}
+
+/* ---------- looks ---------- */
+.occ{display:flex;gap:8px;overflow-x:auto;padding:2px 18px 4px;margin:0 -18px;scrollbar-width:none}
+.occ::-webkit-scrollbar{display:none}
+.occ .chip{white-space:nowrap}
+.flatlay{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:linear-gradient(160deg,#F9EEF2,#F3E2E9);border-radius:var(--r-lg);padding:12px}
+.flatlay div{background:rgba(255,255,255,.75);border-radius:14px;aspect-ratio:1;display:grid;place-items:center}
+.flatlay svg{width:74%;height:74%}
+.look-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin:14px 2px 6px}
+.items{list-style:none;display:grid;gap:2px;margin-top:6px}
+.items li{display:grid;grid-template-columns:16px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.items li:last-child{border-bottom:0}
+.items small{display:block;color:var(--muted);font-size:12px;font-weight:600}
+.notes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.notes div{background:var(--blush);border-radius:var(--r-md);padding:12px;font-size:13px}
+.notes b{display:flex;gap:6px;align-items:center;color:var(--berry);font-size:12.5px;margin-bottom:4px}
+.shop{list-style:none;margin-top:12px;display:grid;gap:8px}
+.shop li{display:flex;align-items:center;gap:10px;background:var(--blush-2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px}
+.shop li.done{text-decoration:line-through;color:var(--muted)}
+.shop .box{width:20px;height:20px;border-radius:6px;border:2px solid var(--rose);display:grid;place-items:center;flex:none}
+.shop li.done .box{background:var(--rose);color:var(--white)}
+
+/* ---------- check ---------- */
+.cam{display:block;position:relative;border-radius:var(--r-xl);padding:26px 18px;text-align:center;color:var(--white);background:linear-gradient(150deg,#C2456E 0%,#6D2E46 100%);box-shadow:var(--lift);cursor:pointer}
+.cam input{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}
+.cam .big{width:76px;height:76px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.16);border:2px solid rgba(255,255,255,.4)}
+.cam b{font-size:18px;display:block}
+.cam span{font-size:13px;color:#F6D7E2}
+.samples{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.sample{background:var(--white);border-radius:var(--r-md);padding:10px;font-size:12px;font-weight:700;line-height:1.25;box-shadow:var(--lift-sm);text-align:center}
+.sample svg:not(.ic){width:64px;height:64px;margin:0 auto 6px;display:block}
+.res-top{display:grid;grid-template-columns:110px 1fr;gap:16px;align-items:center}
+.res-img{width:110px;height:130px;border-radius:18px;background:var(--blush);overflow:hidden;display:grid;place-items:center}
+.res-img img{width:100%;height:100%;object-fit:cover}
+.res-img svg{width:80%;height:80%}
+.score{display:flex;align-items:center;gap:12px}
+.vtitle{font-family:var(--serif);font-size:34px;font-weight:700;line-height:1}
+.detect{display:flex;align-items:center;gap:10px;margin:14px 0 4px;padding:10px 12px;background:var(--blush-2);border-radius:12px;font-size:13px}
+.detect .dot{width:26px;height:26px}
+.spin{width:44px;height:44px;border-radius:50%;border:4px solid var(--blush);border-top-color:var(--rose);animation:rot 0.8s linear infinite;margin:20px auto}
+@keyframes rot{to{transform:rotate(360deg)}}
+.hist{list-style:none;display:grid;gap:8px}
+.hist li{display:flex;align-items:center;gap:12px;background:var(--white);border-radius:var(--r-md);padding:9px 12px;font-size:13.5px;box-shadow:var(--lift-sm)}
+.hist .thumb{width:40px;height:40px;border-radius:10px;background:var(--blush);overflow:hidden;display:grid;place-items:center;flex:none}
+.hist .thumb img{width:100%;height:100%;object-fit:cover}
+.hist .thumb svg{width:80%;height:80%}
+.hist .grow{flex:1;min-width:0}
+.hist b{font-family:var(--serif);font-size:20px}
+
+/* ---------- wardrobe ---------- */
+.w-stats{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+.w-stats .nums{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center}
+.w-stats .nums b{font-family:var(--serif);font-size:30px;line-height:1;color:var(--berry);display:block}
+.w-stats .nums span{font-size:11px;font-weight:700;color:var(--muted)}
+.w-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.w-item{position:relative;background:var(--white);border-radius:var(--r-md);padding:8px 8px 10px;box-shadow:var(--lift-sm);font-size:12px;line-height:1.25}
+.w-item .pic{aspect-ratio:1;border-radius:11px;background:var(--blush-2);display:grid;place-items:center;overflow:hidden;margin-bottom:7px}
+.w-item .pic img{width:100%;height:100%;object-fit:cover}
+.w-item .pic svg{width:76%;height:76%}
+.w-item b{display:block;font-size:12.5px}
+.w-item .cn{display:flex;align-items:center;gap:5px;color:var(--muted);font-weight:600;margin-top:2px}
+.w-item .cn .dot{width:10px;height:10px}
+.w-item .flag{position:absolute;top:12px;left:12px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:var(--white)}
+.w-item .rm{position:absolute;top:10px;right:10px;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;color:var(--muted);box-shadow:var(--lift-sm)}
+.add-tile{border:2px dashed var(--rose-soft);background:transparent;box-shadow:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--rose);font-weight:800;min-height:150px}
+.add-panel{margin-top:12px}
+.add-panel .drop{margin-top:12px;padding:12px}
+.gaps{list-style:none;display:grid;gap:8px;margin-top:10px}
+.gaps li{display:flex;align-items:center;gap:10px;font-size:14px}
+.gaps svg:not(.ic){width:34px;height:34px;flex:none}
+
+/* ---------- chat ---------- */
+.chat{display:flex;flex-direction:column;gap:10px;padding:8px 16px 16px}
+.msg{max-width:84%;padding:11px 14px;border-radius:18px;font-size:14.5px;line-height:1.45;white-space:pre-line}
+.msg.ai{background:var(--white);border-bottom-left-radius:6px;box-shadow:var(--lift-sm);align-self:flex-start}
+.msg.me{background:var(--berry);color:var(--white);border-bottom-right-radius:6px;align-self:flex-end}
+.msg .swr{display:flex;gap:5px;margin-top:8px}
+.msg .swr i{width:22px;height:22px;border-radius:7px}
+.ai-head{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;color:var(--berry);margin-bottom:4px}
+.ai-head .mini{width:26px;height:26px;border-radius:50%;overflow:hidden}
+.typing{display:inline-flex;gap:4px;padding:14px 16px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--rose-soft);animation:bl 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes bl{50%{opacity:.25;transform:translateY(-3px)}}
+.quick{display:flex;gap:8px;overflow-x:auto;padding:4px 16px 8px;scrollbar-width:none}
+.quick::-webkit-scrollbar{display:none}
+.quick .chip{white-space:nowrap;background:var(--blush);border-color:var(--blush);color:var(--berry)}
+.composer{display:flex;gap:8px;padding:8px 16px 0}
+.composer input{flex:1;height:48px;border-radius:24px;border:1.5px solid var(--line);padding:0 18px;background:var(--white);outline:0;min-width:0}
+.composer input:focus{border-color:var(--rose)}
+.composer button{width:48px;height:48px;border-radius:50%;background:var(--berry);color:var(--white);display:grid;place-items:center;flex:none}
+.chat-wrap{display:flex;flex-direction:column;min-height:100%}
+.chat-wrap .chat{flex:1}
+
+/* ---------- profile ---------- */
+.prof-head{display:flex;align-items:center;gap:16px;margin:6px 0 16px}
+.prof-head .av{width:84px;height:84px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 4px var(--white),var(--lift-sm)}
+.prof-head .av img{width:100%;height:100%;object-fit:cover}
+.kv{list-style:none}
+.kv li{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}
+.kv li:last-child{border-bottom:0}
+.kv span{color:var(--muted)} .kv b{text-align:right}
+.menu{display:grid;gap:10px;margin-top:14px}
+.menu button{display:flex;align-items:center;gap:12px;background:var(--white);padding:14px 16px;border-radius:var(--r-md);font-weight:700;box-shadow:var(--lift-sm);text-align:left}
+.menu button .ic{color:var(--rose)}
+.menu button.danger{color:var(--bad)} .menu button.danger .ic{color:var(--bad)}
+.seri{display:flex;align-items:center;gap:14px;background:#22313A;color:#E7EEF2;border-radius:var(--r-lg);padding:16px;margin-top:14px}
+.seri .s{font-family:var(--serif);font-style:italic;font-weight:700;font-size:34px;color:#C9D8C2;line-height:1}
+.seri p{font-size:13px;color:#B8C7CF}
+.photos{display:flex;gap:10px;margin-top:10px}
+.photos div{width:72px;height:92px;border-radius:14px;background:var(--blush);overflow:hidden;display:grid;place-items:center;color:var(--muted)}
+.photos img{width:100%;height:100%;object-fit:cover}
+
+/* ---------- print passport ---------- */
+#passport{display:none}
+@media print{
+  body{background:#fff}
+  .stage{display:none}
+  #passport{display:block;padding:24px;font-family:var(--sans);color:var(--ink)}
+  #passport h1{font-family:var(--serif);font-style:italic;font-size:54px;color:var(--berry)}
+  #passport h2{font-family:var(--serif);font-size:26px;color:var(--berry);margin:18px 0 8px}
+  #passport .pg{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}
+  #passport .pg div{font-size:10px;text-align:center}
+  #passport .pg i{display:block;height:46px;border-radius:8px;margin-bottom:4px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #passport p,#passport li{font-size:13px}
+}
+</style>
+</head>
+<body>
+<div class="stage">
+  <aside class="side" id="side"></aside>
+  <div class="phone" id="phone"></div>
+</div>
+<div id="passport"></div>
+
+<script>
+/* =========================================================
+   Aru — prototype v0.1
+   Everything below runs locally in the browser. No photos
+   leave the device; colour reading uses <canvas>.
+   ========================================================= */
+
+const LANGS = ['ru','kk','en'];
+let L = 0;
+
+/* ---------- strings: [ru, kk, en] ---------- */
+const S = {
+  tagline:["Ваш личный стилист — всегда рядом","Жеке стилистіңіз — әрдайым қасыңызда","Your personal stylist, always with you"],
+  key_label:["Ключ доступа","Кіру кілті","Access key"],
+  enter:["Войти","Кіру","Sign in"],
+  demo_key:["Для демонстрации ключ уже вставлен","Көрсету үшін кілт енгізілген","A demo key is already filled in"],
+  no_key:["Нет ключа?","Кілтіңіз жоқ па?","No key yet?"],
+  buy:["Купить доступ за $49","Қолжетімділікті $49-ға алу","Get access for $49"],
+  once:["Разовая оплата, без подписки","Бір реттік төлем, жазылымсыз","One-time payment, no subscription"],
+  privacy_short:["Фото удаляются сразу после анализа","Фото талдаудан кейін бірден өшіріледі","Photos are deleted right after analysis"],
+  bad_key:["Такой ключ не найден. Для демо: ARU-DEMO-2026","Мұндай кілт табылмады. Демо үшін: ARU-DEMO-2026","Key not found. For the demo use ARU-DEMO-2026"],
+  pay_toast:["В прототипе оплата выключена. В рабочей версии здесь откроется Gumroad","Прототипте төлем өшірулі. Жұмыс нұсқасында мұнда Gumroad ашылады","Payment is off in the prototype. The live app opens Gumroad here"],
+  step_n:["Шаг {n} из 3","{n}-қадам, барлығы 3","Step {n} of 3"],
+  face_title:["Фото лица","Бет суреті","Your face"],
+  face_sub:["По нему Aru определит ваш цветотип","Осы сурет бойынша Aru түс типіңізді анықтайды","Aru reads your colour type from this photo"],
+  t_day:["Дневной свет у окна","Терезе жанындағы күн жарығы","Daylight by a window"],
+  t_nomake:["Без макияжа","Макияжсыз","No makeup"],
+  t_nofilter:["Без фильтров","Сүзгісіз","No filters"],
+  body_title:["Фото в полный рост","Толық бойлы сурет","Full-length photo"],
+  body_sub:["По нему Aru поймёт пропорции и силуэт","Осы сурет бойынша Aru пропорция мен силуэтті түсінеді","Aru reads your proportions from this photo"],
+  t_fitted:["Облегающая одежда","Денеге қонымды киім","Fitted clothes"],
+  t_waist:["Камера на уровне талии","Камера бел тұсында","Camera at waist height"],
+  t_straight:["Стойте прямо","Тік тұрыңыз","Stand straight"],
+  upload:["Загрузить фото","Сурет жүктеу","Upload a photo"],
+  replace:["Заменить фото","Суретті ауыстыру","Replace photo"],
+  next:["Дальше","Келесі","Next"],
+  skip:["Пропустить в демо-режиме","Демо режимінде өткізу","Skip in demo mode"],
+  demo_client:["Показать на демо-клиентке Айгерим","Демо-клиент Айгерімнің мысалында көрсету","Use demo client Aigerim"],
+  demo_loaded:["Загружены фото и анкета Айгерим, 28 лет, рост 165 см","Айгерімнің (28 жас, бойы 165 см) суреттері мен сауалнамасы жүктелді","Loaded photos and answers for Aigerim, 28, 165 cm"],
+  age_v:["Возраст","Жасы","Age"],
+  quiz_title:["Немного о вас","Өзіңіз туралы","A little about you"],
+  quiz_sub:["Чтобы образы подходили вашей жизни, а не журналу","Бейнелер журналға емес, өміріңізге лайық болуы үшін","So the looks fit your life, not a magazine"],
+  q_age:["Возраст","Жасыңыз","Age"],
+  q_height:["Рост","Бойыңыз","Height"],
+  q_life:["Где вы бываете чаще всего","Көбіне қайда боласыз","Where you spend your days"],
+  q_budget:["Бюджет на одну вещь","Бір затқа бюджет","Budget per item"],
+  q_like:["Что вам нравится","Сізге не ұнайды","What you love"],
+  q_dislike:["Что вы точно не наденете","Не кимейсіз","What you never wear"],
+  dislike_ph:["Например: мини, крупный принт","Мысалы: мини, ірі принт","For example: mini skirts, big prints"],
+  analyze:["Сделать разбор","Талдау жасау","Run my analysis"],
+  analyzing:["Aru изучает вашу внешность","Aru келбетіңізді зерттеп жатыр","Aru is studying your features"],
+  a1:["Определяю подтон кожи","Тері реңкін анықтаймын","Reading skin undertone"],
+  a2:["Измеряю контраст внешности","Келбет контрастын өлшеймін","Measuring contrast"],
+  a3:["Форма лица и тип фигуры","Бет пішіні мен дене бітімі","Face shape and body type"],
+  a4:["Собираю ваши образы","Бейнелеріңізді жинаймын","Putting your looks together"],
+  done_toast:["Разбор готов. Это ваша панель стиля","Талдау дайын. Бұл сіздің стиль панеліңіз","Your analysis is ready. This is your style panel"],
+  hello:["Здравствуйте","Сәлеметсіз бе","Hello"],
+  your_type:["Ваш цветотип","Түс типіңіз","Your colour type"],
+  soft_autumn:["Мягкая осень","Жұмсақ күз","Soft Autumn"],
+  sa_desc:["Тёплые, приглушённые, природные оттенки — как осенний лес в мягком свете","Жылы, бәсең, табиғи реңктер — жұмсақ жарықтағы күзгі орман сияқты","Warm, muted, earthy shades, like an autumn forest in soft light"],
+  match:["Совпадение 94%","Сәйкестік 94%","94% match"],
+  indicators:["Индикаторы стиля","Стиль көрсеткіштері","Style indicators"],
+  undertone:["Подтон","Реңк","Undertone"], warm:["Тёплый","Жылы","Warm"],
+  contrast:["Контраст","Контраст","Contrast"], medium:["Средний","Орташа","Medium"],
+  chroma:["Насыщенность","Қанықтық","Chroma"], muted_v:["Приглушённая","Бәсең","Muted"],
+  harmony:["Гардероб в палитре","Палитрадағы гардероб","Wardrobe in palette"],
+  sections:["Ваш разбор","Сіздің талдауыңыз","Your analysis"],
+  s_colors:["Цвета","Түстер","Colours"], s_colors_d:["16 ваших, 8 не ваших","16 сіздікі, 8 сіздікі емес","16 yours, 8 not yours"],
+  s_hair:["Причёска","Шаш үлгісі","Hair"], s_hair_d:["3 стрижки, 4 оттенка","3 үлгі, 4 реңк","3 cuts, 4 shades"],
+  s_clothes:["Одежда","Киім","Clothes"], s_clothes_d:["Фигура «песочные часы»","«Құм сағат» бітімі","Hourglass figure"],
+  s_acc:["Обувь и аксессуары","Аяқ киім, аксессуарлар","Shoes & accessories"], s_acc_d:["Золото и коньяк","Алтын мен коньяк","Gold and cognac"],
+  s_makeup:["Макияж","Макияж","Makeup"], s_makeup_d:["Тёплая роза, бронза","Жылы раушан, қола","Warm rose, bronze"],
+  s_looks:["Образы","Бейнелер","Looks"], s_looks_d:["5 готовых образов","5 дайын бейне","5 ready looks"],
+  tip_day:["Совет дня","Күн кеңесі","Tip of the day"],
+  another_tip:["Ещё совет","Тағы кеңес","Another tip"],
+  today_look:["Образ на сегодня","Бүгінгі бейне","Today's look"],
+  open_look:["Открыть образ","Бейнені ашу","Open the look"],
+  tab_home:["Панель","Панель","Panel"], tab_looks:["Образы","Бейнелер","Looks"], tab_check:["Проверить","Тексеру","Check"], tab_wardrobe:["Гардероб","Гардероб","Wardrobe"], tab_chat:["Стилист","Стилист","Stylist"],
+  drape_title:["Тест драпировки","Драпировка сынағы","Drape test"],
+  drape_sub:["Нажмите на цвет и посмотрите на лицо","Түсті басып, бетке қараңыз","Tap a colour and watch the face"],
+  glows:["Лицо светится","Бет жарқырайды","Face glows"], dulls:["Лицо тускнеет","Бет солғындайды","Face looks dull"],
+  my_colors:["Ваши цвета","Сіздің түстеріңіз","Your colours"], not_mine:["Не ваши цвета","Сіздікі емес түстер","Not your colours"],
+  neutrals:["Базовые нейтрали","Негізгі бейтарап түстер","Your neutrals"],
+  neutrals_d:["Вместо чёрного — шоколад, вместо белого — тёплый беж","Қараның орнына — шоколад, ақтың орнына — жылы беж","Chocolate instead of black, warm beige instead of white"],
+  metal:["Ваш металл","Сіздің металыңыз","Your metal"], gold:["Золото","Алтын","Gold"], silver:["Серебро","Күміс","Silver"],
+  tryon:["Примерка","Өлшеп көру","Try-on"],
+  face_shape:["Форма лица","Бет пішіні","Face shape"], oval:["Овальная","Сопақ","Oval"],
+  oval_d:["Пропорциональная, мягкая линия скул. Подходит почти любая длина — выбираем то, что подчёркивает глаза.","Пропорциялы, бет сүйегі жұмсақ. Кез келген ұзындық жарасады — көзді ерекшелейтінін таңдаймыз.","Balanced with soft cheekbones. Almost any length works; we pick what flatters your eyes."],
+  cuts:["Стрижки для вас","Сізге лайық үлгілер","Cuts for you"],
+  hair_shades:["Оттенки волос","Шаш реңктері","Hair shades"],
+  rec:["Рекомендуем","Ұсынамыз","Recommended"], not_rec:["Не рекомендуем","Ұсынбаймыз","Not for you"],
+  body_type:["Тип фигуры","Дене бітімі","Body type"], hourglass:["Песочные часы","Құм сағат","Hourglass"],
+  hourglass_d:["Плечи и бёдра в балансе, талия выражена. Талию подчёркиваем, а не прячем.","Иық пен жамбас теңгерімді, бел айқын. Белді жасырмай, ерекшелейміз.","Shoulders and hips balance, the waist is defined. Show the waist, never hide it."],
+  shoulders:["Плечи","Иық","Shoulders"], waist:["Талия","Бел","Waist"], hips:["Бёдра","Жамбас","Hips"],
+  your_sil:["Ваши силуэты","Сіздің силуэттеріңіз","Your silhouettes"],
+  avoid_sil:["Что прячет вашу фигуру","Бітіміңізді жасыратындар","What hides your figure"],
+  necklines:["Вырезы","Мойын ойындысы","Necklines"],
+  fabrics:["Ткани и фактуры","Маталар мен текстура","Fabrics and textures"],
+  prints:["Принты","Принттер","Prints"],
+  shoes_t:["Обувь","Аяқ киім","Shoes"], heel:["Каблук 5–7 см","Өкше 5–7 см","5–7 cm heel"],
+  bags_t:["Сумки","Сөмкелер","Bags"], details_t:["Детали","Бөлшектер","Details"],
+  lips:["Губы","Ерін","Lips"], blush_t:["Румяна","Ұялық","Blush"], eyes_t:["Тени","Көз бояуы","Eyeshadow"],
+  tap_lip:["Нажмите на помаду, чтобы примерить","Өлшеп көру үшін ерін далабын басыңыз","Tap a lipstick to try it on"],
+  occ_work:["Работа","Жұмыс","Work"], occ_day:["Каждый день","Күнделікті","Everyday"], occ_party:["Праздник","Мереке","Celebration"], occ_date:["Свидание","Кездесу","Date"], occ_travel:["Путешествие","Саяхат","Travel"],
+  what_in:["Из чего собран образ","Бейне неден құралған","What the look is made of"],
+  hair_n:["Волосы","Шаш","Hair"], makeup_n:["Макияж","Макияж","Makeup"],
+  have:["есть у вас","сізде бар","you own it"], buy_it:["докупить","сатып алу","to buy"],
+  shopping:["Список покупок","Сатып алу тізімі","Shopping list"],
+  hide_shopping:["Скрыть список","Тізімді жасыру","Hide the list"],
+  save_look:["Сохранить образ","Бейнені сақтау","Save look"], saved:["Образ сохранён","Бейне сақталды","Look saved"],
+  nothing_buy:["Всё уже есть в гардеробе","Барлығы гардеробта бар","You own everything already"],
+  check_title:["Проверьте вещь","Затты тексеріңіз","Check an item"],
+  check_sub:["Сфотографируйте вещь в магазине — Aru скажет, ваша ли она","Дүкендегі затты суретке түсіріңіз — Aru сізге лайық па, айтады","Snap an item in the store and Aru tells you if it's yours"],
+  take_photo:["Сфотографировать вещь","Затты суретке түсіру","Photograph an item"],
+  take_photo_d:["Цвет считывается прямо в телефоне","Түс телефонда оқылады","The colour is read on your phone"],
+  or_try:["Или попробуйте на примере","Немесе мысалмен көріңіз","Or try an example"],
+  item_type:["Что вы проверяете","Нені тексересіз","What are you checking"],
+  v_yes:["Берите","Алыңыз","Get it"], v_maybe:["Подумайте","Ойланыңыз","Think twice"], v_no:["Не ваше","Сіздікі емес","Not yours"],
+  detected:["Цвет вещи","Заттың түсі","Item colour"], closest:["ближе всего к «{c}»","«{c}» түсіне ең жақын","closest to {c}"],
+  c_ok:["Цвет из вашей палитры","Түс сіздің палитраңыздан","The colour is in your palette"],
+  c_close:["Цвет рядом с вашей палитрой","Түс палитраңызға жақын","The colour is near your palette"],
+  c_bad:["Цвет вне вашей палитры","Түс палитраңыздан тыс","The colour is outside your palette"],
+  f_ok:["Фасон подходит вашей фигуре","Фасон бітіміңізге сай","The cut suits your figure"],
+  f_bad:["Фасон спрячет вашу талию","Фасон беліңізді жасырады","The cut will hide your waist"],
+  combo:["Сочетается с {n} вещами из гардероба","Гардеробтағы {n} затпен үйлеседі","Goes with {n} items you own"],
+  alt:["Поищите такой же фасон в цвете «{c}»","Осы фасонды «{c}» түсінде іздеңіз","Look for the same cut in {c}"],
+  add_w:["Добавить в гардероб","Гардеробқа қосу","Add to wardrobe"], added:["Добавлено в гардероб","Гардеробқа қосылды","Added to wardrobe"],
+  check_again:["Проверить другую вещь","Басқа затты тексеру","Check another item"],
+  history:["Последние проверки","Соңғы тексерулер","Recent checks"],
+  reading:["Считываю цвет и фасон","Түс пен фасонды оқып жатырмын","Reading colour and cut"],
+  w_title:["Мой гардероб","Менің гардеробым","My wardrobe"],
+  w_items:["вещей","зат","items"], in_pal:["в палитре","палитрада","in palette"], out_pal:["вне палитры","палитрадан тыс","off palette"],
+  all:["Все","Барлығы","All"], f_in:["В палитре","Палитрада","In palette"], f_out:["Вне палитры","Палитрадан тыс","Off palette"],
+  add_item:["Добавить вещь","Зат қосу","Add an item"],
+  add_how:["Выберите тип и сфотографируйте вещь","Түрін таңдап, затты суретке түсіріңіз","Pick a type and photograph the item"],
+  gaps:["Чего не хватает до базовой капсулы","Негізгі капсулаға не жетпейді","Missing from your base capsule"],
+  gaps_none:["Капсула собрана полностью","Капсула толық жиналды","Your capsule is complete"],
+  removed:["Вещь убрана из гардероба","Зат гардеробтан алынды","Item removed"],
+  empty_w:["В этом фильтре пока пусто","Бұл сүзгіде әзірге бос","Nothing here yet"],
+  chat_hello:["Здравствуйте! Я Aru, ваш стилист. Я знаю ваш цветотип, фигуру и гардероб — спрашивайте о чём угодно.","Сәлеметсіз бе! Мен Aru — сіздің стилистіңізмін. Түс типіңізді, бітіміңізді және гардеробыңызды білемін — кез келген сұрақ қойыңыз.","Hi! I'm Aru, your stylist. I know your colour type, figure and wardrobe, so ask me anything."],
+  chat_ph:["Спросите стилиста","Стилисттен сұраңыз","Ask your stylist"],
+  stylist:["Стилист Aru","Aru стилисті","Aru stylist"],
+  profile:["Профиль","Профиль","Profile"],
+  my_params:["Мои параметры","Менің параметрлерім","My parameters"],
+  eyes_c:["Глаза","Көз","Eyes"], hazel:["Ореховые","Жаңғақ түстес","Hazel"],
+  hair_nat:["Свой цвет волос","Табиғи шаш түсі","Natural hair"], hair_nat_v:["Тёплый тёмный каштан","Жылы қою құба","Warm dark chestnut"],
+  height_v:["Рост","Бойы","Height"], cm:["см","см","cm"],
+  language:["Язык","Тіл","Language"],
+  my_photos:["Мои фото","Менің суреттерім","My photos"],
+  no_photos:["Фото не хранятся: они удалены сразу после анализа","Суреттер сақталмайды: талдаудан кейін бірден өшірілді","No photos are stored: they were deleted right after analysis"],
+  photos_session:["Фото видны только в этой сессии и не отправляются на сервер","Суреттер тек осы сеансте көрінеді және серверге жіберілмейді","Photos stay in this session only and are never uploaded"],
+  passport:["Скачать стиль-паспорт в PDF","Стиль-паспортты PDF түрінде жүктеу","Download style passport as PDF"],
+  redo:["Пройти разбор заново","Талдауды қайта өту","Redo my analysis"],
+  delete_photos:["Удалить мои фото","Суреттерімді өшіру","Delete my photos"],
+  photos_deleted:["Фото удалены","Суреттер өшірілді","Photos deleted"],
+  access:["Доступ","Қолжетімділік","Access"], lifetime:["Бессрочный","Мерзімсіз","Lifetime"],
+  key_v:["Ключ","Кілт","Key"],
+  seri_t:["Мужская версия","Ерлерге арналған нұсқа","Menswear edition"],
+  seri_d:["Скоро: тот же стилист для мужского гардероба","Жақында: ер адамдар гардеробына арналған сол стилист","Coming soon: the same stylist for men"],
+  logout:["Выйти","Шығу","Sign out"],
+  proto:["прототип","прототип","prototype"],
+  passport_t:["Стиль-паспорт","Стиль-паспорт","Style passport"],
+  side_p:["Это интерактивный прототип Aru. Всё нажимается, а цвет вещей на ваших фото считывается по-настоящему.","Бұл Aru интерактивті прототипі. Бәрі басылады, ал суреттегі заттың түсі шын мәнінде оқылады.","This is an interactive Aru prototype. Everything is clickable, and colours on your photos are read for real."],
+  side_try:["Что попробовать","Нені көру керек","Things to try"],
+  side_1:["Переключить язык: RU, KZ, EN","Тілді ауыстыру: RU, KZ, EN","Switch language: RU, KZ, EN"],
+  side_2:["Тест драпировки в разделе «Цвета»","«Түстер» бөліміндегі драпировка сынағы","The drape test in Colours"],
+  side_3:["Сфотографировать любую вещь во вкладке «Проверить»","«Тексеру» бетінде кез келген затты суретке түсіру","Photograph any item in Check"],
+  side_4:["Спросить стилиста, что надеть на свадьбу","Стилисттен тойға не кию керегін сұрау","Ask the stylist what to wear to a wedding"],
+  side_ver:["Прототип v0.1, 23 октября 2026","Прототип v0.1, 2026 жылғы 23 қазан","Prototype v0.1, 23 October 2026"],
+  user_name:["Айгерим","Айгерім","Aigerim"]
+};
+const t = (k, v) => { let s = S[k] ? S[k][L] : k; if (v) for (const x in v) s = s.split('{'+x+'}').join(v[x]); return s; };
+const tr = a => a[L];
+
+/* ---------- palette ---------- */
+const C = {
+  camel:{hex:'#C19A6B',n:['Кэмел','Кэмел','Camel'],g:'mine'},
+  terracotta:{hex:'#C66B4E',n:['Терракота','Терракота','Terracotta'],g:'mine'},
+  olive:{hex:'#808A54',n:['Оливковый','Зәйтүн','Olive'],g:'mine'},
+  sage:{hex:'#9CAF88',n:['Шалфей','Шалфей','Sage'],g:'mine'},
+  teal:{hex:'#3F7F7A',n:['Тёплая бирюза','Жылы көгілдір','Warm teal'],g:'mine'},
+  rust:{hex:'#A85A3B',n:['Ржавый','Тот түсті','Rust'],g:'mine'},
+  mustard:{hex:'#C9A43A',n:['Горчичный','Қыша түсті','Mustard'],g:'mine'},
+  peach:{hex:'#E8A982',n:['Персик','Шабдалы','Peach'],g:'mine'},
+  beige:{hex:'#D8C3A5',n:['Тёплый беж','Жылы беж','Warm beige'],g:'mine'},
+  chocolate:{hex:'#6B4A3A',n:['Шоколад','Шоколад','Chocolate'],g:'mine'},
+  moss:{hex:'#6E7B4A',n:['Мох','Мүк жасылы','Moss'],g:'mine'},
+  salmon:{hex:'#E07A5F',n:['Лосось','Лосось','Salmon'],g:'mine'},
+  coral:{hex:'#D98B74',n:['Пыльный коралл','Бозғылт маржан','Dusty coral'],g:'mine'},
+  marsala:{hex:'#8C4A4A',n:['Марсала','Марсала','Marsala'],g:'mine'},
+  taupe:{hex:'#9E8B78',n:['Тёплый тауп','Жылы тауп','Warm taupe'],g:'mine'},
+  softgold:{hex:'#CFAF6E',n:['Мягкое золото','Жұмсақ алтын','Soft gold'],g:'mine'},
+  black:{hex:'#151515',n:['Чёрный','Қара','Black'],g:'not'},
+  white:{hex:'#FFFFFF',n:['Белоснежный','Аппақ','Optic white'],g:'not'},
+  icypink:{hex:'#F3D3E6',n:['Ледяной розовый','Мұздай қызғылт','Icy pink'],g:'not'},
+  fuchsia:{hex:'#D61F82',n:['Фуксия','Фуксия','Fuchsia'],g:'not'},
+  royal:{hex:'#2A50C8',n:['Королевский синий','Ашық көк','Royal blue'],g:'not'},
+  coolgrey:{hex:'#A3ABB5',n:['Холодный серый','Суық сұр','Cool grey'],g:'not'},
+  lemon:{hex:'#F2EA4E',n:['Лимонный','Лимон түсті','Lemon'],g:'not'},
+  violet:{hex:'#7A2FD0',n:['Электрик-фиолет','Ашық күлгін','Electric violet'],g:'not'},
+  denim:{hex:'#4F6378',n:['Тёплый деним','Жылы деним','Warm denim'],g:'neutral'}
+};
+const MINE = Object.keys(C).filter(k => C[k].g === 'mine');
+const NOT = Object.keys(C).filter(k => C[k].g === 'not');
+
+const HAIRC = {
+  chestnut:{hex:'#6E3F24',ok:1,n:['Золотистый каштан','Алтын құба','Golden chestnut']},
+  caramel:{hex:'#9C6235',ok:1,n:['Карамель','Карамель','Caramel']},
+  honey:{hex:'#C08E52',ok:1,n:['Мёд','Бал түстес','Honey']},
+  copper:{hex:'#9A4A26',ok:1,n:['Медь','Мыс','Copper']},
+  ash:{hex:'#BDB6A8',ok:0,n:['Пепельный блонд','Күлгін аққұба','Ash blonde']},
+  blueblack:{hex:'#17171E',ok:0,n:['Иссиня-чёрный','Көкшіл қара','Blue-black']}
+};
+const LIPS = {
+  rose:{hex:'#B5605A',ok:1,n:['Тёплая роза','Жылы раушан','Warm rose']},
+  nude:{hex:'#B87560',ok:1,n:['Терракотовый нюд','Терракота нюд','Terracotta nude']},
+  brick:{hex:'#8E3B2E',ok:1,n:['Кирпичный','Кірпіш түстес','Brick']},
+  frost:{hex:'#E9A9C8',ok:0,n:['Холодный розовый','Суық қызғылт','Frosty pink']},
+  plum:{hex:'#5E2A4F',ok:0,n:['Холодная слива','Суық алхоры','Cool plum']}
+};
+const BLUSH = [['#E9A28A',['Персиковые','Шабдалы','Peach']],['#E59A6E',['Абрикос','Өрік','Apricot']]];
+const EYES = [['#8A5A32',['Бронза','Қола','Bronze']],['#6E6B3A',['Олива','Зәйтүн','Olive']],['#5A3B2A',['Тёплый коричневый','Жылы қоңыр','Warm brown']]];
+
+const CUTS = {
+  lob:{n:['Удлинённое каре с волной','Толқынды ұзартылған каре','Long bob with waves'],
+       w:['Подчёркивает скулы, мягкая волна добавляет тепла.','Бет сүйегін ерекшелейді, жұмсақ толқын жылулық береді.','Shows off cheekbones; soft waves add warmth.']},
+  layers:{n:['Каскад до лопаток','Жауырынға дейінгі каскад','Shoulder-blade layers'],
+       w:['Движение и объём, тёплые блики играют на прядях.','Қозғалыс пен көлем, жылы жалтырлар шашта ойнайды.','Movement and volume; warm highlights play on the layers.']},
+  pixie:{n:['Короткая с косой чёлкой','Қиғаш кекілді қысқа шаш','Pixie with a side fringe'],
+       w:['Смелый вариант: открывает глаза и шею.','Батыл нұсқа: көз бен мойынды ашады.','The bold option: opens up eyes and neck.']}
+};
+
+const TYPES = {
+  top:['Блуза','Блузка','Top'], knit:['Свитер','Жемпір','Knit'], dress:['Платье','Көйлек','Dress'],
+  skirt:['Юбка','Юбка','Skirt'], trousers:['Брюки','Шалбар','Trousers'], jeans:['Джинсы','Джинсы','Jeans'],
+  coat:['Пальто','Пальто','Coat'], jacket:['Жакет','Жакет','Blazer'], shoes:['Туфли','Туфли','Shoes'],
+  boots:['Ботильоны','Бәтеңке','Ankle boots'], bag:['Сумка','Сөмке','Bag'], scarf:['Шарф','Шарф','Scarf'],
+  earrings:['Серьги','Сырға','Earrings'], oversize:['Оверсайз','Оверсайз','Oversized']
+};
+const CHECK_TYPES = ['top','knit','dress','skirt','trousers','coat','jacket','bag','shoes','oversize'];
+
+const LOOKS = {
+  work:{t:['Тёплый офис','Жылы кеңсе','Warm office'],
+    items:[['jacket','camel'],['top','beige'],['trousers','chocolate'],['shoes','rust'],['bag','olive'],['earrings','softgold']],
+    hair:['Каре с волной, пробор сбоку','Толқынды каре, бүйірден айырылған','Wavy bob, side part'],
+    mk:['Терракотовый нюд, бронзовые тени','Терракота нюд, қола көлеңке','Terracotta nude, bronze shadow'],
+    why:['Шоколад вместо чёрного: строго, но лицо остаётся живым.','Қараның орнына шоколад: қатаң, бірақ бет сергек көрінеді.','Chocolate instead of black: sharp, and your face stays bright.']},
+  day:{t:['Мягкий выходной','Жұмсақ демалыс','Soft weekend'],
+    items:[['knit','sage'],['jeans','denim'],['boots','chocolate'],['bag','camel'],['scarf','mustard']],
+    hair:['Свободная волна','Еркін толқын','Loose waves'],
+    mk:['Персиковые румяна, бальзам тёплой розы','Шабдалы ұялық, жылы раушан бальзамы','Peach blush, warm rose balm'],
+    why:['Шалфей освежает лицо, горчичный шарф даёт акцент.','Шалфей бетті сергітеді, қыша шарф екпін береді.','Sage freshens your face; the mustard scarf adds a spark.']},
+  party:{t:['Вечер в марсале','Марсала кеші','Marsala evening'],
+    items:[['dress','marsala'],['shoes','softgold'],['bag','chocolate'],['earrings','softgold']],
+    hair:['Гладкая укладка, объём у корней','Тегіс сәндеу, түбінде көлем','Sleek styling, root volume'],
+    mk:['Кирпичная помада, золотистые тени','Кірпіш ерін далабы, алтын көлеңке','Brick lips, golden shadow'],
+    why:['Марсала — ваш праздничный цвет: торжественно и тепло.','Марсала — мерекелік түсіңіз: салтанатты әрі жылы.','Marsala is your festive colour: elegant and warm.']},
+  date:{t:['Коралловое свидание','Маржан кездесу','Coral date'],
+    items:[['top','coral'],['skirt','camel'],['boots','chocolate'],['earrings','softgold']],
+    hair:['Мягкие локоны','Жұмсақ бұйралар','Soft curls'],
+    mk:['Тёплая роза, тушь коричневая','Жылы раушан, қоңыр тушь','Warm rose, brown mascara'],
+    why:['Коралл у лица даёт румянец без макияжа.','Бетке жақын маржан макияжсыз-ақ ұялық береді.','Coral near your face gives a natural glow.']},
+  travel:{t:['Город и дорога','Қала мен жол','City and road'],
+    items:[['coat','taupe'],['knit','beige'],['trousers','olive'],['boots','rust'],['bag','camel']],
+    hair:['Низкий пучок','Төмен түйін','Low bun'],
+    mk:['Минимум: румяна и бальзам','Ең аз: ұялық пен бальзам','Minimal: blush and balm'],
+    why:['Всё сочетается со всем — удобно собирать чемодан.','Бәрі бір-бірімен үйлеседі — чемодан жинау оңай.','Everything goes with everything, so packing is easy.']}
+};
+const OCC = ['work','day','party','date','travel'];
+
+const TIPS = [
+  ['Шоколадная водолазка под жакет кэмел мягче, чем чёрная.','Кэмел жакетінің астындағы шоколад водолазка қарадан жұмсақ.','A chocolate turtleneck under a camel blazer is softer than black.'],
+  ['Золотые серьги-кольца делают взгляд теплее.','Алтын сақина сырғалар көзқарасты жылытады.','Gold hoops warm up your gaze.'],
+  ['Подчёркивайте талию поясом — это ваш главный козырь.','Белді белдікпен ерекшелеңіз — бұл басты артықшылығыңыз.','Belt your waist: it is your strongest asset.'],
+  ['Матовая замша и твид в вашей гамме выглядят дороже глянца.','Сіздің түстеріңіздегі күңгірт күдері мен твид жылтырдан қымбат көрінеді.','Matte suede and tweed in your shades look richer than gloss.']
+];
+
+const CAPSULE = [['jacket','camel'],['trousers','chocolate'],['dress','marsala'],['shoes','rust'],['knit','sage'],['earrings','softgold']];
+
+const CLOTHES = {
+  yes:[['dress',['Платье-запах','Орама көйлек','Wrap dress']],['coat',['Пальто с поясом','Белдікті пальто','Belted coat']],['trousers',['Прямые брюки с высокой посадкой','Биік белді түзу шалбар','High-waist straight trousers']],['skirt',['Юбка-карандаш миди','Миди қарындаш юбка','Midi pencil skirt']],['top',['Блуза с V-вырезом','V-ойынды блузка','V-neck blouse']],['knit',['Приталенный трикотаж','Қонымды трикотаж','Fitted knit']]],
+  no:[['oversize',['Объёмный оверсайз','Көлемді оверсайз','Boxy oversized']],['dress',['Платье с заниженной талией','Белі төмен көйлек','Drop-waist dress']],['coat',['Пальто-кокон','Кокон пальто','Cocoon coat']]],
+  neck:[['V-вырез','V-ойынды','V-neck'],['Запах','Орама','Wrap'],['Овальный','Сопақ','Scoop'],['Квадратный','Шаршы','Square']],
+  fab:[['Трикотаж','Трикотаж','Jersey knit'],['Замша','Күдері','Suede'],['Шерсть','Жүн','Wool'],['Твид','Твид','Tweed'],['Лён','Зығыр','Linen']],
+  prY:[['Тёплые цветы','Жылы гүлдер','Warm florals'],['Пейсли','Пейсли','Paisley'],['Мягкий леопард','Жұмсақ барыс','Soft leopard']],
+  prN:[['Чёрно-белая полоска','Ақ-қара жолақ','Black-white stripes'],['Неон','Неон','Neon']]
+};
+const ACC = {
+  shapes:[['Миндальный носок','Бадам тұмсық','Almond toe'],['Лоферы','Лоферлер','Loafers'],['Челси','Челси','Chelsea boots']],
+  shoeC:['rust','chocolate','camel'],
+  bags:[['Средняя структурная','Орташа қатты пішінді','Structured, medium'],['Кросс-боди из замши','Күдері кросс-боди','Suede crossbody']],
+  bagC:['rust','olive','chocolate'],
+  det:[['Черепаховая оправа','Тасбақа сауытты көзілдірік','Tortoiseshell frames'],['Шёлковый платок с тёплым принтом','Жылы принтті жібек орамал','Silk scarf, warm print'],['Тонкий пояс коньячного цвета','Коньяк түсті жіңішке белдік','Thin cognac belt']]
+};
+
+/* ---------- chat knowledge (prototype) ---------- */
+const CHAT = [
+  {k:['свадьб','той','wedding','ұзату'], sw:['marsala','coral','softgold'], a:[
+    'На свадьбу выберите платье миди цвета марсала или пыльного коралла — это ваши праздничные оттенки. Туфли цвета мягкого золота и золотые серьги завершат образ.\n\nБелоснежный оставьте невесте, а чёрный рядом с вашим лицом подчеркнёт тени.',
+    'Тойға марсала немесе бозғылт маржан түсті миди көйлек таңдаңыз — бұл сіздің мерекелік реңктеріңіз. Жұмсақ алтын түсті туфли мен алтын сырға бейнені толықтырады.\n\nАппақ түсті қалыңдыққа қалдырыңыз, ал қара түс бетіңіздегі көлеңкені күшейтеді.',
+    'For a wedding, choose a midi dress in marsala or dusty coral, your festive shades. Soft-gold shoes and gold earrings finish the look.\n\nLeave optic white to the bride; black near your face would deepen shadows.']},
+  {k:['офис','работ','собесед','жұмыс','кеңсе','office','work','interview'], sw:['camel','chocolate','beige'], a:[
+    'Ваш офисный базис: жакет кэмел, брюки шоколадного цвета и блуза тёплого бежа. Вместо чёрного — шоколад, вместо белого — сливочный беж. Металл — золото.',
+    'Кеңседегі негізіңіз: кэмел жакет, шоколад түсті шалбар және жылы беж блузка. Қараның орнына — шоколад, ақтың орнына — кілегей беж. Металл — алтын.',
+    'Your office base: a camel blazer, chocolate trousers and a warm beige blouse. Chocolate replaces black, creamy beige replaces white. Your metal is gold.']},
+  {k:['свидан','кездес','date'], sw:['coral','camel','chocolate'], a:[
+    'Блуза пыльного коралла, юбка миди кэмел и ботильоны цвета шоколада. Волосы — мягкие локоны, губы — тёплая роза.',
+    'Бозғылт маржан блузка, кэмел миди юбка және шоколад түсті бәтеңке. Шаш — жұмсақ бұйралар, ерін — жылы раушан.',
+    'A dusty coral blouse, a camel midi skirt and chocolate ankle boots. Soft curls and warm rose lips.']},
+  {k:['чёрн','черн','қара','black'], sw:['chocolate','moss','marsala'], a:[
+    'Чёрный — не ваш цвет у лица: он подчёркивает тени. Если очень хочется, носите его внизу — брюки или обувь, а у лица держите цвет из палитры. Лучшая замена — шоколад и тёмный мох.',
+    'Қара түс бетке жақын жараспайды: көлеңкені күшейтеді. Қатты қаласаңыз, оны төменге киіңіз — шалбар не аяқ киім, ал бетке жақын палитрадағы түсті ұстаңыз. Ең жақсы алмастыру — шоколад пен қою мүк жасылы.',
+    'Black isn’t your colour near the face: it deepens shadows. If you love it, wear it below the waist and keep a palette colour near your face. Chocolate and deep moss are the best swaps.']},
+  {k:['джинс','jeans'], sw:['denim','camel','beige'], a:[
+    'Ваши джинсы — средне-синие с тёплым оттенком, без холодной «варёнки». Прямой крой с высокой посадкой подчеркнёт талию.',
+    'Сіздің джинсыңыз — жылы реңкті орташа көк, суық «қайнатылған» түссіз. Биік белді түзу пішім беліңізді ерекшелейді.',
+    'Your jeans are mid-blue with a warm cast, no cold acid wash. A high-rise straight cut shows off your waist.']},
+  {k:['золот','серебр','алтын','күміс','gold','silver','металл','metal'], sw:['softgold','mustard','rust'], a:[
+    'Ваш металл — золото, медь и бронза. Серебро рядом с тёплой кожей смотрится холодно и «серо».',
+    'Сіздің металыңыз — алтын, мыс және қола. Жылы терінің жанында күміс суық әрі сұрғылт көрінеді.',
+    'Your metals are gold, copper and bronze. Silver looks cold and greyish against warm skin.']},
+  {k:['волос','покрас','шаш','бояу','hair'], sw:['camel','rust','softgold'], a:[
+    'Лучшие оттенки для вас: золотистый каштан, карамель и медовые блики. Избегайте пепельного блонда и иссиня-чёрного — они «выключают» тёплый подтон.',
+    'Сізге ең жақсы реңктер: алтын құба, карамель және бал түстес жалтырлар. Күлгін аққұба мен көкшіл қарадан аулақ болыңыз — олар жылы реңкті «сөндіреді».',
+    'Your best shades: golden chestnut, caramel and honey highlights. Avoid ash blonde and blue-black, which switch off your warm undertone.']},
+  {k:['очк','көзілдір','glasses'], sw:['chocolate','rust','camel'], a:[
+    'Оправа — черепаховая или медово-коричневая, форма мягкая: лёгкий «кошачий глаз» или округлая.',
+    'Көзілдірік жиегі — тасбақа сауытты немесе бал-қоңыр, пішіні жұмсақ: жеңіл «мысық көз» не дөңгелек.',
+    'Frames in tortoiseshell or honey brown, in a soft shape: a gentle cat-eye or round.']}
+];
+const CHAT_FALLBACK = [
+  'Хороший вопрос. В рабочей версии я отвечу подробно с учётом вашего цветотипа «Мягкая осень», фигуры и гардероба. В прототипе спросите о свадьбе, офисе, свидании, чёрном цвете, джинсах, волосах или очках.',
+  'Жақсы сұрақ. Жұмыс нұсқасында «Жұмсақ күз» түс типіңізді, бітіміңізді және гардеробыңызды ескеріп, толық жауап беремін. Прототипте той, кеңсе, кездесу, қара түс, джинсы, шаш немесе көзілдірік туралы сұраңыз.',
+  'Good question. In the live app I answer in detail using your Soft Autumn type, figure and wardrobe. In the prototype, ask about weddings, the office, a date, black, jeans, hair or glasses.'
+];
+const QUICK = [['Что надеть на свадьбу?','Тойға не киемін?','What should I wear to a wedding?'],['Образ для офиса','Кеңсеге арналған бейне','An outfit for the office'],['Можно ли мне чёрный?','Маған қара жараса ма?','Can I wear black?'],['Какой цвет волос выбрать?','Шашты қай түске бояған жөн?','Which hair colour suits me?'],['Золото или серебро?','Алтын ба, күміс пе?','Gold or silver?'],['Иду на свидание','Кездесуге барамын','I have a date']];
+
+/* ---------- icons ---------- */
+const IC = {
+  home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9v11h13V9"/>',
+  hanger:'<path d="M12 7.5a2.2 2.2 0 1 1 2.2-2.2"/><path d="M12 7.5v1.8L2.8 16.2c-.6.5-.3 1.3.5 1.3h17.4c.8 0 1.1-.8.5-1.3L12 9.3"/>',
+  camera:'<path d="M4 8h3.2l1.9-2.6h5.8L16.8 8H20v11H4z"/><circle cx="12" cy="13.3" r="3.6"/>',
+  wardrobe:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 3v18M9.5 11v2.4M14.5 11v2.4M4 18h16"/>',
+  chat:'<path d="M4 5h16v11H9.5L5 20v-4H4z"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
+  back:'<path d="M15 5l-7 7 7 7"/>',
+  palette:'<path d="M12 3a9 9 0 1 0 0 18c1.3 0 1.9-.8 1.9-1.7 0-1.3-1.2-1.6-1.2-2.8 0-1 .8-1.6 1.8-1.6H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3z"/><circle cx="7.5" cy="11" r="1.1"/><circle cx="10" cy="7" r="1.1"/><circle cx="14.6" cy="7" r="1.1"/>',
+  scissors:'<circle cx="6" cy="7" r="2.6"/><circle cx="6" cy="17" r="2.6"/><path d="M8.2 8.5 20 18M8.2 15.5 20 6"/>',
+  dress:'<path d="M9.5 3h5l-.8 4.2L18 21H6l4.3-13.8z"/><path d="M9.8 9h4.4"/>',
+  shoe:'<path d="M3 16c0-3 .8-6.5 2-9l4.2 5.2c3 .2 6 1 8 2.2 2 1.2 3.8 2 3.8 3.6v1H3z"/>',
+  lipstick:'<path d="M9 11.5h6V21H9z"/><path d="M10 11.5V6.5L14 3v8.5"/>',
+  sparkle:'<path d="M12 3l1.9 5.3L19 10l-5.1 1.8L12 17l-1.9-5.2L5 10l5.1-1.7z"/><path d="M19 15.5l.6 1.8 1.8.6-1.8.6-.6 1.8-.6-1.8-1.8-.6 1.8-.6z"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7"/>',
+  cross:'<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
+  key:'<circle cx="8" cy="15" r="4"/><path d="M11 12l8.5-8.5M16.5 6.5l2 2M14 9l2 2"/>',
+  lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  download:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+  upload:'<path d="M12 19V8M7 12.5l5-5 5 5M5 4h14"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  trash:'<path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13"/>',
+  send:'<path d="M4 12 20 4l-6.5 16-2.6-6.9z"/>',
+  gem:'<path d="M6 4h12l3 5-9 11L3 9z"/><path d="M3 9h18M9 4l3 16 3-16"/>',
+  bag:'<path d="M5 8.5h14L18 20H6z"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',
+  leaf:'<path d="M5 19C5 10 11 5 20 4c-1 9-6 15-15 15z"/><path d="M5 19l8-8"/>',
+  list:'<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01"/>',
+  heart:'<path d="M12 20s-7.5-4.6-7.5-10.2A4.2 4.2 0 0 1 12 7.2a4.2 4.2 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z"/>',
+  refresh:'<path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/>',
+  logout:'<path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5h.01"/>',
+  ruler:'<path d="M3 17 17 3l4 4L7 21z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/>',
+  face:'<ellipse cx="12" cy="12" rx="7" ry="9"/><path d="M9.5 15.5c1.5 1 3.5 1 5 0"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/>',
+  eye:'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>'
+};
+const ic = (n, s = 22, sw = 1.8) => `<svg class="ic" viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+
+/* ---------- colour maths ---------- */
+const hex2rgb = h => { h = h.replace('#',''); return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; };
+const rgb2hex = (r,g,b) => '#' + [r,g,b].map(x => Math.round(x).toString(16).padStart(2,'0')).join('').toUpperCase();
+function shade(h, p){ const [r,g,b] = hex2rgb(h); const f = x => Math.max(0, Math.min(255, x + (p<0 ? x*p/100 : (255-x)*p/100))); return rgb2hex(f(r),f(g),f(b)); }
+function rgb2lab([r,g,b]){
+  [r,g,b] = [r,g,b].map(v => { v/=255; return v>0.04045 ? Math.pow((v+0.055)/1.055,2.4) : v/12.92; });
+  let x=(r*0.4124+g*0.3576+b*0.1805)/0.95047, y=(r*0.2126+g*0.7152+b*0.0722), z=(r*0.0193+g*0.1192+b*0.9505)/1.08883;
+  const f = v => v>0.008856 ? Math.cbrt(v) : 7.787*v + 16/116;
+  x=f(x); y=f(y); z=f(z);
+  return [116*y-16, 500*(x-y), 200*(y-z)];
+}
+const dE = (a,b) => { const p=rgb2lab(hex2rgb(a)), q=rgb2lab(hex2rgb(b)); return Math.hypot(p[0]-q[0],p[1]-q[1],p[2]-q[2]); };
+function nearest(hex, keys){ let best=null, bd=1e9; for(const k of keys){ const d=dE(hex,C[k].hex); if(d<bd){bd=d;best=k;} } return {key:best, d:bd}; }
+const isLight = h => { const [r,g,b]=hex2rgb(h); return (r*299+g*587+b*114)/1000 > 165; };
+
+/* Dominant colour of a photo, read locally with canvas */
+function dominantColor(img){
+  const cv=document.createElement('canvas'), N=72; cv.width=N; cv.height=N;
+  const cx=cv.getContext('2d',{willReadFrequently:true});
+  const s=Math.min(img.naturalWidth,img.naturalHeight)*0.7;
+  cx.drawImage(img,(img.naturalWidth-s)/2,(img.naturalHeight-s)/2,s,s,0,0,N,N);
+  const d=cx.getImageData(0,0,N,N).data, buckets={};
+  let total=0;
+  for(let i=0;i<d.length;i+=4){
+    const r=d[i],g=d[i+1],b=d[i+2];
+    const mx=Math.max(r,g,b), mn=Math.min(r,g,b);
+    const bg = (mx>232 && mx-mn<18); // plain light background
+    const key=(r>>4)+'-'+(g>>4)+'-'+(b>>4);
+    const o=buckets[key]||(buckets[key]={n:0,r:0,g:0,b:0,bg:bg});
+    o.n++; o.r+=r; o.g+=g; o.b+=b; total++;
+  }
+  const arr=Object.values(buckets).sort((a,b)=>b.n-a.n);
+  let pick=arr.find(o=>!o.bg && o.n>total*0.03)||arr[0];
+  // merge neighbours of the winning bucket for a smoother average
+  const [pr,pg,pb]=[pick.r/pick.n,pick.g/pick.n,pick.b/pick.n];
+  let R=0,G=0,B=0,n=0;
+  for(const o of arr){ const r=o.r/o.n,g=o.g/o.n,b=o.b/o.n; if(Math.hypot(r-pr,g-pg,b-pb)<38){R+=o.r;G+=o.g;B+=o.b;n+=o.n;} }
+  return rgb2hex(R/n,G/n,B/n);
+}
+
+/* ---------- illustrations ---------- */
+const SKIN='#EDC3A2', SKIN_DULL='#D4C0B4';
+function hairPaths(cut){
+  if(cut==='pixie') return {
+    back:'M63 98 C57 54 79 37 102 37 C126 37 145 56 137 98 C134 84 130 76 125 71 L75 71 C70 77 66 86 63 98 Z',
+    front:'M64 84 C64 55 86 40 108 42 C130 44 140 60 137 82 C127 64 111 57 95 61 C82 65 72 74 64 84 Z M69 80 C84 58 112 53 125 66 C109 63 92 70 80 86 Z'};
+  if(cut==='layers') return {
+    back:'M59 94 C55 49 78 37 100 37 C122 37 145 49 141 94 L148 172 C140 184 129 178 125 170 C119 182 108 180 104 172 L96 172 C92 180 81 182 75 170 C71 178 60 184 52 172 Z',
+    front:'M67 74 C71 50 89 43 103 45 C122 45 133 58 133 74 C122 61 110 56 100 58 C88 60 77 64 67 74 Z M66 88 C61 120 59 150 55 180 C64 175 71 162 75 150 C77 130 77 108 77 92 Z M134 88 C139 120 141 150 145 180 C136 175 129 162 125 150 C123 130 123 108 123 92 Z'};
+  return {
+    back:'M61 92 C57 51 78 39 100 39 C122 39 143 51 139 92 L143 147 C135 154 124 151 120 145 L80 145 C76 151 65 154 57 147 Z',
+    front:'M68 73 C72 50 90 44 104 46 C122 46 133 58 132 73 C122 61 110 56 100 58 C88 60 78 64 68 73 Z M66 96 C64 63 82 47 106 48 C92 55 80 67 76 93 C74 106 70 120 63 131 C61 120 66 107 66 96 Z M134 96 C136 69 124 53 106 48 C120 57 128 73 126 96 C126 109 130 121 137 131 C139 118 134 107 134 96 Z'};
+}
+let AVN=0;
+function avatar(o={}){
+  const drape=o.drape||'#C19A6B', cut=o.cut||'lob', hair=o.hair||'#6E3F24', dull=!!o.dull, lip=o.lip||'#B5605A';
+  const bg=o.bg||'#F3DCE4', skin=dull?SKIN_DULL:SKIN, id='av'+(AVN++);
+  const hp=hairPaths(cut);
+  const ear = o.earring ? `<circle cx="66" cy="114" r="6" fill="none" stroke="${o.earring}" stroke-width="3"/><circle cx="134" cy="114" r="6" fill="none" stroke="${o.earring}" stroke-width="3"/>` : '';
+  return `<svg viewBox="0 0 200 200" role="img" aria-label="avatar"><defs><clipPath id="${id}"><circle cx="100" cy="100" r="100"/></clipPath>
+  <radialGradient id="${id}g" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#fff" stop-opacity="${dull?0:.35}"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
+  <g clip-path="url(#${id})"><rect width="200" height="200" fill="${bg}"/>
+  <path d="${hp.back}" fill="${shade(hair,-12)}"/>
+  <path d="M86 126 L86 158 Q100 166 114 158 L114 126 Z" fill="${shade(skin,-8)}"/>
+  <ellipse cx="66" cy="98" rx="6" ry="9" fill="${shade(skin,-5)}"/><ellipse cx="134" cy="98" rx="6" ry="9" fill="${shade(skin,-5)}"/>
+  <path d="M8 206 C12 176 44 160 75 154 Q100 178 125 154 C156 160 188 176 192 206 Z" fill="${drape}"/>
+  <path d="M75 154 Q100 178 125 154" fill="none" stroke="${shade(drape,-18)}" stroke-width="2"/>
+  <ellipse cx="100" cy="92" rx="33" ry="42" fill="${skin}"/>
+  <ellipse cx="100" cy="88" rx="30" ry="36" fill="url(#${id}g)"/>
+  ${dull?`<path d="M80 99 Q88 103 95 99 M105 99 Q112 103 120 99" stroke="#8C7A72" stroke-opacity=".45" stroke-width="3" fill="none" stroke-linecap="round"/>`:''}
+  <path d="M80 80 Q88 75 95 79 M105 79 Q112 75 120 80" stroke="${shade(hair,-10)}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+  <path d="M82 92 Q88 96 94 92 M106 92 Q112 96 118 92" stroke="#4A3228" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <path d="M100 96 Q97 105 101 107" stroke="${shade(skin,-22)}" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  ${dull?'':`<circle cx="82" cy="106" r="7" fill="#E9A28A" opacity=".38"/><circle cx="118" cy="106" r="7" fill="#E9A28A" opacity=".38"/>`}
+  <path d="M90 116 Q95 113 100 115 Q105 113 110 116 Q100 124 90 116 Z" fill="${lip}"/>
+  ${ear}
+  <path d="${hp.front}" fill="${hair}"/>
+  </g></svg>`;
+}
+
+const GP = {
+  top:'M30 22 L42 15 Q50 23 58 15 L70 22 L86 38 L75 47 L68 40 L68 86 L32 86 L32 40 L25 47 L14 38 Z',
+  knit:'M28 20 L42 13 Q50 21 58 13 L72 20 L90 64 L79 68 L70 42 L70 88 L30 88 L30 42 L21 68 L10 64 Z',
+  dress:'M39 8 L61 8 L60 30 Q58 36 62 40 L78 92 L22 92 L38 40 Q42 36 40 30 Z',
+  skirt:'M32 14 L68 14 L82 88 L18 88 Z',
+  trousers:'M28 10 L72 10 L76 92 L57 92 L50 38 L43 92 L24 92 Z',
+  jeans:'M28 10 L72 10 L76 92 L57 92 L50 38 L43 92 L24 92 Z',
+  oversize:'M16 18 L40 12 Q50 20 60 12 L84 18 L95 60 L81 64 L77 44 L79 92 L21 92 L23 44 L19 64 L5 60 Z',
+  coat:'M30 10 L42 6 L50 28 L58 6 L70 10 L84 28 L80 94 L20 94 L16 28 Z',
+  jacket:'M30 14 L42 10 L50 32 L58 10 L70 14 L84 30 L80 80 L20 80 L16 30 Z',
+  shoes:'M8 66 C8 52 16 48 21 55 C25 61 34 64 44 66 L46 74 L8 74 Z M54 66 C54 52 62 48 67 55 C71 61 80 64 90 66 L92 74 L54 74 Z',
+  boots:'M30 12 L50 12 L50 60 C64 62 76 68 76 82 L30 82 Z',
+  bag:'M20 40 L80 40 L75 88 L25 88 Z',
+  scarf:'M18 22 Q50 10 82 22 L76 36 Q50 26 24 36 Z M40 32 L35 88 L50 84 L54 30 Z M57 30 L63 86 L75 82 L66 30 Z'
+};
+const GX = {
+  dress:'M38 40 L62 40', jacket:'M50 32 L50 80 M42 10 L46 44 M58 10 L54 44', coat:'M50 28 L50 94 M38 60 L38 70 M62 60 L62 70',
+  trousers:'M28 18 L72 18', jeans:'M28 18 L72 18 M50 18 L50 38', top:'M50 23 L50 40', knit:'M30 82 L70 82'
+};
+function garment(type, hex){
+  if(type==='earrings') return `<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="34" cy="46" r="15" fill="none" stroke="${hex}" stroke-width="7"/><circle cx="66" cy="46" r="15" fill="none" stroke="${hex}" stroke-width="7"/><circle cx="34" cy="28" r="4" fill="${shade(hex,-20)}"/><circle cx="66" cy="28" r="4" fill="${shade(hex,-20)}"/></svg>`;
+  const st=shade(hex, isLight(hex)?-22:-30);
+  const extra = type==='bag' ? `<path d="M36 40 C36 20 64 20 64 40" fill="none" stroke="${st}" stroke-width="5"/>` : '';
+  const line = GX[type] ? `<path d="${GX[type]}" fill="none" stroke="${st}" stroke-width="2.4" stroke-linecap="round"/>` : '';
+  return `<svg viewBox="0 0 100 100" aria-hidden="true">${extra}<path d="${GP[type]||GP.top}" fill="${hex}" stroke="${st}" stroke-width="2.4" stroke-linejoin="round"/>${line}</svg>`;
+}
+function ring(p, color, size=58, w=7, label){
+  const r=(size-w)/2, c=2*Math.PI*r, off=c*(1-p/100);
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="#F3E3EA" stroke-width="${w}"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}" transform="rotate(-90 ${size/2} ${size/2})"/><text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-family="Manrope" font-weight="800" font-size="${size*0.26}" fill="#2B1A22">${label!=null?label:Math.round(p)+'%'}</text></svg>`;
+}
+const BODY_SVG = `<svg viewBox="0 0 100 200" width="96" height="190" aria-hidden="true"><circle cx="50" cy="20" r="12" fill="#F3DCE4" stroke="#6D2E46" stroke-width="2"/><path d="M38 36 C30 38 24 42 24 52 L26 70 C30 82 36 88 38 96 C34 108 26 118 26 132 L30 188 L44 188 L50 142 L56 188 L70 188 L74 132 C74 118 66 108 62 96 C64 88 70 82 74 70 L76 52 C76 42 70 38 62 36 Z" fill="#F7E6EC" stroke="#6D2E46" stroke-width="2" stroke-linejoin="round"/><path d="M14 50 L86 50 M14 96 L86 96 M14 126 L86 126" stroke="#C2456E" stroke-width="1.4" stroke-dasharray="3 3"/></svg>`;
+
+function fmtDate(dt){
+  if(L===1){ const W=['жексенбі','дүйсенбі','сейсенбі','сәрсенбі','бейсенбі','жұма','сенбі'], M=['қаңтар','ақпан','наурыз','сәуір','мамыр','маусым','шілде','тамыз','қыркүйек','қазан','қараша','желтоқсан'];
+    return dt.getDate()+' '+M[dt.getMonth()]+', '+W[dt.getDay()]; }
+  return dt.toLocaleDateString(L===0?'ru-RU':'en-GB',{weekday:'long',day:'numeric',month:'long'});
+}
+
+const DEMO_FACE='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MDAgNzUwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0id2FsbCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI0VDRTdFMiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0Q5RDJDQiIvPjwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9ImxpZ2h0IiBjeD0iMC4yNSIgY3k9IjAuMiIgcj0iMC44Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGRkZGRkYiIHN0b3Atb3BhY2l0eT0iLjU1Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkZGRkZGIiBzdG9wLW9wYWNpdHk9IjAiLz48L3JhZGlhbEdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJza2luIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRTlCRTk4Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRDlBNTdEIi8+PC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iaGFpciIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzRBMkExQSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzNBMjAxNCIvPjwvbGluZWFyR3JhZGllbnQ+CiAgICA8Y2xpcFBhdGggaWQ9ImV5ZUwiPjxwYXRoIGQ9Ik0yMzggMzAyIFEyNjIgMjg1IDI4OCAyOTkgUTI2NCAzMTMgMjM4IDMwMiBaIi8+PC9jbGlwUGF0aD4KICAgIDxjbGlwUGF0aCBpZD0iZXllUiI+PHBhdGggZD0iTTMxMiAyOTkgUTMzOCAyODUgMzYyIDMwMiBRMzM2IDMxMyAzMTIgMjk5IFoiLz48L2NsaXBQYXRoPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNjAwIiBoZWlnaHQ9Ijc1MCIgZmlsbD0idXJsKCN3YWxsKSIvPgogIDxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNzUwIiBmaWxsPSJ1cmwoI2xpZ2h0KSIvPgogIDwhLS0gaGFpciwgYmFjayAtLT4KICA8cGF0aCBkPSJNMTY4IDMxMCBDMTQ4IDE3MCAyMjIgOTIgMzAwIDkyIEMzNzggOTIgNDUyIDE3MCA0MzIgMzEwIEw0NTIgNjQwIEM0MjAgNjY4IDM2MiA2NjAgMzQwIDY0MCBMMjYwIDY0MCBDMjM4IDY2MCAxODAgNjY4IDE0OCA2NDAgWiIgZmlsbD0idXJsKCNoYWlyKSIvPgogIDwhLS0gbmVjayAtLT4KICA8cGF0aCBkPSJNMjYyIDQ2MCBMMjYwIDU2NSBRMzAwIDU4OCAzNDAgNTY1IEwzMzggNDYwIFoiIGZpbGw9IiNEMDlBNzIiLz4KICA8cGF0aCBkPSJNMjYyIDQ3MCBRMzAwIDUwMCAzMzggNDcwIEwzMzggNDg1IFEzMDAgNTE1IDI2MiA0ODUgWiIgZmlsbD0iI0I5ODQ1RSIgb3BhY2l0eT0iLjQ1Ii8+CiAgPCEtLSB0b3AgLS0+CiAgPHBhdGggZD0iTTcwIDc2MCBDODIgNjQwIDE2OCA1OTIgMjUwIDU3MiBRMzAwIDYwNCAzNTAgNTcyIEM0MzIgNTkyIDUxOCA2NDAgNTMwIDc2MCBaIiBmaWxsPSIjQ0JDM0JBIi8+CiAgPHBhdGggZD0iTTI1MCA1NzIgUTMwMCA2MDQgMzUwIDU3MiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQjNBQUExIiBzdHJva2Utd2lkdGg9IjQiLz4KICA8IS0tIGhhaXIgc3RyYW5kcyBvdmVyIHNob3VsZGVycyAtLT4KICA8cGF0aCBkPSJNMjAzIDMzMCBDMTg2IDQ0MCAxODIgNTQ4IDE2NiA2NjggQzE5OCA2NjAgMjI0IDYxNiAyMzQgNTcyIEMyNDYgNDg2IDI0MiA0MDQgMjM2IDM0MCBaIiBmaWxsPSIjNDMyNjFBIi8+CiAgPHBhdGggZD0iTTM5NyAzMzAgQzQxNCA0NDAgNDE4IDU0OCA0MzQgNjY4IEM0MDIgNjYwIDM3NiA2MTYgMzY2IDU3MiBDMzU0IDQ4NiAzNTggNDA0IDM2NCAzNDAgWiIgZmlsbD0iIzQzMjYxQSIvPgogIDxwYXRoIGQ9Ik0xOTAgNDcwIEMxODggNTQwIDE4MiA2MDAgMTc2IDY1MCBNNDEyIDQ3MCBDNDE0IDU0MCA0MTggNjAwIDQyNCA2NTAiIHN0cm9rZT0iIzZFM0QyMiIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIiBvcGFjaXR5PSIuNyIvPgogIDwhLS0gZWFycyAtLT4KICA8IS0tIGZhY2UgLS0+CiAgPHBhdGggZD0iTTMwMCAxNzggQzM2MiAxNzggMzk3IDIyNCAzOTkgMjg4IEM0MDEgMzM0IDM5MyAzNzAgMzc1IDQwNSBDMzU0IDQ1MCAzMzAgNDgwIDMwMCA0ODIgQzI3MCA0ODAgMjQ2IDQ1MCAyMjUgNDA1IEMyMDcgMzcwIDE5OSAzMzQgMjAxIDI4OCBDMjAzIDIyNCAyMzggMTc4IDMwMCAxNzggWiIgZmlsbD0idXJsKCNza2luKSIvPgogIDxlbGxpcHNlIGN4PSIyNzIiIGN5PSIyNTAiIHJ4PSI1OCIgcnk9IjQwIiBmaWxsPSIjRkZGRkZGIiBvcGFjaXR5PSIuMTIiLz4KICA8ZWxsaXBzZSBjeD0iMjQ2IiBjeT0iMzYyIiByeD0iMzAiIHJ5PSIxOCIgZmlsbD0iI0Q4OEY2RSIgb3BhY2l0eT0iLjI4Ii8+CiAgPGVsbGlwc2UgY3g9IjM1NCIgY3k9IjM2MiIgcng9IjMwIiByeT0iMTgiIGZpbGw9IiNEODhGNkUiIG9wYWNpdHk9Ii4yOCIvPgogIDxwYXRoIGQ9Ik0yMjIgMzM4IFEyMzIgMzcyIDI1MiAzOTIgTTM3OCAzMzggUTM2OCAzNzIgMzQ4IDM5MiIgc3Ryb2tlPSIjQzg4RDY2IiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiIG9wYWNpdHk9Ii4zNSIvPgogIDwhLS0gYnJvd3MgLS0+CiAgPHBhdGggZD0iTTIzNiAyNzAgUTI1OCAyNTUgMjg2IDI2MiIgc3Ryb2tlPSIjM0EyMTE2IiBzdHJva2Utd2lkdGg9IjciIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0zMTQgMjYyIFEzNDIgMjU1IDM2NCAyNzAiIHN0cm9rZT0iIzNBMjExNiIgc3Ryb2tlLXdpZHRoPSI3IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8IS0tIGV5ZXMgLS0+CiAgPHBhdGggZD0iTTIzOCAzMDIgUTI2MiAyODUgMjg4IDI5OSBRMjY0IDMxMyAyMzggMzAyIFoiIGZpbGw9IiNGNkVGRTgiLz4KICA8ZyBjbGlwLXBhdGg9InVybCgjZXllTCkiPjxjaXJjbGUgY3g9IjI2NCIgY3k9IjI5OSIgcj0iMTAiIGZpbGw9IiM4QTVBMkIiLz48Y2lyY2xlIGN4PSIyNjQiIGN5PSIyOTkiIHI9IjYiIGZpbGw9IiNCMDdBM0MiIG9wYWNpdHk9Ii42Ii8+PGNpcmNsZSBjeD0iMjY0IiBjeT0iMjk5IiByPSI0LjIiIGZpbGw9IiMyNDE0MEMiLz48Y2lyY2xlIGN4PSIyNjciIGN5PSIyOTYiIHI9IjIiIGZpbGw9IiNGRkYiLz48L2c+CiAgPHBhdGggZD0iTTIzNiAzMDIgUTI2MSAyODMgMjkwIDI5OCIgc3Ryb2tlPSIjMjQxNDBDIiBzdHJva2Utd2lkdGg9IjMuNiIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTI4OCAyOTggTDI5NCAyOTQiIHN0cm9rZT0iIzI0MTQwQyIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0yNDYgMjkxIFEyNjQgMjgwIDI4NCAyODkiIHN0cm9rZT0iI0I5ODQ1RSIgc3Ryb2tlLXdpZHRoPSIxLjgiIGZpbGw9Im5vbmUiLz4KICA8cGF0aCBkPSJNMzEyIDI5OSBRMzM4IDI4NSAzNjIgMzAyIFEzMzYgMzEzIDMxMiAyOTkgWiIgZmlsbD0iI0Y2RUZFOCIvPgogIDxnIGNsaXAtcGF0aD0idXJsKCNleWVSKSI+PGNpcmNsZSBjeD0iMzM2IiBjeT0iMjk5IiByPSIxMCIgZmlsbD0iIzhBNUEyQiIvPjxjaXJjbGUgY3g9IjMzNiIgY3k9IjI5OSIgcj0iNiIgZmlsbD0iI0IwN0EzQyIgb3BhY2l0eT0iLjYiLz48Y2lyY2xlIGN4PSIzMzYiIGN5PSIyOTkiIHI9IjQuMiIgZmlsbD0iIzI0MTQwQyIvPjxjaXJjbGUgY3g9IjMzOSIgY3k9IjI5NiIgcj0iMiIgZmlsbD0iI0ZGRiIvPjwvZz4KICA8cGF0aCBkPSJNMzEwIDI5OCBRMzM5IDI4MyAzNjQgMzAyIiBzdHJva2U9IiMyNDE0MEMiIHN0cm9rZS13aWR0aD0iMy42IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMzEyIDI5OCBMMzA2IDI5NCIgc3Ryb2tlPSIjMjQxNDBDIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTMxNiAyODkgUTMzNiAyODAgMzU0IDI5MSIgc3Ryb2tlPSIjQjk4NDVFIiBzdHJva2Utd2lkdGg9IjEuOCIgZmlsbD0ibm9uZSIvPgogIDwhLS0gbm9zZSAtLT4KICA8cGF0aCBkPSJNMjk4IDMyNiBRMjk2IDM1MiAyODggMzY4IiBzdHJva2U9IiNCOTg0NUUiIHN0cm9rZS13aWR0aD0iMi42IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMjg0IDM3MiBRMjkyIDM4MCAzMDAgMzc3IFEzMDggMzgwIDMxNiAzNzIiIHN0cm9rZT0iI0E5NzM0RiIgc3Ryb2tlLXdpZHRoPSIyLjYiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDwhLS0gbGlwcyAtLT4KICA8cGF0aCBkPSJNMjY4IDQyMCBRMjg0IDQwOSAzMDAgNDE1IFEzMTYgNDA5IDMzMiA0MjAgUTMwMCA0MjUgMjY4IDQyMCBaIiBmaWxsPSIjQjA2MDVBIi8+CiAgPHBhdGggZD0iTTI2OCA0MjAgUTMwMCA0NDcgMzMyIDQyMCBRMzAwIDQyOSAyNjggNDIwIFoiIGZpbGw9IiNDNDc0NkIiLz4KICA8cGF0aCBkPSJNMjg2IDQzMiBRMzAwIDQzNyAzMTQgNDMyIiBzdHJva2U9IiNFNkE3OUIiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIgb3BhY2l0eT0iLjciLz4KICA8IS0tIGhhaXIsIGZyb250IHdpdGggbWlkZGxlIHBhcnQgLS0+CiAgPHBhdGggZD0iTTE5OCAzMDYgQzE5MCAyMDYgMjQ0IDE1NiAzMDAgMTU4IEMzNTYgMTU2IDQxMCAyMDYgNDAyIDMwNiBDMzk2IDI2MiAzNzIgMjIyIDMwNiAyMDQgTDMwMCAxOTYgTDI5NCAyMDQgQzIyOCAyMjIgMjA0IDI2MiAxOTggMzA2IFoiIGZpbGw9InVybCgjaGFpcikiLz4KICA8cGF0aCBkPSJNMTk4IDMwNiBDMTk2IDM3MCAyMDIgNDMwIDIxMCA0NjggQzIxNCA0MjAgMjE0IDM2MCAyMTcgMzA0IEMyMjIgMjYwIDI1MCAyMjYgMjkwIDIwNiBDMjQwIDIyMCAyMDUgMjUyIDE5OCAzMDYgWiIgZmlsbD0iIzQzMjYxQSIvPgogIDxwYXRoIGQ9Ik00MDIgMzA2IEM0MDQgMzcwIDM5OCA0MzAgMzkwIDQ2OCBDMzg2IDQyMCAzODYgMzYwIDM4MyAzMDQgQzM3OCAyNjAgMzUwIDIyNiAzMTAgMjA2IEMzNjAgMjIwIDM5NSAyNTIgNDAyIDMwNiBaIiBmaWxsPSIjNDMyNjFBIi8+CiAgPHBhdGggZD0iTTI5NiAyMDAgQzI2MiAyMTAgMjMyIDIzNiAyMjAgMjgwIE0zMDQgMjAwIEMzMzggMjEwIDM2OCAyMzYgMzgwIDI4MCIgc3Ryb2tlPSIjN0E0NDI2IiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiIG9wYWNpdHk9Ii43NSIvPgogIDxwYXRoIGQ9Ik0yNjAgMTIwIEMyNDAgMTQwIDIyNiAxNjUgMjIwIDE5NSBNMzQwIDEyMCBDMzYwIDE0MCAzNzQgMTY1IDM4MCAxOTUiIHN0cm9rZT0iIzZCM0EyMiIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIiBvcGFjaXR5PSIuNTUiLz4KPC9zdmc+Cg==';
+const DEMO_BODY='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgOTAwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0id2FsbCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI0VDRTdFMiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0RDRDVDRSIvPjwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9ImxpZ2h0IiBjeD0iMC4yIiBjeT0iMC4xNSIgcj0iMC45Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGRkZGRkYiIHN0b3Atb3BhY2l0eT0iLjUiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNGRkZGRkYiIHN0b3Atb3BhY2l0eT0iMCIvPjwvcmFkaWFsR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iOTAwIiBmaWxsPSJ1cmwoI3dhbGwpIi8+CiAgPHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI5MDAiIGZpbGw9InVybCgjbGlnaHQpIi8+CiAgPHJlY3QgeT0iODE4IiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjgyIiBmaWxsPSIjQ0VDNkJEIi8+CiAgPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjgyNiIgcng9Ijk2IiByeT0iMTAiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPgogIDwhLS0gaGFpciBiYWNrIC0tPgogIDxwYXRoIGQ9Ik0xNTUgMTEyIEMxNTAgNjAgMTc4IDQ0IDIwMCA0NCBDMjIyIDQ0IDI1MCA2MCAyNDUgMTEyIEwyNTQgMjU1IEMyNDIgMjY2IDIyNCAyNjIgMjE4IDI1NCBMMTgyIDI1NCBDMTc2IDI2MiAxNTggMjY2IDE0NiAyNTUgWiIgZmlsbD0iIzQwMjQxQSIvPgogIDwhLS0gbmVjayAtLT4KICA8cGF0aCBkPSJNMTg3IDE1MCBMMTg2IDIwMCBRMjAwIDIwOCAyMTQgMjAwIEwyMTMgMTUwIFoiIGZpbGw9IiNEMDlBNzIiLz4KICA8IS0tIHRyb3VzZXJzIC0tPgogIDxwYXRoIGQ9Ik0xNjAgMzQ2IEwyNDAgMzQ2IEMyNjQgMzc4IDI3OCA0MTIgMjc1IDQ1OCBMMjYzIDgwMiBMMjI3IDgwMiBMMjA0IDUyMiBMMTk2IDUyMiBMMTczIDgwMiBMMTM3IDgwMiBMMTI1IDQ1OCBDMTIyIDQxMiAxMzYgMzc4IDE2MCAzNDYgWiIgZmlsbD0iIzZCNEEzQSIvPgogIDxwYXRoIGQ9Ik0xNTggMzU4IEwyNDIgMzU4IiBzdHJva2U9IiM0RTMzMjgiIHN0cm9rZS13aWR0aD0iNSIvPgogIDxwYXRoIGQ9Ik0yMDAgMzYyIEwyMDAgNDIwIiBzdHJva2U9IiM1QTNEMzAiIHN0cm9rZS13aWR0aD0iMiIvPgogIDwhLS0gc2hvZXMgLS0+CiAgPHBhdGggZD0iTTEzNSA4MDAgTDE3NiA4MDAgTDE4MSA4MjAgTDEyNyA4MjIgQzEyNiA4MTIgMTI5IDgwNCAxMzUgODAwIFoiIGZpbGw9IiM0QTJFMjIiLz4KICA8cGF0aCBkPSJNMjI0IDgwMCBMMjY1IDgwMCBDMjcxIDgwNCAyNzQgODEyIDI3MyA4MjIgTDIxOSA4MjAgWiIgZmlsbD0iIzRBMkUyMiIvPgogIDwhLS0gdG9wIC0tPgogIDxwYXRoIGQ9Ik0xMjggMjA1IEMxNTAgMTk2IDE3MCAxOTIgMjAwIDE5MiBDMjMwIDE5MiAyNTAgMTk2IDI3MiAyMDUgQzI3NCAyNjIgMjUyIDMwOCAyNDIgMzUwIEwxNTggMzUwIEMxNDggMzA4IDEyNiAyNjIgMTI4IDIwNSBaIiBmaWxsPSIjQ0JDM0JBIi8+CiAgPHBhdGggZD0iTTE4MiAxOTYgUTIwMCAyMTIgMjE4IDE5NiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQjNBQUExIiBzdHJva2Utd2lkdGg9IjMiLz4KICA8cGF0aCBkPSJNMTI4IDIwNSBDMTEyIDIyNiAxMDYgMzAwIDEwNCAzNjAgTDEwMiA0MjUgTDEyMSA0MjcgQzEyNSAzNzAgMTMzIDMwMCAxNDEgMjUwIFoiIGZpbGw9IiNDMkJBQjEiLz4KICA8cGF0aCBkPSJNMjcyIDIwNSBDMjg4IDIyNiAyOTQgMzAwIDI5NiAzNjAgTDI5OCA0MjUgTDI3OSA0MjcgQzI3NSAzNzAgMjY3IDMwMCAyNTkgMjUwIFoiIGZpbGw9IiNDMkJBQjEiLz4KICA8ZWxsaXBzZSBjeD0iMTExIiBjeT0iNDQyIiByeD0iOSIgcnk9IjE3IiBmaWxsPSIjRDA5QTcyIi8+CiAgPGVsbGlwc2UgY3g9IjI4OSIgY3k9IjQ0MiIgcng9IjkiIHJ5PSIxNyIgZmlsbD0iI0QwOUE3MiIvPgogIDwhLS0gaGFpciBzdHJhbmRzIG92ZXIgdGhlIHNob3VsZGVycyAtLT4KICA8cGF0aCBkPSJNMTYwIDEyMCBDMTUyIDE3MCAxNTAgMjIwIDE0NiAyNjIgQzE2MCAyNTggMTcwIDI0MCAxNzQgMjIyIEMxNzggMTkwIDE3NiAxNTAgMTcyIDEyNCBaIiBmaWxsPSIjNDMyNjFBIi8+CiAgPHBhdGggZD0iTTI0MCAxMjAgQzI0OCAxNzAgMjUwIDIyMCAyNTQgMjYyIEMyNDAgMjU4IDIzMCAyNDAgMjI2IDIyMiBDMjIyIDE5MCAyMjQgMTUwIDIyOCAxMjQgWiIgZmlsbD0iIzQzMjYxQSIvPgogIDwhLS0gaGVhZCAtLT4KICA8ZWxsaXBzZSBjeD0iMjAwIiBjeT0iMTA4IiByeD0iMzgiIHJ5PSI0OSIgZmlsbD0iI0UzQjQ4QyIvPgogIDxwYXRoIGQ9Ik0xNzYgOTggUTE4NiA5MiAxOTYgOTYgTTIwNCA5NiBRMjE0IDkyIDIyNCA5OCIgc3Ryb2tlPSIjM0EyMTE2IiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0xNzggMTA4IFExODYgMTA0IDE5NCAxMDcgTTIwNiAxMDcgUTIxNCAxMDQgMjIyIDEwOCIgc3Ryb2tlPSIjMjQxNDBDIiBzdHJva2Utd2lkdGg9IjIuNCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTE5OSAxMTIgUTE5NyAxMjIgMTk0IDEyNiBRMjAwIDEyOSAyMDYgMTI2IiBzdHJva2U9IiNCMDdBNTQiIHN0cm9rZS13aWR0aD0iMS42IiBmaWxsPSJub25lIi8+CiAgPHBhdGggZD0iTTE5MCAxMzggUTIwMCAxMzQgMjEwIDEzOCBRMjAwIDE0NSAxOTAgMTM4IFoiIGZpbGw9IiNCMDYwNUEiLz4KICA8ZWxsaXBzZSBjeD0iMTgyIiBjeT0iMTI0IiByeD0iOSIgcnk9IjUiIGZpbGw9IiNEODhGNkUiIG9wYWNpdHk9Ii4zIi8+PGVsbGlwc2UgY3g9IjIxOCIgY3k9IjEyNCIgcng9IjkiIHJ5PSI1IiBmaWxsPSIjRDg4RjZFIiBvcGFjaXR5PSIuMyIvPgogIDwhLS0gaGFpciBmcm9udCB3aXRoIG1pZGRsZSBwYXJ0IC0tPgogIDxwYXRoIGQ9Ik0xNTggMTE2IEMxNTIgNzAgMTc4IDU0IDIwMCA1NSBDMjIyIDU0IDI0OCA3MCAyNDIgMTE2IEMyMzggOTIgMjI0IDc2IDIwMyA3MCBMMjAwIDY2IEwxOTcgNzAgQzE3NiA3NiAxNjIgOTIgMTU4IDExNiBaIiBmaWxsPSIjNDAyNDFBIi8+CiAgPHBhdGggZD0iTTE1OCAxMTYgQzE1NyAxNDAgMTYwIDE2MCAxNjQgMTcyIEMxNjggMTUwIDE2OCAxMjYgMTcyIDEwNiBDMTc1IDkyIDE4NCA4MCAxOTYgNzIgQzE3NiA3OCAxNjAgOTQgMTU4IDExNiBaIiBmaWxsPSIjNDMyNjFBIi8+CiAgPHBhdGggZD0iTTI0MiAxMTYgQzI0MyAxNDAgMjQwIDE2MCAyMzYgMTcyIEMyMzIgMTUwIDIzMiAxMjYgMjI4IDEwNiBDMjI1IDkyIDIxNiA4MCAyMDQgNzIgQzIyNCA3OCAyNDAgOTQgMjQyIDExNiBaIiBmaWxsPSIjNDMyNjFBIi8+CiAgPCEtLSBoZWlnaHQgbWFya3MgLS0+CiAgPHBhdGggZD0iTTM1MiA1NiBMMzUyIDgyMiIgc3Ryb2tlPSIjQzI0NTZFIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWRhc2hhcnJheT0iNSA1Ii8+CiAgPHBhdGggZD0iTTM0MiA1NiBMMzYyIDU2IE0zNDIgODIyIEwzNjIgODIyIiBzdHJva2U9IiNDMjQ1NkUiIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjM1OCIgeT0iNDQ2IiBmb250LWZhbWlseT0iTWFucm9wZSwgQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNDMjQ1NkUiIHRyYW5zZm9ybT0icm90YXRlKC05MCAzNTggNDQ2KSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+MTY1INGB0Lw8L3RleHQ+Cjwvc3ZnPgo=';
+
+/* ---------- state ---------- */
+let SEQ=100;
+const DEMO_W = [['coat','camel'],['top','white'],['trousers','black'],['skirt','olive'],['top','terracotta'],['boots','chocolate'],['bag','camel'],['knit','beige'],['jeans','denim'],['dress','rust'],['knit','coolgrey'],['scarf','mustard']];
+const mkItem = (type, key, hex, photo) => { hex = hex || C[key].hex; const n = key ? {key, d:0} : nearest(hex, MINE.concat(NOT));
+  const k = key || n.key; return {id:SEQ++, type, hex, key:k, mine: C[k].g!=='not', photo:photo||null}; };
+const state = {
+  screen:'welcome', prev:[], onboarded:false, step:0, photos:{face:null, body:null},
+  quiz:{age:'26–35', height:165, life:['office','events'], budget:'$$', like:['classic','minimal'], dislike:''},
+  drape:'terracotta', cut:'lob', hairc:'chestnut', lip:'rose', occ:'work', tip:0,
+  wardrobe: DEMO_W.map(([tp,k]) => mkItem(tp,k)), wf:'all', addOpen:false, addType:'top',
+  checkType:'top', check:null, checking:false, checks:[], showShop:false, shopDone:{},
+  chat:[], typing:false
+};
+function save(){ try{ localStorage.setItem('aru_proto_v1', JSON.stringify({L, onboarded:state.onboarded, wardrobe:state.wardrobe.map(w=>({...w,photo:null})), checks:state.checks.map(c=>({...c,photo:null}))})); }catch(e){} }
+function load(){ try{ const d=JSON.parse(localStorage.getItem('aru_proto_v1')||'null'); if(!d) return; L=d.L||0; state.onboarded=!!d.onboarded; if(Array.isArray(d.wardrobe)&&d.wardrobe.length) state.wardrobe=d.wardrobe; if(Array.isArray(d.checks)) state.checks=d.checks; SEQ=Math.max(SEQ,...state.wardrobe.map(w=>w.id+1)); }catch(e){} }
+
+const harmony = () => { const w=state.wardrobe; return w.length ? Math.round(100*w.filter(x=>x.mine).length/w.length) : 0; };
+const owns = (type, key) => state.wardrobe.some(w => (w.type===type || (type==='trousers'&&w.type==='jeans') || (type==='jeans'&&w.type==='trousers')) && w.key===key);
+
+/* ---------- chrome ---------- */
+const langPills = () => `<div class="langs" role="group" aria-label="Language">${['RU','KZ','EN'].map((x,i)=>`<button class="${i===L?'on':''}" data-act="lang" data-arg="${i}" aria-pressed="${i===L}">${x}</button>`).join('')}</div>`;
+const TABS = [['home','home','tab_home'],['looks','hanger','tab_looks'],['check','camera','tab_check'],['wardrobe','wardrobe','tab_wardrobe'],['chat','chat','tab_chat']];
+const TITLES = {colors:'s_colors', hair:'s_hair', clothes:'s_clothes', acc:'s_acc', makeup:'s_makeup', profile:'profile'};
+function topbar(){
+  const s=state.screen;
+  if(s==='welcome'||s==='analyzing') return '';
+  if(s==='onboard') return `<header class="topbar">${state.step>0?`<button class="back" data-act="obback" aria-label="back">${ic('back')}</button>`:'<span class="logo">Aru</span>'}<span class="small muted" style="font-weight:700">${t('step_n',{n:state.step+1})}</span>${langPills()}</header>`;
+  if(TITLES[s]) return `<header class="topbar"><button class="back" data-act="back" aria-label="back">${ic('back')}</button><span class="top-title">${t(TITLES[s])}</span>${langPills()}</header>`;
+  return `<header class="topbar"><span class="logo">Aru<small>${t('proto')}</small></span><div class="top-right">${langPills()}<button class="icon-btn" data-act="go" data-arg="profile" aria-label="${t('profile')}">${ic('user',20)}</button></div></header>`;
+}
+const tabbar = () => `<nav class="tabbar">${TABS.map(([s,i,k])=> s==='check'
+  ? `<button class="tab fab ${state.screen===s?'on':''}" data-act="go" data-arg="${s}"><span class="fab-c">${ic(i,26)}</span>${t(k)}</button>`
+  : `<button class="tab ${state.screen===s?'on':''}" data-act="go" data-arg="${s}">${ic(i,24)}${t(k)}</button>`).join('')}</nav>`;
+
+/* ---------- screens ---------- */
+const SCREENS = {};
+
+SCREENS.welcome = () => `<section class="welcome">
+  ${langPills()}
+  <div class="wm-wrap">
+    <div class="wm-av av">${avatar({drape:C.terracotta.hex, bg:'#8A3D5C'})}</div>
+    <h1 class="wordmark">Aru</h1>
+    <p>${t('tagline')}</p>
+    <div class="drape-strip" aria-hidden="true">${['camel','terracotta','sage','teal','mustard','marsala','peach'].map(k=>`<i style="background:${C[k].hex}"></i>`).join('')}</div>
+  </div>
+  <div class="key-card">
+    <label for="keyIn">${t('key_label')}</label>
+    <div class="key-in">${ic('key',20)}<input id="keyIn" value="ARU-DEMO-2026" autocomplete="off" spellcheck="false"></div>
+    <button class="btn primary" data-act="login">${t('enter')}</button>
+    <p class="key-note">${t('demo_key')}</p>
+  </div>
+  <p class="buy">${t('no_key')} <button class="link" data-act="buy">${t('buy')}</button></p>
+  <p class="fine">${ic('lock',14)} ${t('privacy_short')}. ${t('once')}.</p>
+</section>`;
+
+function dropZone(kind){
+  const img=state.photos[kind];
+  const ph = img ? `<img src="${img}" alt="">` : (kind==='face'
+    ? `<div class="av" style="width:170px;height:170px;border-radius:50%;overflow:hidden;opacity:.6">${avatar({drape:'#E7C9D5',hair:'#C9A8B6',bg:'#F7E6EC'})}</div>`
+    : `<div style="opacity:.55">${BODY_SVG}</div>`);
+  return `<label class="drop"><input type="file" accept="image/*" capture="${kind==='face'?'user':'environment'}" data-file="${kind}" aria-label="${t('upload')}"><div class="ph">${ph}</div><span class="cta">${ic(img?'refresh':'upload',20)} ${t(img?'replace':'upload')}</span></label>`;
+}
+SCREENS.onboard = () => {
+  const st=state.step, pct=[33,66,100][st];
+  let body='';
+  if(st===0) body = `<h2 class="h">${t('face_title')}</h2><p class="lead">${t('face_sub')}</p>${dropZone('face')}
+    <div class="tips"><div class="tip">${ic('sun')}<br>${t('t_day')}</div><div class="tip">${ic('face')}<br>${t('t_nomake')}</div><div class="tip">${ic('eye')}<br>${t('t_nofilter')}</div></div>`;
+  if(st===1) body = `<h2 class="h">${t('body_title')}</h2><p class="lead">${t('body_sub')}</p>${dropZone('body')}
+    <div class="tips"><div class="tip">${ic('dress')}<br>${t('t_fitted')}</div><div class="tip">${ic('camera')}<br>${t('t_waist')}</div><div class="tip">${ic('ruler')}<br>${t('t_straight')}</div></div>`;
+  if(st===2){
+    const q=state.quiz, chip=(grp,val,label,multi)=>{ const on = multi ? q[grp].includes(val) : q[grp]===val; return `<button class="chip ${on?'on':''}" data-act="${multi?'qmulti':'qone'}" data-arg="${grp}|${val}" aria-pressed="${on}">${label}</button>`; };
+    const LIFE=[['office',['Офис','Кеңсе','Office']],['kids',['Дом и дети','Үй және балалар','Home and kids']],['study',['Учёба','Оқу','Study']],['events',['Мероприятия','Іс-шаралар','Events']],['sport',['Спорт','Спорт','Sport']],['travel',['Путешествия','Саяхат','Travel']]];
+    const LIKE=[['classic',['Классика','Классика','Classic']],['romantic',['Романтика','Романтика','Romantic']],['sporty',['Спорт-шик','Спорт-шик','Sporty chic']],['minimal',['Минимализм','Минимализм','Minimal']],['boho',['Бохо','Бохо','Boho']],['ethno',['Этно-шик','Этно-шик','Ethno chic']]];
+    body = `<h2 class="h">${t('quiz_title')}</h2><p class="lead">${t('quiz_sub')}</p>
+    <div class="q"><h4>${t('q_age')}</h4><div class="chips">${['18–25','26–35','36–45','46–55','55+'].map(a=>chip('age',a,a)).join('')}</div></div>
+    <div class="q"><h4>${t('q_height')}</h4><div class="range-row"><input type="range" min="145" max="190" value="${q.height}" id="hRange" aria-label="${t('q_height')}"><b id="hVal">${q.height} ${t('cm')}</b></div></div>
+    <div class="q"><h4>${t('q_life')}</h4><div class="chips">${LIFE.map(([v,l])=>chip('life',v,tr(l),true)).join('')}</div></div>
+    <div class="q"><h4>${t('q_budget')}</h4><div class="chips">${[['$','$ < 30'],['$$','$$ 30–100'],['$$$','$$$ 100+']].map(([v,l])=>chip('budget',v,l)).join('')}</div></div>
+    <div class="q"><h4>${t('q_like')}</h4><div class="chips">${LIKE.map(([v,l])=>chip('like',v,tr(l),true)).join('')}</div></div>
+    <div class="q"><h4>${t('q_dislike')}</h4><input class="text-in" id="dislike" value="${q.dislike}" placeholder="${t('dislike_ph')}"></div>`;
+  }
+  return `<section class="pad"><div class="progress"><i style="width:${pct}%"></i></div>${body}
+    <div class="ob-foot"><button class="btn primary" data-act="obnext">${st<2?t('next'):ic('sparkle',20)+' '+t('analyze')}</button>${st<2?`<button class="btn gold" data-act="demo">${ic('user',20)} ${t('demo_client')}</button><button class="link" data-act="obskip">${t('skip')}</button>`:''}</div></section>`;
+};
+
+SCREENS.analyzing = () => `<section class="scan">
+  <div class="scan-face">${state.photos.face?`<img src="${state.photos.face}" alt="">`:avatar({drape:C.camel.hex})}</div>
+  <h2 class="h" style="margin-top:26px;text-align:center">${t('analyzing')}</h2>
+  <ul class="steps" id="steps">${['a1','a2','a3','a4'].map((k,i)=>`<li data-i="${i}"><span class="st">${ic('check',16,2.4)}</span>${t(k)}</li>`).join('')}</ul>
+</section>`;
+
+SCREENS.home = () => {
+  const h=harmony(), d=fmtDate(new Date());
+  const tile=(scr,icn,bg,k)=>`<button class="tile" data-act="go" data-arg="${scr}"><span class="ti" style="background:${bg}">${ic(icn,22)}</span><b>${t(k)}</b><span>${t(k+'_d')}</span></button>`;
+  const lk=LOOKS.work;
+  return `<section class="pad">
+  <div class="greet"><div><p class="small muted" style="font-weight:600">${d}</p><h2 class="h">${t('hello')}, ${t('user_name')}</h2></div></div>
+  <div class="hero">
+    <div class="hero-av av">${avatar({drape:C[state.drape].hex,bg:'transparent',dull:C[state.drape].g==='not'})}</div>
+    <span class="k">${t('your_type')}</span>
+    <div class="t">${t('soft_autumn')}</div>
+    <p>${t('sa_desc')}</p>
+    <span class="match">${ic('leaf',14)} ${t('match')}</span>
+    <div class="strip">${MINE.map(k=>`<i style="background:${C[k].hex}"></i>`).join('')}</div>
+  </div>
+  <h3 class="sec">${t('indicators')}</h3>
+  <div class="ind">
+    <div class="card">${ring(78,'#C2456E')}<div><span>${t('undertone')}</span><b>${t('warm')}</b></div></div>
+    <div class="card">${ring(45,'#D9A441')}<div><span>${t('contrast')}</span><b>${t('medium')}</b></div></div>
+    <div class="card">${ring(35,'#8E6C88')}<div><span>${t('chroma')}</span><b>${t('muted_v')}</b></div></div>
+    <button class="card" data-act="go" data-arg="wardrobe">${ring(h,h>=70?'#3E8A68':'#C98A2B')}<div><span>${t('harmony')}</span><b>${state.wardrobe.filter(x=>x.mine).length} / ${state.wardrobe.length}</b></div></button>
+  </div>
+  <h3 class="sec">${t('sections')}</h3>
+  <div class="tiles">
+    ${tile('colors','palette','#C2456E','s_colors')}${tile('hair','scissors','#9A4A26','s_hair')}
+    ${tile('clothes','dress','#6D2E46','s_clothes')}${tile('acc','gem','#B8892F','s_acc')}
+    ${tile('makeup','lipstick','#B5605A','s_makeup')}${tile('looks','hanger','#3F7F7A','s_looks')}
+  </div>
+  <div class="tipcard">${ic('sparkle',24)}<div><p style="font-size:12px;font-weight:800;color:#8A5A12">${t('tip_day')}</p><p>${tr(TIPS[state.tip])}</p><button data-act="tip">${t('another_tip')}</button></div></div>
+  <h3 class="sec">${t('today_look')} <span class="count">${tr(lk.t)}</span></h3>
+  <button class="card" data-act="openlook" data-arg="work" style="display:block;width:100%;text-align:left;padding:12px">
+    <div class="flatlay" style="grid-template-columns:repeat(6,1fr);padding:8px;gap:6px">${lk.items.map(([tp,k])=>`<div>${garment(tp,C[k].hex)}</div>`).join('')}</div>
+    <div class="row" style="justify-content:space-between;margin-top:10px"><b>${tr(lk.t)}</b><span class="link" style="font-size:13.5px">${t('open_look')}</span></div>
+  </button>
+</section>`;
+};
+
+SCREENS.colors = () => {
+  const k=state.drape, c=C[k], mine=c.g!=='not';
+  const sw=(key)=>`<button class="sw ${state.drape===key?'on':''}" data-act="drape" data-arg="${key}" aria-label="${tr(C[key].n)}"><i style="background:${C[key].hex}"></i><span>${tr(C[key].n)}</span></button>`;
+  return `<section class="pad">
+  <div class="drape">
+    <div class="av">${avatar({drape:c.hex,dull:!mine,cut:state.cut,hair:HAIRC[state.hairc].hex})}</div>
+    <div><p class="small muted" style="font-weight:700">${t('drape_title')}</p><div class="cname">${tr(c.n)}</div>
+      <span class="verdict ${mine?'ok':'bad'}">${ic(mine?'check':'cross',16,2.4)} ${mine?t('glows'):t('dulls')}</span>
+      <p class="tiny muted" style="margin-top:8px">${t('drape_sub')}</p></div>
+  </div>
+  <h3 class="sec">${t('my_colors')} <span class="count">16</span></h3>
+  <div class="sw-grid">${MINE.map(sw).join('')}</div>
+  <h3 class="sec">${t('not_mine')} <span class="count">8</span></h3>
+  <div class="sw-grid not">${NOT.map(sw).join('')}</div>
+  <div class="card" style="margin-top:22px"><h3 class="h" style="font-size:21px">${t('neutrals')}</h3><p class="small muted">${t('neutrals_d')}</p>
+    <div class="neutrals">${['chocolate','beige','camel','taupe','olive'].map(x=>`<div><i style="background:${C[x].hex}"></i>${tr(C[x].n)}</div>`).join('')}</div></div>
+  <div class="card"><h3 class="h" style="font-size:21px">${t('metal')}</h3>
+    <div class="metal"><div style="background:#FBF3E2"><div class="disc" style="background:radial-gradient(circle at 35% 30%,#FFF1C4,#D9A441 55%,#9C6E1E)"></div>${t('gold')}<br><span class="pill ok" style="margin-top:6px">${ic('check',13,2.6)} ${t('rec')}</span></div>
+    <div style="background:#F2F3F5"><div class="disc" style="background:radial-gradient(circle at 35% 30%,#FFFFFF,#BFC5CC 55%,#7D858F)"></div>${t('silver')}<br><span class="pill bad" style="margin-top:6px">${ic('cross',13,2.6)} ${t('not_rec')}</span></div></div></div>
+</section>`;
+};
+
+SCREENS.hair = () => {
+  const hc=HAIRC[state.hairc];
+  return `<section class="pad">
+  <div class="card" style="display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center">
+    <div class="av" style="width:150px;height:150px;border-radius:50%;overflow:hidden">${avatar({cut:state.cut,hair:hc.hex,dull:!hc.ok,drape:C.camel.hex})}</div>
+    <div><p class="small muted" style="font-weight:700">${t('tryon')}</p><div class="cname">${tr(CUTS[state.cut].n)}</div>
+      <p class="small" style="margin-top:4px">${tr(hc.n)}</p>
+      <span class="verdict ${hc.ok?'ok':'bad'}">${ic(hc.ok?'check':'cross',16,2.4)} ${hc.ok?t('rec'):t('not_rec')}</span></div>
+  </div>
+  <div class="seg" style="margin-top:12px">${Object.keys(CUTS).map(k=>`<button class="${state.cut===k?'on':''}" data-act="cut" data-arg="${k}">${tr(CUTS[k].n)}</button>`).join('')}</div>
+  <h3 class="sec">${t('hair_shades')}</h3>
+  <div class="hairc">${Object.keys(HAIRC).map(k=>`<button class="${state.hairc===k?'on':''} ${HAIRC[k].ok?'':'avoid'}" data-act="hairc" data-arg="${k}"><i style="background:${HAIRC[k].hex}"></i>${tr(HAIRC[k].n)}</button>`).join('')}</div>
+  <h3 class="sec">${t('cuts')}</h3>
+  ${Object.keys(CUTS).map(k=>`<button class="card cut-card ${state.cut===k?'on':''}" data-act="cut" data-arg="${k}" style="width:100%;text-align:left"><div class="av">${avatar({cut:k,hair:HAIRC.chestnut.hex,drape:C.sage.hex})}</div><div><b>${tr(CUTS[k].n)}</b><p>${tr(CUTS[k].w)}</p></div></button>`).join('')}
+  <div class="card" style="margin-top:12px;display:grid;grid-template-columns:70px 1fr;gap:14px;align-items:center">
+    <svg viewBox="0 0 70 90" width="70" height="90" aria-hidden="true"><ellipse cx="35" cy="45" rx="24" ry="33" fill="#F7E6EC" stroke="#6D2E46" stroke-width="2"/><path d="M8 45 H62 M35 8 V82" stroke="#C2456E" stroke-dasharray="3 3"/></svg>
+    <div><p class="small muted" style="font-weight:700">${t('face_shape')}</p><div class="cname">${t('oval')}</div><p class="small muted">${t('oval_d')}</p></div>
+  </div>
+</section>`;
+};
+
+SCREENS.clothes = () => `<section class="pad">
+  <div class="card body-card">${BODY_SVG}<div><p class="small muted" style="font-weight:700">${t('body_type')}</p><div class="cname">${t('hourglass')}</div><p class="small" style="margin-top:4px">${t('hourglass_d')}</p>
+    <div class="meas"><div>${t('shoulders')}<span class="bar"><i style="width:92%"></i></span>92</div><div>${t('waist')}<span class="bar"><i style="width:70%"></i></span>70</div><div>${t('hips')}<span class="bar"><i style="width:96%"></i></span>96</div></div></div></div>
+  <h3 class="sec">${t('your_sil')}</h3>
+  <div class="gar-grid">${CLOTHES.yes.map(([tp,n],i)=>`<div class="gar">${garment(tp,C[['terracotta','camel','chocolate','olive','coral','sage'][i]].hex)}<span class="ok-c">${ic('check',14,2.6)}</span> ${tr(n)}</div>`).join('')}</div>
+  <h3 class="sec">${t('avoid_sil')}</h3>
+  <div class="gar-grid">${CLOTHES.no.map(([tp,n])=>`<div class="gar no">${garment(tp,'#B9A9B1')}<span class="bad-c">${ic('cross',14,2.6)}</span> ${tr(n)}</div>`).join('')}</div>
+  <div class="card" style="margin-top:18px"><h3 class="h" style="font-size:21px;margin-bottom:10px">${t('necklines')}</h3><div class="chips">${CLOTHES.neck.map(n=>`<span class="chip static yes">${tr(n)}</span>`).join('')}</div></div>
+  <div class="card"><h3 class="h" style="font-size:21px;margin-bottom:10px">${t('fabrics')}</h3><div class="chips">${CLOTHES.fab.map(n=>`<span class="chip static yes">${tr(n)}</span>`).join('')}</div></div>
+  <div class="card"><h3 class="h" style="font-size:21px;margin-bottom:10px">${t('prints')}</h3><div class="chips">${CLOTHES.prY.map(n=>`<span class="chip static yes">${tr(n)}</span>`).join('')}${CLOTHES.prN.map(n=>`<span class="chip static no">${tr(n)}</span>`).join('')}</div></div>
+</section>`;
+
+SCREENS.acc = () => `<section class="pad">
+  <div class="card"><h3 class="h" style="font-size:21px">${t('metal')}</h3>
+    <div class="metal">
+      <div style="background:#FBF3E2"><div class="av" style="width:100px;height:100px;border-radius:50%;overflow:hidden;margin:0 auto 8px">${avatar({earring:'#D9A441',drape:C.chocolate.hex})}</div>${t('gold')}<br><span class="pill ok" style="margin-top:6px">${ic('check',13,2.6)} ${t('rec')}</span></div>
+      <div style="background:#F2F3F5"><div class="av" style="width:100px;height:100px;border-radius:50%;overflow:hidden;margin:0 auto 8px">${avatar({earring:'#B8BEC6',drape:C.chocolate.hex,dull:true})}</div>${t('silver')}<br><span class="pill bad" style="margin-top:6px">${ic('cross',13,2.6)} ${t('not_rec')}</span></div>
+    </div></div>
+  <div class="card"><div class="row" style="justify-content:space-between"><h3 class="h" style="font-size:21px">${t('shoes_t')}</h3><span class="pill warn">${t('heel')}</span></div>
+    <div class="gar-grid" style="margin-top:12px">${ACC.shoeC.map((k,i)=>`<div class="gar" style="box-shadow:none;background:var(--blush-2)">${garment(i===2?'boots':'shoes',C[k].hex)}${tr(C[k].n)}</div>`).join('')}</div>
+    <div class="chips" style="margin-top:12px">${ACC.shapes.map(n=>`<span class="chip static yes">${tr(n)}</span>`).join('')}</div></div>
+  <div class="card"><h3 class="h" style="font-size:21px">${t('bags_t')}</h3>
+    <div class="gar-grid" style="margin-top:12px">${ACC.bagC.map(k=>`<div class="gar" style="box-shadow:none;background:var(--blush-2)">${garment('bag',C[k].hex)}${tr(C[k].n)}</div>`).join('')}</div>
+    <div class="chips" style="margin-top:12px">${ACC.bags.map(n=>`<span class="chip static yes">${tr(n)}</span>`).join('')}</div></div>
+  <div class="card"><h3 class="h" style="font-size:21px;margin-bottom:8px">${t('details_t')}</h3><ul class="list-check">${ACC.det.map(n=>`<li><span class="ok-c">${ic('check',18,2.4)}</span>${tr(n)}</li>`).join('')}</ul></div>
+</section>`;
+
+SCREENS.makeup = () => {
+  const lp=LIPS[state.lip];
+  const stick=(k)=>`<button class="sw ${state.lip===k?'on':''}" data-act="lip" data-arg="${k}" style="position:relative"><svg viewBox="0 0 40 70" width="40" height="70" aria-hidden="true"><rect x="10" y="34" width="20" height="34" rx="3" fill="#D9A441"/><rect x="12" y="24" width="16" height="12" fill="#E7C27A"/><path d="M13 24 V10 L27 2 V24 Z" fill="${LIPS[k].hex}"/></svg><span>${tr(LIPS[k].n)}</span>${LIPS[k].ok?'':`<span class="pill bad" style="padding:1px 6px">${ic('cross',11,2.6)}</span>`}</button>`;
+  return `<section class="pad">
+  <div class="card" style="display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center">
+    <div class="av" style="width:150px;height:150px;border-radius:50%;overflow:hidden">${avatar({lip:lp.hex,dull:!lp.ok,drape:C.beige.hex,cut:state.cut,hair:HAIRC[state.hairc].hex})}</div>
+    <div><p class="small muted" style="font-weight:700">${t('lips')}</p><div class="cname">${tr(lp.n)}</div><span class="verdict ${lp.ok?'ok':'bad'}">${ic(lp.ok?'check':'cross',16,2.4)} ${lp.ok?t('rec'):t('not_rec')}</span><p class="tiny muted" style="margin-top:8px">${t('tap_lip')}</p></div>
+  </div>
+  <h3 class="sec">${t('lips')}</h3>
+  <div class="sw-grid" style="grid-template-columns:repeat(5,1fr)">${Object.keys(LIPS).map(stick).join('')}</div>
+  <h3 class="sec">${t('blush_t')}</h3>
+  <div class="sw-grid">${BLUSH.map(([h,n])=>`<div class="sw"><i style="background:radial-gradient(circle,${h} 35%,${shade(h,30)} 100%);border-radius:50%"></i><span>${tr(n)}</span></div>`).join('')}</div>
+  <h3 class="sec">${t('eyes_t')}</h3>
+  <div class="sw-grid">${EYES.map(([h,n])=>`<div class="sw"><i style="background:linear-gradient(135deg,${shade(h,25)},${h})"></i><span>${tr(n)}</span></div>`).join('')}</div>
+</section>`;
+};
+
+SCREENS.looks = () => {
+  const lk=LOOKS[state.occ];
+  const toBuy=lk.items.filter(([tp,k])=>!owns(tp,k));
+  return `<section class="pad">
+  <h2 class="h" style="margin:2px 2px 12px">${t('s_looks')}</h2>
+  <div class="occ">${OCC.map(o=>`<button class="chip ${state.occ===o?'on':''}" data-act="occ" data-arg="${o}">${t('occ_'+o)}</button>`).join('')}</div>
+  <div class="card" style="margin-top:12px">
+    <div class="flatlay">${lk.items.map(([tp,k])=>`<div>${garment(tp,C[k].hex)}</div>`).join('')}</div>
+    <div class="look-head"><div><h3 class="h">${tr(lk.t)}</h3><p class="small muted">${tr(lk.why)}</p></div></div>
+    <p class="small" style="font-weight:800;margin-top:6px">${t('what_in')}</p>
+    <ul class="items">${lk.items.map(([tp,k])=>{const o=owns(tp,k);return `<li><span class="dot" style="background:${C[k].hex}"></span><span>${tr(TYPES[tp])}<small>${tr(C[k].n)}</small></span><span class="pill ${o?'ok':'warn'}">${o?ic('check',12,2.6)+' '+t('have'):t('buy_it')}</span></li>`;}).join('')}</ul>
+    <div class="notes"><div><b>${ic('scissors',15)} ${t('hair_n')}</b>${tr(lk.hair)}</div><div><b>${ic('lipstick',15)} ${t('makeup_n')}</b>${tr(lk.mk)}</div></div>
+    <div class="row" style="margin-top:14px;gap:10px"><button class="btn ghost sm" style="flex:1" data-act="shop">${ic('list',18)} ${state.showShop?t('hide_shopping'):t('shopping')}</button><button class="btn primary sm" style="flex:1" data-act="savelook">${ic('heart',18)} ${t('save_look')}</button></div>
+    ${state.showShop?(toBuy.length?`<ul class="shop">${toBuy.map(([tp,k])=>{const id=state.occ+tp+k, d=state.shopDone[id];return `<li class="${d?'done':''}" data-act="shopitem" data-arg="${id}"><span class="box">${d?ic('check',14,3):''}</span><span class="dot" style="background:${C[k].hex}"></span>${tr(TYPES[tp])}, ${tr(C[k].n).toLowerCase()}</li>`;}).join('')}</ul>`:`<p class="small ok-c" style="margin-top:12px;font-weight:700">${t('nothing_buy')}</p>`):''}
+  </div>
+</section>`;
+};
+
+function verdictOf(score){ return score>=75?['v_yes','#3E8A68']:score>=50?['v_maybe','#C98A2B']:['v_no','#B8434F']; }
+function itemThumb(x){ return x.photo?`<img src="${x.photo}" alt="">`:garment(x.type,x.hex); }
+SCREENS.check = () => {
+  const r=state.check;
+  const typeChips = `<div class="chips">${CHECK_TYPES.map(k=>`<button class="chip ${state.checkType===k?'on':''}" data-act="ctype" data-arg="${k}">${tr(TYPES[k])}</button>`).join('')}</div>`;
+  let main;
+  if(state.checking) main = `<div class="card" style="text-align:center;padding:30px 16px"><div class="spin"></div><b>${t('reading')}</b></div>`;
+  else if(r){
+    const [vk,vc]=verdictOf(r.score);
+    main = `<div class="card">
+      <div class="res-top"><div class="res-img">${itemThumb(r)}</div>
+        <div><div class="score">${ring(r.score,vc,74,8)}</div><div class="vtitle" style="color:${vc};margin-top:8px">${t(vk)}</div><p class="small muted">${tr(TYPES[r.type])}</p></div></div>
+      <div class="detect"><span class="dot" style="background:${r.hex}"></span><div><b>${t('detected')}</b><br><span class="muted">${t('closest',{c:tr(C[r.key].n).toLowerCase()})}</span></div><span class="dot" style="background:${C[r.key].hex};margin-left:auto"></span></div>
+      <ul class="list-check" style="margin-top:12px">
+        <li><span class="${r.cs==='ok'?'ok-c':r.cs==='close'?'warn-c':'bad-c'}">${ic(r.cs==='bad'?'cross':'check',18,2.4)}</span>${t('c_'+r.cs)}</li>
+        <li><span class="${r.fit?'ok-c':'bad-c'}">${ic(r.fit?'check':'cross',18,2.4)}</span>${t(r.fit?'f_ok':'f_bad')}</li>
+        <li><span class="ok-c">${ic('hanger',18)}</span>${t('combo',{n:r.combo})}</li>
+        ${r.alt?`<li><span class="warn-c">${ic('sparkle',18)}</span><span>${t('alt',{c:tr(C[r.alt].n).toLowerCase()})} <span class="dot" style="display:inline-block;vertical-align:-2px;background:${C[r.alt].hex}"></span></span></li>`:''}
+      </ul>
+      <div class="row" style="margin-top:16px;gap:10px"><button class="btn ghost sm" style="flex:1" data-act="recheck">${t('check_again')}</button><button class="btn primary sm" style="flex:1" data-act="addfromcheck">${ic('plus',18)} ${t('add_w')}</button></div>
+    </div>`;
+  } else main = `
+    <label class="cam"><input type="file" accept="image/*" capture="environment" data-file="check" aria-label="${t('take_photo')}"><div class="big">${ic('camera',36)}</div><b>${t('take_photo')}</b><span>${t('take_photo_d')}</span></label>
+    <h3 class="sec">${t('item_type')}</h3>${typeChips}
+    <h3 class="sec">${t('or_try')}</h3>
+    <div class="samples">${SAMPLES.map((s,i)=>`<button class="sample" data-act="sample" data-arg="${i}">${garment(s.type,s.hex)}${tr(s.n)}</button>`).join('')}</div>`;
+  return `<section class="pad"><h2 class="h" style="margin:2px 2px 4px">${t('check_title')}</h2><p class="lead" style="margin-bottom:14px">${t('check_sub')}</p>${main}
+  ${state.checks.length?`<h3 class="sec">${t('history')}</h3><ul class="hist">${state.checks.slice(0,5).map(c=>{const [vk,vc]=verdictOf(c.score);return `<li><span class="thumb">${itemThumb(c)}</span><span class="grow"><b style="color:${vc}">${t(vk)}</b><br><span class="small muted">${tr(TYPES[c.type])}, ${tr(C[c.key].n).toLowerCase()}</span></span>${ring(c.score,vc,40,5)}</li>`;}).join('')}</ul>`:''}
+  </section>`;
+};
+const SAMPLES = [
+  {type:'top',hex:'#C8704F',n:['Блуза терракота','Терракота блузка','Terracotta blouse']},
+  {type:'dress',hex:'#F1CFE2',n:['Платье ледяной розы','Мұздай қызғылт көйлек','Icy pink dress']},
+  {type:'oversize',hex:'#A08B72',n:['Объёмный свитер','Көлемді жемпір','Boxy sweater']}
+];
+function runCheck(hex, type, photo){
+  state.checking=true; state.check=null; render();
+  setTimeout(()=>{
+    const all=nearest(hex, MINE.concat(NOT)), m=nearest(hex, MINE);
+    let cs, cScore;
+    if(C[all.key].g==='mine' && all.d<=20){ cs='ok'; cScore=100-all.d; }
+    else if(C[all.key].g==='mine' || m.d < all.d + 4){ cs='close'; cScore=Math.max(52,74-(m.d-20)); }
+    else { cs='bad'; cScore=Math.max(10,38-all.d/4); }
+    const fit = type!=='oversize';
+    let score = Math.round(cScore*0.7 + (fit?100:25)*0.3);
+    if(cs==='bad') score = Math.min(score, 42);
+    const combo = state.wardrobe.filter(w=>w.mine && w.type!==type).length;
+    const r = {id:SEQ++, hex, type, photo, key: cs==='bad'?all.key:m.key, cs, fit, score, combo, alt: cs==='ok'?null:m.key};
+    state.check=r; state.checking=false; state.checks.unshift(r); state.checks=state.checks.slice(0,12); save(); render();
+  }, 1100);
+}
+
+SCREENS.wardrobe = () => {
+  const w=state.wardrobe, h=harmony(), inn=w.filter(x=>x.mine).length;
+  const list=w.filter(x=>state.wf==='all'||(state.wf==='in'?x.mine:!x.mine));
+  const gaps=CAPSULE.filter(([tp,k])=>!owns(tp,k));
+  return `<section class="pad">
+  <h2 class="h" style="margin:2px 2px 12px">${t('w_title')}</h2>
+  <div class="card w-stats">${ring(h,h>=70?'#3E8A68':'#C98A2B',84,9)}
+    <div class="nums"><div><b>${w.length}</b><span>${t('w_items')}</span></div><div><b style="color:var(--ok)">${inn}</b><span>${t('in_pal')}</span></div><div><b style="color:var(--bad)">${w.length-inn}</b><span>${t('out_pal')}</span></div></div></div>
+  <div class="chips" style="margin:16px 0 12px">${[['all','all'],['in','f_in'],['out','f_out']].map(([v,k])=>`<button class="chip ${state.wf===v?'on':''}" data-act="wf" data-arg="${v}">${t(k)}</button>`).join('')}</div>
+  <div class="w-grid">
+    <button class="w-item add-tile" data-act="addopen">${ic('plus',28)}${t('add_item')}</button>
+    ${list.map(x=>`<div class="w-item"><div class="pic">${itemThumb(x)}</div><span class="flag" style="background:${x.mine?'var(--ok)':'var(--bad)'}">${ic(x.mine?'check':'cross',13,3)}</span><button class="rm" data-act="rm" data-arg="${x.id}" aria-label="remove">${ic('cross',13,2.6)}</button><b>${tr(TYPES[x.type])}</b><span class="cn"><span class="dot" style="background:${x.hex}"></span>${tr(C[x.key].n)}</span></div>`).join('')}
+  </div>
+  ${list.length?'':`<p class="small muted" style="margin-top:10px">${t('empty_w')}</p>`}
+  ${state.addOpen?`<div class="card add-panel"><b>${t('add_item')}</b><p class="small muted">${t('add_how')}</p><div class="chips" style="margin-top:10px">${CHECK_TYPES.filter(k=>k!=='oversize').map(k=>`<button class="chip ${state.addType===k?'on':''}" data-act="atype" data-arg="${k}">${tr(TYPES[k])}</button>`).join('')}</div>
+    <label class="drop"><input type="file" accept="image/*" capture="environment" data-file="wardrobe" aria-label="${t('upload')}"><span class="cta" style="margin-top:0">${ic('camera',20)} ${t('upload')}</span></label></div>`:''}
+  <div class="card" style="margin-top:16px"><h3 class="h" style="font-size:21px">${t('gaps')}</h3>
+    ${gaps.length?`<ul class="gaps">${gaps.map(([tp,k])=>`<li>${garment(tp,C[k].hex)}<span>${tr(TYPES[tp])}, ${tr(C[k].n).toLowerCase()}</span></li>`).join('')}</ul>`:`<p class="small ok-c" style="margin-top:8px;font-weight:700">${t('gaps_none')}</p>`}</div>
+</section>`;
+};
+
+SCREENS.chat = () => {
+  const msgs = [{me:false, text:t('chat_hello')}].concat(state.chat);
+  return `<div class="chat-wrap"><div class="chat" id="chatlog">
+    ${msgs.map(m=>m.me?`<div class="msg me">${esc(m.text)}</div>`:`<div class="msg ai"><div class="ai-head"><span class="mini av">${avatar({drape:C.terracotta.hex})}</span>${t('stylist')}</div>${m.text&&typeof m.text==='object'?esc(tr(m.text)):esc(m.text)}${m.sw?`<div class="swr">${m.sw.map(k=>`<i style="background:${C[k].hex}" title="${tr(C[k].n)}"></i>`).join('')}</div>`:''}</div>`).join('')}
+    ${state.typing?`<div class="msg ai typing"><i></i><i></i><i></i></div>`:''}
+  </div>
+  <div style="position:sticky;bottom:0;background:var(--blush-2);padding-bottom:8px">
+    <div class="quick">${QUICK.map((q,i)=>`<button class="chip" data-act="quick" data-arg="${i}">${tr(q)}</button>`).join('')}</div>
+    <div class="composer"><input id="chatIn" placeholder="${t('chat_ph')}" autocomplete="off"><button data-act="send" aria-label="send">${ic('send',20)}</button></div>
+  </div></div>`;
+};
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function answer(q){
+  const s=q.toLowerCase();
+  const hit=CHAT.find(e=>e.k.some(k=>s.includes(k)));
+  return hit ? {text:hit.a, sw:hit.sw} : {text:CHAT_FALLBACK, sw:null};
+}
+function ask(q){
+  if(!q.trim()) return;
+  state.chat.push({me:true,text:q}); state.typing=true; render();
+  setTimeout(()=>{ const a=answer(q); state.typing=false; state.chat.push({me:false,text:a.text,sw:a.sw}); render(); }, 900);
+}
+
+SCREENS.profile = () => {
+  const p=state.photos, any=p.face||p.body;
+  return `<section class="pad">
+  <div class="prof-head"><div class="av">${p.face?`<img src="${p.face}" alt="">`:avatar({drape:C[state.drape].hex,cut:state.cut,hair:HAIRC[state.hairc].hex})}</div>
+    <div><h2 class="h" style="font-size:28px">${t('user_name')}</h2><p class="small muted" style="font-weight:700">${t('soft_autumn')}, ${t('hourglass').toLowerCase()}</p></div></div>
+  <div class="card"><h3 class="h" style="font-size:20px;margin-bottom:4px">${t('my_params')}</h3><ul class="kv">
+    <li><span>${t('your_type')}</span><b>${t('soft_autumn')}</b></li><li><span>${t('undertone')}</span><b>${t('warm')}</b></li>
+    <li><span>${t('face_shape')}</span><b>${t('oval')}</b></li><li><span>${t('body_type')}</span><b>${t('hourglass')}</b></li>
+    <li><span>${t('eyes_c')}</span><b>${t('hazel')}</b></li><li><span>${t('hair_nat')}</span><b>${t('hair_nat_v')}</b></li>
+    <li><span>${t('age_v')}</span><b>28</b></li><li><span>${t('height_v')}</span><b>${state.quiz.height} ${t('cm')}</b></li></ul></div>
+  <div class="card"><div class="row" style="justify-content:space-between"><h3 class="h" style="font-size:20px">${t('language')}</h3>${langPills()}</div></div>
+  <div class="card"><h3 class="h" style="font-size:20px">${t('my_photos')}</h3>
+    ${any?`<div class="photos">${['face','body'].map(k=>`<div>${p[k]?`<img src="${p[k]}" alt="">`:ic('user')}</div>`).join('')}</div><p class="tiny muted" style="margin-top:8px">${t('photos_session')}</p>`:`<p class="small muted" style="margin-top:6px">${ic('lock',16)} ${t('no_photos')}</p>`}</div>
+  <div class="card"><ul class="kv"><li><span>${t('access')}</span><b>${t('lifetime')}</b></li><li><span>${t('key_v')}</span><b>ARU-DEMO-2026</b></li></ul></div>
+  <div class="menu">
+    <button data-act="passport">${ic('download')} ${t('passport')}</button>
+    <button data-act="redo">${ic('refresh')} ${t('redo')}</button>
+    <button class="danger" data-act="delphotos">${ic('trash')} ${t('delete_photos')}</button>
+    <button data-act="logout">${ic('logout')} ${t('logout')}</button>
+  </div>
+  <div class="seri"><span class="s">Seri</span><div><b>${t('seri_t')}</b><p>${t('seri_d')}</p></div></div>
+</section>`;
+};
+
+/* ---------- side panel & passport ---------- */
+function renderSide(){
+  document.getElementById('side').innerHTML = `<div class="mark">Aru</div><p class="ver">${t('side_ver')}</p><p>${t('side_p')}</p>
+  <p style="font-weight:800;margin-top:20px">${t('side_try')}</p><ul>${['side_1','side_2','side_3','side_4'].map((k,i)=>`<li>${ic(['globe','palette','camera','chat'][i])}<span>${t(k)}</span></li>`).join('')}</ul>`;
+}
+function renderPassport(){
+  document.getElementById('passport').innerHTML = `<h1>Aru</h1><p><b>${t('passport_t')}</b>: ${t('user_name')}</p>
+  <h2>${t('your_type')}: ${t('soft_autumn')}</h2><p>${t('sa_desc')}</p>
+  <h2>${t('my_colors')}</h2><div class="pg">${MINE.map(k=>`<div><i style="background:${C[k].hex}"></i>${tr(C[k].n)}</div>`).join('')}</div>
+  <h2>${t('not_mine')}</h2><div class="pg">${NOT.map(k=>`<div><i style="background:${C[k].hex}"></i>${tr(C[k].n)}</div>`).join('')}</div>
+  <h2>${t('s_hair')}</h2><ul>${Object.keys(CUTS).map(k=>`<li>${tr(CUTS[k].n)}: ${tr(CUTS[k].w)}</li>`).join('')}</ul>
+  <h2>${t('body_type')}: ${t('hourglass')}</h2><p>${t('hourglass_d')}</p>
+  <h2>${t('s_looks')}</h2><ul>${OCC.map(o=>`<li><b>${t('occ_'+o)}:</b> ${tr(LOOKS[o].t)}. ${LOOKS[o].items.map(([tp,k])=>tr(TYPES[tp])+' ('+tr(C[k].n).toLowerCase()+')').join(', ')}</li>`).join('')}</ul>`;
+}
+
+/* ---------- render & router ---------- */
+const phone = document.getElementById('phone');
+let lastScreen=null;
+function render(){
+  const cont=document.getElementById('content');
+  const keep = (cont && lastScreen===state.screen) ? cont.scrollTop : 0;
+  const tabs = ['home','looks','check','wardrobe','chat'].includes(state.screen);
+  phone.innerHTML = topbar() + `<main class="content ${tabs?'has-tabs':''}" id="content">${SCREENS[state.screen]()}</main>` + (tabs?tabbar():'') + `<div class="toast" id="toast" role="status" aria-live="polite"></div>`;
+  document.documentElement.lang = ['ru','kk','en'][L];
+  document.title = 'Aru — ' + t('tagline');
+  renderSide();
+  const c2=document.getElementById('content');
+  if(state.screen==='chat') c2.scrollTop = c2.scrollHeight; else c2.scrollTop = keep;
+  lastScreen=state.screen;
+}
+function go(s){ if(s!==state.screen) state.prev.push(state.screen); state.screen=s; render(); }
+let toastT;
+function toast(m){ const el=document.getElementById('toast'); if(!el) return; el.textContent=m; el.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'),2600); }
+
+function runAnalysis(){
+  state.screen='analyzing'; render();
+  const lis=[...document.querySelectorAll('#steps li')];
+  lis.forEach((li,i)=>{
+    setTimeout(()=>{ lis.forEach((x,j)=>{ x.classList.toggle('done', j<i); x.classList.toggle('now', j===i); }); }, i*850);
+  });
+  setTimeout(()=>{ state.onboarded=true; state.prev=[]; save(); state.screen='home'; render(); toast(t('done_toast')); }, lis.length*850+500);
+}
+
+const ACT = {
+  lang:a=>{ L=+a; save(); render(); },
+  login:()=>{ const v=(document.getElementById('keyIn').value||'').trim().toUpperCase();
+    if(/^ARU-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(v)){ state.prev=[]; state.screen = state.onboarded?'home':'onboard'; state.step=0; render(); } else toast(t('bad_key')); },
+  buy:()=>toast(t('pay_toast')),
+  obnext:()=>{ if(state.step<2){ state.step++; render(); } else runAnalysis(); },
+  obskip:()=>{ state.step++; if(state.step>2) runAnalysis(); else render(); },
+  demo:()=>{ state.photos={face:DEMO_FACE, body:DEMO_BODY};
+    state.quiz={age:'26–35', height:165, life:['office','events','travel'], budget:'$$', like:['classic','minimal'], dislike:['Мини-юбки, крупный яркий принт','Мини юбка, ірі ашық принт','Mini skirts, big loud prints'][L]};
+    state.step=2; render(); toast(t('demo_loaded')); },
+  obback:()=>{ state.step=Math.max(0,state.step-1); render(); },
+  qone:a=>{ const [g,v]=a.split('|'); state.quiz[g]=v; render(); },
+  qmulti:a=>{ const [g,v]=a.split('|'); const arr=state.quiz[g]; const i=arr.indexOf(v); i>=0?arr.splice(i,1):arr.push(v); render(); },
+  go:a=>{ if(['home','looks','check','wardrobe','chat'].includes(a)) state.prev=[]; go(a); },
+  back:()=>{ state.screen=state.prev.pop()||'home'; render(); },
+  drape:a=>{ state.drape=a; render(); },
+  cut:a=>{ state.cut=a; render(); },
+  hairc:a=>{ state.hairc=a; render(); },
+  lip:a=>{ state.lip=a; render(); },
+  occ:a=>{ state.occ=a; state.showShop=false; render(); },
+  openlook:a=>{ state.occ=a; state.prev=[]; go('looks'); },
+  tip:()=>{ state.tip=(state.tip+1)%TIPS.length; render(); },
+  shop:()=>{ state.showShop=!state.showShop; render(); },
+  shopitem:a=>{ state.shopDone[a]=!state.shopDone[a]; render(); },
+  savelook:()=>toast(t('saved')),
+  ctype:a=>{ state.checkType=a; render(); },
+  sample:a=>{ const s=SAMPLES[+a]; state.checkType=s.type; runCheck(s.hex, s.type, null); },
+  recheck:()=>{ state.check=null; render(); },
+  addfromcheck:()=>{ const r=state.check; if(!r) return; const it=mkItem(r.type==='oversize'?'knit':r.type,null,r.hex,r.photo); state.wardrobe.unshift(it); save(); state.check=null; render(); toast(t('added')); },
+  wf:a=>{ state.wf=a; render(); },
+  addopen:()=>{ state.addOpen=!state.addOpen; render(); },
+  atype:a=>{ state.addType=a; render(); },
+  rm:a=>{ state.wardrobe=state.wardrobe.filter(x=>x.id!==+a); save(); render(); toast(t('removed')); },
+  quick:a=>ask(tr(QUICK[+a])),
+  send:()=>{ const el=document.getElementById('chatIn'); const v=el.value; el.value=''; ask(v); },
+  passport:()=>{ renderPassport(); window.print(); },
+  redo:()=>{ state.step=0; state.prev=[]; state.screen='onboard'; render(); },
+  delphotos:()=>{ state.photos={face:null,body:null}; render(); toast(t('photos_deleted')); },
+  logout:()=>{ state.prev=[]; state.screen='welcome'; render(); }
+};
+document.addEventListener('click', e=>{ const el=e.target.closest('[data-act]'); if(!el) return; const f=ACT[el.dataset.act]; if(f){ e.preventDefault(); f(el.dataset.arg, el); } });
+document.addEventListener('keydown', e=>{
+  if(e.key!=='Enter') return;
+  if(e.target.id==='keyIn') ACT.login();
+  if(e.target.id==='chatIn') ACT.send();
+});
+document.addEventListener('input', e=>{
+  if(e.target.id==='hRange'){ state.quiz.height=+e.target.value; const b=document.getElementById('hVal'); if(b) b.textContent=state.quiz.height+' '+t('cm'); }
+  if(e.target.id==='dislike'){ state.quiz.dislike=e.target.value; }
+});
+document.addEventListener('change', e=>{
+  const inp=e.target; if(!inp.matches('input[type=file]')||!inp.files[0]) return;
+  const kind=inp.dataset.file, file=inp.files[0];
+  const fr=new FileReader();
+  fr.onload=()=>{
+    const img=new Image();
+    img.onload=()=>{
+      // downscale for display; the original never leaves the browser
+      const cv=document.createElement('canvas'), m=420, k=Math.min(1,m/Math.max(img.width,img.height));
+      cv.width=img.width*k; cv.height=img.height*k; cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+      const small=cv.toDataURL('image/jpeg',0.82);
+      if(kind==='face'||kind==='body'){ state.photos[kind]=small; render(); }
+      else if(kind==='check'){ runCheck(dominantColor(img), state.checkType, small); }
+      else if(kind==='wardrobe'){ const it=mkItem(state.addType,null,dominantColor(img),small); state.wardrobe.unshift(it); state.addOpen=false; save(); render(); toast(t('added')); }
+    };
+    img.src=fr.result;
+  };
+  fr.readAsDataURL(file);
+});
+
+load();
+render();
+</script>
+</body>
+</html>
