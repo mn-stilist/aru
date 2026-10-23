@@ -163,7 +163,22 @@ h3.h{font-family:var(--serif);font-size:24px;line-height:1.1;font-weight:700;col
 /* ---------- home ---------- */
 .greet{display:flex;align-items:flex-end;justify-content:space-between;margin:4px 2px 14px}
 .hero{position:relative;border-radius:var(--r-xl);padding:20px;color:var(--white);background:linear-gradient(150deg,#7E3654 0%,#4A1D30 100%);overflow:hidden;box-shadow:var(--lift)}
-.hero .hero-av{position:absolute;right:-18px;top:-6px;width:150px;height:150px;opacity:.95}
+.hero .hero-av{position:absolute;right:16px;top:16px;width:92px;height:92px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 3px rgba(255,255,255,.35)}
+.hero .hero-av img{width:100%;height:100%;object-fit:cover;display:block}
+.tryon-frame{position:relative;border-radius:18px;overflow:hidden;background:#D8D8D5}
+.tryon-frame img{width:100%;display:block}
+.ba{position:absolute;left:10px;top:10px;display:flex;background:rgba(255,255,255,.93);border-radius:30px;padding:3px;box-shadow:0 8px 20px -10px rgba(0,0,0,.5)}
+.ba button{font-size:12.5px;font-weight:800;padding:7px 12px;border-radius:30px;color:var(--muted)}
+.ba button.on{background:var(--berry);color:#fff}
+.who{display:flex;gap:8px;margin:0 0 10px}
+.who button{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 5px;border-radius:30px;background:var(--white);box-shadow:var(--lift-sm);font-weight:800;font-size:13.5px;color:var(--berry)}
+.who button img{width:30px;height:30px;border-radius:50%;object-fit:cover}
+.who button.on{background:var(--berry);color:#fff}
+.tlist{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:7px}
+.tlist li{display:flex;align-items:center;gap:10px;font-size:14px}
+.tlist i{width:16px;height:16px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.whybox{margin-top:12px;background:var(--blush,#F7E6EC);border-radius:14px;padding:12px 14px;font-size:13.5px}
+.whybox b{display:block;color:var(--berry);font-size:12.5px;margin-bottom:3px}
 .hero .k{font-size:13px;color:#EAC3D2;font-weight:700}
 .hero .t{font-family:var(--serif);font-style:italic;font-size:42px;line-height:1;font-weight:700;margin:6px 0 8px;max-width:230px}
 .hero p{font-size:13.5px;color:#F3D3DF;max-width:250px}
@@ -425,8 +440,9 @@ const S = {
   done_toast:["Разбор готов. Это ваша панель стиля","Талдау дайын. Бұл сіздің стиль панеліңіз","Your analysis is ready. This is your style panel"],
   hello:["Здравствуйте","Сәлеметсіз бе","Hello"],
   your_type:["Ваш цветотип","Түс типіңіз","Your colour type"],
-  soft_autumn:["Мягкая осень","Жұмсақ күз","Soft Autumn"],
-  sa_desc:["Тёплые, приглушённые, природные оттенки — как осенний лес в мягком свете","Жылы, бәсең, табиғи реңктер — жұмсақ жарықтағы күзгі орман сияқты","Warm, muted, earthy shades, like an autumn forest in soft light"],
+  soft_autumn:["Тёмная осень","Қою күз","Deep Autumn"],
+  sa_desc:["Глубокие тёплые оттенки: шоколад, хвоя, медь, марсала","Терең жылы реңктер: шоколад, қылқан, мыс, марсала","Deep warm shades: chocolate, pine, copper, marsala"],
+  before:["Как было","Бұрын","Before"], after:["Как стало","Кейін","After"], demo_who:["Демо-клиентка","Демо-клиент","Demo client"], why_works:["Почему это работает","Неге жарасады","Why it works"], your_transform:["Ваше превращение","Сіздің өзгерісіңіз","Your transformation"], tryon_ai:["Примерка на фото сделана ИИ: лицо и фигура сохранены","Суреттегі өлшеуді ЖИ жасады: бет пен бітім сақталды","AI try-on on your photo: face and figure kept"], flat_note:["Для этого образа примерка на фото появится в рабочей версии","Бұл бейне үшін суреттегі өлшеу жұмыс нұсқасында болады","Photo try-on for this look comes in the full version"],
   match:["Совпадение 94%","Сәйкестік 94%","94% match"],
   indicators:["Индикаторы стиля","Стиль көрсеткіштері","Style indicators"],
   undertone:["Подтон","Реңк","Undertone"], warm:["Тёплый","Жылы","Warm"],
@@ -636,6 +652,39 @@ const LOOKS = {
     why:['Всё сочетается со всем — удобно собирать чемодан.','Бәрі бір-бірімен үйлеседі — чемодан жинау оңай.','Everything goes with everything, so packing is easy.']}
 };
 const OCC = ['work','day','party','date','travel'];
+const TRYCL = {
+  aigerim:{name:["Айгерим, 28","Айгерім, 28","Aigerim, 28"],
+    type:["Тёмная осень","Қою күз","Deep Autumn"],
+    desc:["Глубокие тёплые оттенки: шоколад, хвоя, медь, марсала. Контраст средне-высокий, поэтому ей идут насыщенные, но не кричащие цвета.","Терең жылы реңктер: шоколад, қылқан жасылы, мыс, марсала. Контраст орташадан жоғары, сондықтан оған қанық, бірақ айқай емес түстер жарасады.","Deep warm shades: chocolate, pine, copper, marsala. Her contrast is medium-high, so rich but never loud colours suit her."],
+    facts:[["Рост 165 см","Бойы 165 см","165 cm"],["Тёмный каштан","Қою құба шаш","Dark chestnut hair"],["Карие глаза","Қоңыр көз","Brown eyes"],["Тёплый подтон","Жылы реңк","Warm undertone"]],
+    mine:[["#4E2E1E",["Шоколад","Шоколад","Chocolate"]],["#2F4A35",["Хвоя","Қылқан","Pine"]],["#B4532A",["Терракота","Терракота","Terracotta"]],["#1F5E5B",["Тёмная бирюза","Қою көгілдір","Deep teal"]],["#B8862B",["Горчица","Қыша","Mustard"]],["#6E2B2B",["Марсала","Марсала","Marsala"]],["#A0522D",["Медь","Мыс","Copper"]],["#4F5A2A",["Олива","Зәйтүн","Olive"]]],
+    not:[["#F4C6D7",["Пастельный розовый","Бозғылт қызғылт","Pastel pink"]],["#CFE6F2",["Ледяной голубой","Мұздай көк","Icy blue"]],["#D61F82",["Фуксия","Фуксия","Fuchsia"]],["#A3ABB5",["Холодный серый","Суық сұр","Cool grey"]]],
+    metal:["#D9A441",["Золото","Алтын","Gold"]],
+    looks:{
+      work:{t:["Тёплый офис","Жылы кеңсе","Warm office"],items:[["jacket","#4E2E1E",["Жакет","Жакет","Blazer"],["шоколад","шоколад","chocolate"]],["top","#B8862B",["Шёлковая блуза","Жібек блузка","Silk blouse"],["горчица","қыша","mustard"]],["trousers","#4F5A2A",["Брюки со стрелками","Қырлы шалбар","Pressed trousers"],["олива","зәйтүн","olive"]],["shoes","#C8B49A",["Лодочки","Туфли","Pumps"],["бежевая замша","беж күдері","beige suede"]]],
+        why:["Шоколад вместо чёрного держит строгость, а горчица у лица подсвечивает карие глаза.","Қараның орнына шоколад қатаңдықты сақтайды, ал бетке жақын қыша қоңыр көзді жарқыратады.","Chocolate keeps it sharp instead of black, and mustard near the face lights up her brown eyes."]},
+      party:{t:["Той в марсале","Марсала тойы","Celebration in marsala"],items:[["dress","#6E2B2B",["Платье миди","Миди көйлек","Midi dress"],["марсала","марсала","marsala"]],["shoes","#C9A15A",["Туфли","Туфли","Heels"],["золотистые","алтын түсті","golden"]],["bag","#4E2E1E",["Клатч","Клатч","Clutch"],["шоколад","шоколад","chocolate"]],["earrings","#D9A441",["Серьги","Сырға","Earrings"],["золото","алтын","gold"]]],
+        why:["Марсала — праздничный цвет тёмной осени: торжественно и без резкости чёрного.","Марсала — қою күздің мерекелік түсі: салтанатты әрі қараның қаталдығынсыз.","Marsala is Deep Autumn's festive colour: elegant without the harshness of black."]},
+      weekend:{t:["Выходной","Демалыс","Weekend"],items:[["knit","#B4532A",["Свитер","Жемпір","Knit"],["терракота","терракота","terracotta"]],["jeans","#3E5168",["Джинсы","Джинсы","Jeans"],["тёмный деним","қою деним","dark denim"]],["boots","#4E2E1E",["Ботинки","Бәтеңке","Boots"],["шоколад","шоколад","chocolate"]],["bag","#A0522D",["Сумка","Сөмке","Bag"],["медь","мыс","copper"]],["scarf","#2F4A35",["Шарф","Шарф","Scarf"],["хвоя","қылқан","pine"]]],
+        why:["Терракота даёт лицу тёплый румянец, хвойный шарф делает образ глубже.","Терракота бетке жылы ұялық береді, қылқан түсті шарф бейнені тереңдетеді.","Terracotta adds a warm glow, and the pine scarf gives the look depth."]}
+    }},
+  elena:{name:["Елена, 30","Елена, 30","Elena, 30"],
+    type:["Мягкое лето","Жұмсақ жаз","Soft Summer"],
+    desc:["Приглушённые прохладные оттенки: пыльная роза, серо-голубой, шалфей. Контраст низкий, поэтому ей идут мягкие, «припылённые» цвета.","Бәсең салқын реңктер: бозғылт раушан, сұр-көк, шалфей. Контраст төмен, сондықтан оған жұмсақ, «шаңданған» түстер жарасады.","Muted cool shades: dusty rose, grey-blue, sage. Her contrast is low, so soft, dusty colours suit her."],
+    facts:[["Рост 168 см","Бойы 168 см","168 cm"],["Пепельно-русые","Күлгін ақшыл шаш","Ash-brown hair"],["Серо-голубые глаза","Сұр-көк көз","Grey-blue eyes"],["Прохладный подтон","Салқын реңк","Cool undertone"]],
+    mine:[["#C49A9E",["Пыльная роза","Бозғылт раушан","Dusty rose"]],["#8FA3B5",["Серо-голубой","Сұр-көк","Grey-blue"]],["#A79BB8",["Пыльная лаванда","Бозғылт лаванда","Dusty lavender"]],["#9AAE9E",["Холодный шалфей","Суық шалфей","Cool sage"]],["#5F6670",["Мягкий графит","Жұмсақ графит","Soft graphite"]],["#6F9497",["Морская волна","Теңіз толқыны","Muted teal"]],["#7D5A6E",["Мягкая слива","Жұмсақ алхоры","Soft plum"]],["#BFC0C2",["Жемчужный","Інжу түсті","Pearl grey"]]],
+    not:[["#E8732A",["Оранжевый","Қызғылт сары","Orange"]],["#C9A43A",["Горчица","Қыша","Mustard"]],["#151515",["Чёрный","Қара","Black"]],["#F2EA4E",["Лимонный","Лимон","Lemon"]]],
+    metal:["#C2C8CF",["Серебро","Күміс","Silver"]],
+    looks:{
+      work:{t:["Мягкий офис","Жұмсақ кеңсе","Soft office"],items:[["jacket","#5F6670",["Жакет","Жакет","Blazer"],["графит","графит","graphite"]],["top","#C49A9E",["Шёлковая блуза","Жібек блузка","Silk blouse"],["пыльная роза","бозғылт раушан","dusty rose"]],["trousers","#6F8296",["Брюки со стрелками","Қырлы шалбар","Pressed trousers"],["серо-голубые","сұр-көк","grey-blue"]],["shoes","#A39A90",["Лоферы","Лоферлер","Loafers"],["тауп","тауп","taupe"]],["earrings","#E6E2DA",["Серьги","Сырға","Earrings"],["жемчуг","інжу","pearl"]]],
+        why:["Графит вместо чёрного не спорит с мягкой внешностью, пыльная роза освежает лицо.","Қараның орнына графит жұмсақ келбетпен таласпайды, бозғылт раушан бетті сергітеді.","Graphite instead of black doesn't overpower her soft colouring; dusty rose freshens her face."]},
+      party:{t:["Вечер в мальве","Мальва кеші","Evening in mauve"],items:[["dress","#9E5468",["Платье с запахом","Орама көйлек","Wrap dress"],["мальва","мальва","mauve"]],["shoes","#A8969A",["Лодочки","Туфли","Pumps"],["серо-розовые","сұр-қызғылт","rose grey"]],["bag","#CFCDCB",["Клатч","Клатч","Clutch"],["серый жемчуг","сұр інжу","pearl grey"]],["earrings","#C2C8CF",["Серьги-капли","Тамшы сырға","Drop earrings"],["серебро","күміс","silver"]]],
+        why:["Приглушённая ягодная мальва выглядит нарядно, даёт лицу румянец и подчёркивает серо-голубые глаза.","Бәсең жидек-мальва сәнді көрінеді, бетке ұялық береді және сұр-көк көзді ерекшелейді.","Muted berry mauve looks dressy, adds a flush to her face and brings out her grey-blue eyes."]},
+      weekend:{t:["Выходной","Демалыс","Weekend"],items:[["knit","#A79BB8",["Джемпер","Жемпір","Knit"],["серая лаванда","сұр лаванда","lavender grey"]],["jacket","#C9C2B8",["Тренч","Тренч","Trench"],["серый камень","сұр тас","stone grey"]],["jeans","#C9DCE6",["Прямые джинсы","Тік джинсы","Straight jeans"],["светлый деним","ашық деним","light denim"]],["shoes","#EDEDEA",["Кеды","Кеды","Sneakers"],["белые с серым","ақ-сұр","white & grey"]],["bag","#7D8EA6",["Сумка через плечо","Иық сөмкесі","Crossbody bag"],["серо-голубая","сұр-көк","grey-blue"]]],
+        why:["Лаванда с серым оттенком и светлый деним — спокойная прохладная гамма, в которой лицо выглядит отдохнувшим.","Сұр реңкті лаванда мен ашық деним — бет демалған болып көрінетін байсалды салқын гамма.","Grey lavender and light denim make a calm, cool palette that keeps her face looking rested."]}
+    }}
+};
+
 
 const TIPS = [
   ['Шоколадная водолазка под жакет кэмел мягче, чем чёрная.','Кэмел жакетінің астындағы шоколад водолазка қарадан жұмсақ.','A chocolate turtleneck under a camel blazer is softer than black.'],
@@ -698,7 +747,7 @@ const CHAT = [
     'Frames in tortoiseshell or honey brown, in a soft shape: a gentle cat-eye or round.']}
 ];
 const CHAT_FALLBACK = [
-  'Хороший вопрос. В рабочей версии я отвечу подробно с учётом вашего цветотипа «Мягкая осень», фигуры и гардероба. В прототипе спросите о свадьбе, офисе, свидании, чёрном цвете, джинсах, волосах или очках.',
+  'Хороший вопрос. В рабочей версии я отвечу подробно с учётом вашего цветотипа «Тёмная осень», фигуры и гардероба. В прототипе спросите о свадьбе, офисе, свидании, чёрном цвете, джинсах, волосах или очках.',
   'Жақсы сұрақ. Жұмыс нұсқасында «Жұмсақ күз» түс типіңізді, бітіміңізді және гардеробыңызды ескеріп, толық жауап беремін. Прототипте той, кеңсе, кездесу, қара түс, джинсы, шаш немесе көзілдірік туралы сұраңыз.',
   'Good question. In the live app I answer in detail using your Soft Autumn type, figure and wardrobe. In the prototype, ask about weddings, the office, a date, black, jeans, hair or glasses.'
 ];
@@ -873,7 +922,7 @@ const mkItem = (type, key, hex, photo) => { hex = hex || C[key].hex; const n = k
 const state = {
   screen:'welcome', prev:[], onboarded:false, step:0, photos:{face:null, body:null},
   quiz:{age:'26–35', height:165, life:['office','events'], budget:'$$', like:['classic','minimal'], dislike:''},
-  drape:'terracotta', cut:'lob', hairc:'chestnut', lip:'rose', occ:'work', tip:0,
+  drape:'terracotta', cut:'lob', hairc:'chestnut', lip:'rose', occ:'work', tip:0, client:'aigerim', ba:'after',
   wardrobe: DEMO_W.map(([tp,k]) => mkItem(tp,k)), wf:'all', addOpen:false, addType:'top',
   checkType:'top', check:null, checking:false, checks:[], showShop:false, shopDone:{},
   chat:[], typing:false
@@ -963,7 +1012,7 @@ SCREENS.home = () => {
   return `<section class="pad">
   <div class="greet"><div><p class="small muted" style="font-weight:600">${d}</p><h2 class="h">${t('hello')}, ${t('user_name')}</h2></div></div>
   <div class="hero">
-    <div class="hero-av av">${avatar({drape:C[state.drape].hex,bg:'transparent',dull:C[state.drape].g==='not'})}</div>
+    <div class="hero-av"><img src="img/aigerim-face.jpg" alt=""></div>
     <span class="k">${t('your_type')}</span>
     <div class="t">${t('soft_autumn')}</div>
     <p>${t('sa_desc')}</p>
@@ -984,10 +1033,10 @@ SCREENS.home = () => {
     ${tile('makeup','lipstick','#B5605A','s_makeup')}${tile('looks','hanger','#3F7F7A','s_looks')}
   </div>
   <div class="tipcard">${ic('sparkle',24)}<div><p style="font-size:12px;font-weight:800;color:#8A5A12">${t('tip_day')}</p><p>${tr(TIPS[state.tip])}</p><button data-act="tip">${t('another_tip')}</button></div></div>
-  <h3 class="sec">${t('today_look')} <span class="count">${tr(lk.t)}</span></h3>
+  <h3 class="sec">${t('your_transform')} <span class="count">${tr(TRYCL.aigerim.looks.work.t)}</span></h3>
   <button class="card" data-act="openlook" data-arg="work" style="display:block;width:100%;text-align:left;padding:12px">
-    <div class="flatlay" style="grid-template-columns:repeat(6,1fr);padding:8px;gap:6px">${lk.items.map(([tp,k])=>`<div>${garment(tp,C[k].hex)}</div>`).join('')}</div>
-    <div class="row" style="justify-content:space-between;margin-top:10px"><b>${tr(lk.t)}</b><span class="link" style="font-size:13.5px">${t('open_look')}</span></div>
+    <div class="tryon-frame"><img src="img/aigerim-work.jpg" alt=""></div>
+    <div class="row" style="justify-content:space-between;margin-top:10px"><b>${tr(TRYCL.aigerim.looks.work.t)}</b><span class="link" style="font-size:13.5px">${t('open_look')}</span></div>
   </button>
 </section>`;
 };
@@ -1080,6 +1129,27 @@ SCREENS.makeup = () => {
 };
 
 SCREENS.looks = () => {
+  const c=state.client, cl=TRYCL[c], key=state.occ==='day'?'weekend':state.occ, tl=cl.looks[key];
+  const occs = c==='aigerim'?OCC:['work','day','party'];
+  const who = `<p class="small muted" style="font-weight:700;margin:0 2px 6px">${t('demo_who')}</p><div class="who">${['aigerim','elena'].map(k=>`<button class="${c===k?'on':''}" data-act="who" data-arg="${k}"><img src="img/${k}-face.jpg" alt="">${tr(TRYCL[k].name).split(',')[0]}</button>`).join('')}</div>`;
+  if(!tl) return looksFlat().replace('<div class="occ">', who+'<div class="occ">').replace('<div class="card" style="margin-top:12px">','<p class="small muted" style="margin:10px 2px 0">'+t('flat_note')+'</p><div class="card" style="margin-top:12px">');
+  const src = `img/${c}-${state.ba==='before'?'orig':key}.jpg`;
+  return `<section class="pad">
+  <h2 class="h" style="margin:2px 2px 12px">${t('s_looks')}</h2>
+  ${who}
+  <div class="occ">${occs.map(o=>`<button class="chip ${state.occ===o?'on':''}" data-act="occ" data-arg="${o}">${t('occ_'+o)}</button>`).join('')}</div>
+  <div class="card" style="margin-top:12px;padding:12px">
+    <div class="tryon-frame"><img src="${src}" alt="${tr(cl.name)}, ${tr(tl.t)}"><div class="ba"><button data-act="ba" data-arg="before" class="${state.ba==='before'?'on':''}">${t('before')}</button><button data-act="ba" data-arg="after" class="${state.ba==='after'?'on':''}">${t('after')}</button></div></div>
+    <p class="small muted" style="margin:8px 2px 0">${t('tryon_ai')}</p>
+    <div class="look-head" style="margin-top:10px"><div><h3 class="h">${tr(tl.t)}</h3><p class="small muted" style="font-weight:700">${tr(cl.type)}</p></div></div>
+    <ul class="tlist">${tl.items.map(([tp,h,n,cn])=>`<li><i style="background:${h}"></i><span>${tr(n)}, ${tr(cn)}</span></li>`).join('')}</ul>
+    <div class="whybox"><b>${t('why_works')}</b>${tr(tl.why)}</div>
+    <div class="row" style="margin-top:14px"><button class="btn primary sm" style="flex:1" data-act="savelook">${ic('heart',18)} ${t('save_look')}</button></div>
+  </div>
+</section>`;
+};
+
+const looksFlat = () => {
   const lk=LOOKS[state.occ];
   const toBuy=lk.items.filter(([tp,k])=>!owns(tp,k));
   return `<section class="pad">
@@ -1267,7 +1337,7 @@ const ACT = {
   buy:()=>toast(t('pay_toast')),
   obnext:()=>{ if(state.step<2){ state.step++; render(); } else runAnalysis(); },
   obskip:()=>{ state.step++; if(state.step>2) runAnalysis(); else render(); },
-  demo:()=>{ state.photos={face:DEMO_FACE, body:DEMO_BODY};
+  demo:()=>{ state.photos={face:'img/aigerim-face.jpg', body:'img/aigerim-orig.jpg'};
     state.quiz={age:'26–35', height:165, life:['office','events','travel'], budget:'$$', like:['classic','minimal'], dislike:['Мини-юбки, крупный яркий принт','Мини юбка, ірі ашық принт','Mini skirts, big loud prints'][L]};
     state.step=2; render(); toast(t('demo_loaded')); },
   obback:()=>{ state.step=Math.max(0,state.step-1); render(); },
@@ -1279,8 +1349,10 @@ const ACT = {
   cut:a=>{ state.cut=a; render(); },
   hairc:a=>{ state.hairc=a; render(); },
   lip:a=>{ state.lip=a; render(); },
-  occ:a=>{ state.occ=a; state.showShop=false; render(); },
-  openlook:a=>{ state.occ=a; state.prev=[]; go('looks'); },
+  occ:a=>{ state.occ=a; state.showShop=false; state.ba='after'; render(); },
+  who:a=>{ state.client=a; state.ba='after'; if(a==='elena'&&!['work','day','party'].includes(state.occ)) state.occ='work'; render(); },
+  ba:a=>{ state.ba=a; render(); },
+  openlook:a=>{ state.occ=a; state.client='aigerim'; state.ba='after'; state.prev=[]; go('looks'); },
   tip:()=>{ state.tip=(state.tip+1)%TIPS.length; render(); },
   shop:()=>{ state.showShop=!state.showShop; render(); },
   shopitem:a=>{ state.shopDone[a]=!state.shopDone[a]; render(); },
