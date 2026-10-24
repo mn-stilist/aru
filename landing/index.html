@@ -181,6 +181,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
 footer .logo{color:#fff;font-size:30px}
 .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:13px 18px;border-radius:14px;font-weight:700;font-size:14.5px;opacity:0;pointer-events:none;transition:.25s;z-index:50;max-width:90%;text-align:center}
 .toast.show{opacity:1;transform:translate(-50%,0)}
+.sr-link{display:inline-block;margin-top:18px;background:var(--berry);color:#fff;font-weight:800;text-decoration:none;padding:13px 22px;border-radius:16px}
 </style>
 </head>
 <body>
@@ -227,6 +228,7 @@ footer .logo{color:#fff;font-size:30px}
     </div>
     <div class="looks"><div class="look-tabs" id="lookTabs"></div><div id="look"></div></div>
     <p class="ai-note"><span data-ic="info" data-s="16"></span><span data-t="ai_note"></span></p>
+    <a class="sr-link" href="../showroom/"><span data-t="sr_link"></span> →</a>
   </div></section>
 
   <section><div class="wrap">
@@ -277,6 +279,7 @@ const S = {
   s1:["Сфотографируйтесь","Суретке түсіңіз","Take two photos"], s1d:["Лицо при дневном свете и фото в полный рост. Без макияжа и фильтров.","Күндізгі жарықтағы бет суреті және толық бойлы сурет. Макияжсыз, сүзгісіз.","Your face in daylight and a full-length photo. No makeup, no filters."],
   s2:["Ответьте на 6 вопросов","6 сұраққа жауап беріңіз","Answer 6 questions"], s2d:["Возраст, рост, образ жизни, бюджет и что вам нравится.","Жасыңыз, бойыңыз, өмір салтыңыз, бюджет және не ұнайтыны.","Age, height, lifestyle, budget and what you love."],
   s3:["Получите свою панель","Панеліңізді алыңыз","Get your panel"], s3d:["Цвета, причёска, одежда, аксессуары, макияж и готовые образы.","Түстер, шаш үлгісі, киім, аксессуарлар, макияж және дайын бейнелер.","Colours, hair, clothes, accessories, makeup and ready looks."],
+  sr_link:["Шоу-рум: женщины от 28 до 67 лет в своих цветах","Шоу-рум: 28-ден 67 жасқа дейінгі әйелдер өз түстерінде","Showroom: women aged 28 to 67 in their own colours"],
   demo_h:["Посмотрите, как это работает","Қалай жұмыс істейтінін көріңіз","See how it works"],
   demo_sub:["Выберите демо-клиентку, посмотрите на её внешность и сравните образы, которые собрал для неё Aru.","Демо-клиентті таңдап, келбетін көріп, Aru құрастырған бейнелерді салыстырыңыз.","Pick a demo client, look at her features and compare the looks Aru put together for her."],
   front:["Анфас","Алдынан","Front"], tq:["Три четверти","Үштен төрт","Three-quarter"], full:["Полный рост","Толық бойы","Full length"],
