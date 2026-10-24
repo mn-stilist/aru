@@ -1008,7 +1008,7 @@ SCREENS.welcome = () => `<section class="welcome">
     <div class="drape-strip" aria-hidden="true">${['camel','terracotta','sage','teal','mustard','marsala','peach'].map(k=>`<i style="background:${C[k].hex}"></i>`).join('')}</div>
   </div>
   ${keyCard()}
-  <a href="../showroom/" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;padding:13px 16px;border-radius:16px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;font-weight:800;text-decoration:none">${ic('sparkle',18)} ${t('sr_see')}</a>
+  <a href="../showroom/" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;padding:13px 16px;border-radius:16px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;font-weight:800;text-decoration:none">${ic('sparkle',18)} ${t('sr_see')}</a>
   <p class="buy">${t('no_key')} <button class="link" data-act="buy">${t('buy')}</button></p>
   <p class="fine">${ic('lock',14)} ${t('privacy_short')}. ${t('once')}.</p>
 </section>`;
@@ -1190,7 +1190,7 @@ SCREENS.looks = () => {
     <div class="whybox"><b>${t('why_works')}</b>${tr(tl.why)}</div>
     <div class="row" style="margin-top:14px"><button class="btn primary sm" style="flex:1" data-act="savelook">${ic('heart',18)} ${t('save_look')}</button></div>
   </div>
-  <a href="../showroom/" target="_blank" rel="noopener" class="card" style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding:14px 16px;text-decoration:none;color:var(--berry);font-weight:800">${ic('sparkle',20)}<span style="flex:1">${t('sr_link')}</span>→</a>
+  <a href="../showroom/" class="card" style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding:14px 16px;text-decoration:none;color:var(--berry);font-weight:800">${ic('sparkle',20)}<span style="flex:1">${t('sr_link')}</span>→</a>
 </section>`;
 };
 

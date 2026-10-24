@@ -19,6 +19,8 @@ header.top{position:sticky;top:0;z-index:5;background:rgba(251,244,247,.92);back
 header .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:10px}
 .logo{font-family:var(--serif);font-style:italic;font-weight:700;font-size:30px;color:var(--berry);text-decoration:none}
 .logo small{font-family:var(--sans);font-style:normal;font-size:11px;font-weight:800;color:#fff;background:var(--rose);border-radius:20px;padding:2px 8px;margin-left:6px;vertical-align:6px}
+.back{font-weight:800;font-size:14px;color:#fff;background:var(--berry);text-decoration:none;padding:9px 14px;border-radius:22px;white-space:nowrap}
+@media (max-width:520px){header .logo small{display:none}.back{padding:8px 11px;font-size:13px}}
 .langs{display:flex;background:#fff;border-radius:30px;padding:3px;box-shadow:0 6px 14px -10px rgba(0,0,0,.4)}
 .langs button{font-size:12.5px;font-weight:800;padding:6px 10px;border-radius:20px;color:var(--muted)}
 .langs button.on{background:var(--berry);color:#fff}
@@ -72,7 +74,7 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;padding:0 16px 30px
 </style>
 </head>
 <body>
-<header class="top"><div class="wrap"><a class="logo" href="../landing/">Aru<small>Showroom</small></a><div class="langs" id="langs"></div></div></header>
+<header class="top"><div class="wrap"><a class="back" href="../app/" id="back">← <span id="backT"></span></a><a class="logo" href="../landing/">Aru<small>Showroom</small></a><div class="langs" id="langs"></div></div></header>
 <main class="wrap">
   <section class="hero"><h1 id="h1"></h1><p id="lead"></p></section>
   <div class="who" id="who"></div>
@@ -93,6 +95,7 @@ const S = {
   ctaH:['Хотите так же — в своих цветах?','Өз түстеріңізде осылай болғыңыз келе ме?','Want this — in your own colours?'],
   ctaP:['Aru разберёт ваш цветотип по фото и покажет вас в ваших образах: «как было» и «как стало».','Aru фото бойынша түс типіңізді анықтап, сізді өз бейнелеріңізде көрсетеді.','Aru finds your colour type from a photo and shows you in your own looks: before and after.'],
   ctaBuy:['Подобрать мои цвета — $29 в месяц','Менің түстерімді таңдау — айына $29','Find my colours — $29 a month'], ctaMore:['Подробнее об Aru','Aru туралы толығырақ','More about Aru'],
+  backT:['В приложение','Қосымшаға','To the app'],
   foot:['Изображения созданы ИИ. Героини вымышлены.','Суреттерді ЖИ жасаған. Кейіпкерлер ойдан шығарылған.','Images are AI-generated. The women are fictional.']
 };
 const t = k => S[k][L], tr = a => a[L];
@@ -105,7 +108,7 @@ function render(){
   document.documentElement.lang=['ru','kk','en'][L];
   document.getElementById('langs').innerHTML=['RU','KZ','EN'].map((x,i)=>`<button class="${i===L?'on':''}" data-lang="${i}">${x}</button>`).join('');
   document.getElementById('h1').innerHTML=t('h1'); document.getElementById('lead').textContent=t('lead');
-  ['ctaH','ctaP','ctaBuy','ctaMore','foot'].forEach(k=>document.getElementById(k).textContent=t(k));
+  ['ctaH','ctaP','ctaBuy','ctaMore','foot','backT'].forEach(k=>document.getElementById(k).textContent=t(k));
   document.getElementById('who').innerHTML=SR.map(h=>`<button class="${h.id===cur?'on':''}" data-who="${h.id}"><img src="${h.face}" alt=""><b>${esc(tr(h.name))}</b><span>${h.age} ${t('age')}</span></button>`).join('');
   const h=SR.find(x=>x.id===cur), lk=h.looks.find(x=>x.id===look)||h.looks[0];
   const src = ba==='before' ? h.orig : lk.img;
