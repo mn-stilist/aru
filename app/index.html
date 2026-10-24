@@ -399,8 +399,37 @@ const S = {
   enter:["Войти","Кіру","Sign in"],
   demo_key:["Для демонстрации ключ уже вставлен","Көрсету үшін кілт енгізілген","A demo key is already filled in"],
   no_key:["Нет ключа?","Кілтіңіз жоқ па?","No key yet?"],
-  buy:["Купить доступ за $49","Қолжетімділікті $49-ға алу","Get access for $49"],
-  once:["Разовая оплата, без подписки","Бір реттік төлем, жазылымсыз","One-time payment, no subscription"],
+  buy:["Оформить подписку — $29 в месяц","Жазылу — айына $29","Subscribe — $29 a month"],
+  key_ph:["Вставьте ключ из письма","Хаттағы кілтті қойыңыз","Paste the key from your email"],
+  have_acc:["Уже есть аккаунт? Войти по почте","Аккаунтыңыз бар ма? Поштамен кіру","Already have an account? Sign in with email"],
+  use_key:["У меня есть ключ","Менде кілт бар","I have a key"],
+  demo_hint:["Посмотреть демо без ключа: ARU-DEMO-2026","Кілтсіз демо: ARU-DEMO-2026","Try the demo without a key: ARU-DEMO-2026"],
+  create_t:["Ключ принят! Создайте аккаунт","Кілт қабылданды! Аккаунт жасаңыз","Key accepted! Create your account"],
+  create_sub:["В следующий раз будете входить только по почте и паролю","Келесі жолы тек пошта мен құпиясөз арқылы кіресіз","Next time you just sign in with email and password"],
+  signin_t:["Вход в Aru","Aru-ға кіру","Sign in to Aru"],
+  email_l:["Почта","Пошта","Email"], pass_l:["Пароль (не короче 6 знаков)","Құпиясөз (кемінде 6 таңба)","Password (6+ characters)"],
+  create_btn:["Создать аккаунт","Аккаунт жасау","Create account"],
+  wait:["Секунду…","Бір сәт…","One moment…"],
+  signed_as:["Вы вошли как","Сіз кірдіңіз:","Signed in as"], cont:["Продолжить","Жалғастыру","Continue"],
+  sub_t:["Подписка","Жазылым","Subscription"], sub_status:["Статус","Күйі","Status"],
+  st_active:["Активна","Белсенді","Active"], st_expired:["Закончилась","Аяқталды","Ended"], st_refunded:["Отменена","Жойылды","Cancelled"], st_cancelled:["Отменена","Тоқтатылды","Cancelled"],
+  paid_until:["Оплачено до","Төленген мерзім","Paid until"], tryons_left:["Примерок осталось","Қалған өлшеу","Try-ons left"],
+  demo_mode:["Демо-режим: подписка не нужна","Демо режим: жазылым қажет емес","Demo mode: no subscription needed"],
+  test_use:["Тест: списать 1 примерку","Тест: 1 өлшеуді есептен шығару","Test: use 1 try-on"],
+  manage_sub:["Управлять подпиской в Gumroad","Gumroad-та жазылымды басқару","Manage subscription on Gumroad"],
+  r_key_not_found:["Ключ не найден. Проверьте, что скопировали его полностью","Кілт табылмады. Толық көшірілгенін тексеріңіз","Key not found. Check you copied it in full"],
+  r_subscription_ended:["Подписка закончилась. Продлите её, чтобы продолжить","Жазылым аяқталды. Жалғастыру үшін ұзартыңыз","Your subscription has ended. Renew to continue"],
+  r_payment_failed:["Оплата подписки не прошла. Проверьте карту в Gumroad","Жазылым төлемі өтпеді. Gumroad-тағы картаны тексеріңіз","Subscription payment failed. Check your card on Gumroad"],
+  r_refunded:["Покупка отменена — ключ не действует","Сатып алу жойылды — кілт жарамсыз","The purchase was refunded — the key is no longer valid"],
+  r_key_bound:["Этот ключ уже привязан к аккаунту — войдите по почте","Бұл кілт аккаунтқа байланған — поштамен кіріңіз","This key is already linked to an account — sign in with email"],
+  r_email_exists:["Аккаунт с этой почтой уже есть — войдите","Бұл поштамен аккаунт бар — кіріңіз","An account with this email exists — please sign in"],
+  r_bad_input:["Проверьте почту; пароль — не короче 6 знаков","Поштаны тексеріңіз; құпиясөз — кемінде 6 таңба","Check your email; the password needs 6+ characters"],
+  r_bad_login:["Неверная почта или пароль","Пошта немесе құпиясөз қате","Wrong email or password"],
+  r_net:["Нет связи с сервером. Попробуйте ещё раз","Сервермен байланыс жоқ. Қайталап көріңіз","Can't reach the server. Please try again"],
+  r_inactive:["Подписка неактивна. Продлите её в Gumroad","Жазылым белсенді емес. Gumroad-та ұзартыңыз","Your subscription is inactive. Renew it on Gumroad"],
+  r_quota:["Примерки на этот месяц закончились","Осы айдағы өлшеулер таусылды","You've used all try-ons for this month"],
+  r_rate:["Слишком часто — попробуйте через час","Тым жиі — бір сағаттан кейін көріңіз","Too many in a row — try again in an hour"],
+  once:["Подписка — отменить можно в любой момент","Жазылым — кез келген уақытта тоқтатуға болады","Subscription — cancel anytime"],
   privacy_short:["Фото удаляются сразу после анализа","Фото талдаудан кейін бірден өшіріледі","Photos are deleted right after analysis"],
   bad_key:["Такой ключ не найден. Для демо: ARU-DEMO-2026","Мұндай кілт табылмады. Демо үшін: ARU-DEMO-2026","Key not found. For the demo use ARU-DEMO-2026"],
   pay_toast:["В прототипе оплата выключена. В рабочей версии здесь откроется Gumroad","Прототипте төлем өшірулі. Жұмыс нұсқасында мұнда Gumroad ашылады","Payment is off in the prototype. The live app opens Gumroad here"],
@@ -922,7 +951,7 @@ const mkItem = (type, key, hex, photo) => { hex = hex || C[key].hex; const n = k
 const state = {
   screen:'welcome', prev:[], onboarded:false, step:0, photos:{face:null, body:null},
   quiz:{age:'26–35', height:165, life:['office','events'], budget:'$$', like:['classic','minimal'], dislike:''},
-  drape:'terracotta', cut:'lob', hairc:'chestnut', lip:'rose', occ:'work', tip:0, client:'aigerim', ba:'after',
+  drape:'terracotta', cut:'lob', hairc:'chestnut', lip:'rose', occ:'work', tip:0, client:'aigerim', ba:'after', wm:'key', busy:false, sub:null, demo:false, wKey:'', wEmail:'',
   wardrobe: DEMO_W.map(([tp,k]) => mkItem(tp,k)), wf:'all', addOpen:false, addType:'top',
   checkType:'top', check:null, checking:false, checks:[], showShop:false, shopDone:{},
   chat:[], typing:false
@@ -951,6 +980,22 @@ const tabbar = () => `<nav class="tabbar">${TABS.map(([s,i,k])=> s==='check'
 /* ---------- screens ---------- */
 const SCREENS = {};
 
+function keyCard(){
+  const busy=state.busy?' disabled':'', lbl=(k)=>state.busy?t('wait'):t(k);
+  if(AUTH&&state.wm==='key') return `<div class="key-card"><label>${t('signed_as')}</label><p style="font-weight:800;margin:6px 0 12px;word-break:break-all">${esc(AUTH.email||'')}</p>
+    <button class="btn primary" data-act="cont"${busy}>${lbl('cont')}</button><p class="key-note"><button class="link" data-act="logout" style="color:#F3D3DF">${t('logout')}</button></p></div>`;
+  if(state.wm==='create'||state.wm==='signin'){ const cr=state.wm==='create';
+    return `<div class="key-card"><label>${cr?t('create_t'):t('signin_t')}</label>${cr?`<p class="key-note" style="text-align:left;margin:4px 0 0">${t('create_sub')}</p>`:''}
+    <div class="key-in">${ic('user',20)}<input id="emIn" type="email" value="${esc(state.wEmail||'')}" placeholder="${t('email_l')}" autocomplete="email" spellcheck="false" style="letter-spacing:0;font-weight:700"></div>
+    <div class="key-in" style="margin-top:-4px">${ic('lock',20)}<input id="pwIn" type="password" placeholder="${t('pass_l')}" autocomplete="${cr?'new-password':'current-password'}" style="letter-spacing:0;font-weight:700"></div>
+    <button class="btn primary" data-act="${cr?'create':'signin'}"${busy}>${lbl(cr?'create_btn':'enter')}</button>
+    <p class="key-note"><button class="link" data-act="wmode" data-arg="key" style="color:#F3D3DF">${t('use_key')}</button></p></div>`; }
+  return `<div class="key-card"><label for="keyIn">${t('key_label')}</label>
+    <div class="key-in">${ic('key',20)}<input id="keyIn" value="" placeholder="${t('key_ph')}" autocomplete="off" spellcheck="false" style="font-size:14px;letter-spacing:.5px"></div>
+    <button class="btn primary" data-act="login"${busy}>${lbl('enter')}</button>
+    <p class="key-note"><button class="link" data-act="wmode" data-arg="signin" style="color:#F3D3DF">${t('have_acc')}</button></p>
+    <p class="key-note" style="opacity:.8">${t('demo_hint')}</p></div>`;
+}
 SCREENS.welcome = () => `<section class="welcome">
   ${langPills()}
   <div class="wm-wrap">
@@ -959,12 +1004,7 @@ SCREENS.welcome = () => `<section class="welcome">
     <p>${t('tagline')}</p>
     <div class="drape-strip" aria-hidden="true">${['camel','terracotta','sage','teal','mustard','marsala','peach'].map(k=>`<i style="background:${C[k].hex}"></i>`).join('')}</div>
   </div>
-  <div class="key-card">
-    <label for="keyIn">${t('key_label')}</label>
-    <div class="key-in">${ic('key',20)}<input id="keyIn" value="ARU-DEMO-2026" autocomplete="off" spellcheck="false"></div>
-    <button class="btn primary" data-act="login">${t('enter')}</button>
-    <p class="key-note">${t('demo_key')}</p>
-  </div>
+  ${keyCard()}
   <p class="buy">${t('no_key')} <button class="link" data-act="buy">${t('buy')}</button></p>
   <p class="fine">${ic('lock',14)} ${t('privacy_short')}. ${t('once')}.</p>
 </section>`;
@@ -1276,7 +1316,13 @@ SCREENS.profile = () => {
   <div class="card"><div class="row" style="justify-content:space-between"><h3 class="h" style="font-size:20px">${t('language')}</h3>${langPills()}</div></div>
   <div class="card"><h3 class="h" style="font-size:20px">${t('my_photos')}</h3>
     ${any?`<div class="photos">${['face','body'].map(k=>`<div>${p[k]?`<img src="${p[k]}" alt="">`:ic('user')}</div>`).join('')}</div><p class="tiny muted" style="margin-top:8px">${t('photos_session')}</p>`:`<p class="small muted" style="margin-top:6px">${ic('lock',16)} ${t('no_photos')}</p>`}</div>
-  <div class="card"><ul class="kv"><li><span>${t('access')}</span><b>${t('lifetime')}</b></li><li><span>${t('key_v')}</span><b>ARU-DEMO-2026</b></li></ul></div>
+  ${state.sub&&!state.demo?`<div class="card"><h3 class="h" style="font-size:20px;margin-bottom:4px">${t('sub_t')}</h3><ul class="kv">
+    <li><span>${t('email_l')}</span><b style="word-break:break-all">${esc(state.sub.email||'')}</b></li>
+    <li><span>${t('sub_status')}</span><b>${t('st_'+(state.sub.status||'expired'))||state.sub.status}</b></li>
+    <li><span>${t('paid_until')}</span><b>${state.sub.paid_until?fmtDate(new Date(state.sub.paid_until)):'—'}</b></li>
+    <li><span>${t('tryons_left')}</span><b>${state.sub.tryons_left} / ${state.sub.tryons_limit}</b></li></ul>
+    <div class="row" style="gap:10px;margin-top:12px;flex-wrap:wrap"><button class="btn ghost sm" style="flex:1" data-act="testuse">${t('test_use')}</button><button class="btn ghost sm" style="flex:1" data-act="buy">${t('manage_sub')}</button></div></div>`
+  :`<div class="card"><p class="small muted">${ic('sparkle',16)} ${t('demo_mode')}</p></div>`}
   <div class="menu">
     <button data-act="passport">${ic('download')} ${t('passport')}</button>
     <button data-act="redo">${ic('refresh')} ${t('redo')}</button>
@@ -1330,11 +1376,52 @@ function runAnalysis(){
   setTimeout(()=>{ state.onboarded=true; state.prev=[]; save(); state.screen='home'; render(); toast(t('done_toast')); }, lis.length*850+500);
 }
 
+/* ---------- server: Supabase + Gumroad ---------- */
+const SB_URL='https://cgefoqmwqwcxtozcurqo.supabase.co', SB_KEY='sb_publishable_7iWgF0qLKanDVI4-NFvhXg_6MqMc2Gt';
+const API=SB_URL+'/functions/v1/aru-api', BUY_URL='https://kvantor.gumroad.com/l/aru';
+let AUTH=null; try{ AUTH=JSON.parse(localStorage.getItem('aru_auth_v1')||'null'); }catch(e){}
+function saveAuth(){ try{ AUTH?localStorage.setItem('aru_auth_v1',JSON.stringify(AUTH)):localStorage.removeItem('aru_auth_v1'); }catch(e){} }
+async function sbToken(grant, payload){
+  const r=await fetch(SB_URL+'/auth/v1/token?grant_type='+grant,{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok||!d.access_token) return false;
+  AUTH={access:d.access_token, refresh:d.refresh_token, exp:Date.now()+(d.expires_in||3600)*1000, email:(d.user&&d.user.email)||payload.email||(AUTH&&AUTH.email)};
+  saveAuth(); return true;
+}
+async function token(){ if(!AUTH) return null; if(Date.now()>AUTH.exp-60000){ const ok=await sbToken('refresh_token',{refresh_token:AUTH.refresh}); if(!ok){ AUTH=null; saveAuth(); return null; } } return AUTH.access; }
+async function api(action, body={}, withAuth=false){
+  const h={'Content-Type':'application/json',apikey:SB_KEY};
+  if(withAuth){ const tk=await token(); if(!tk) return {ok:false,reason:'not_signed_in'}; h.Authorization='Bearer '+tk; }
+  try{ const r=await fetch(API,{method:'POST',headers:h,body:JSON.stringify({action,...body})}); return await r.json(); }catch(e){ return {ok:false,reason:'net'}; }
+}
+const why = (r)=>{ const k='r_'+({gumroad_unreachable:'net',server_error:'net',create_failed:'net',no_subscription:'inactive',not_signed_in:'bad_login'}[r]||r); return S[k]?t(k):t('r_net'); };
+function enterApp(){ state.prev=[]; state.screen = state.onboarded?'home':'onboard'; state.step=0; render(); }
+async function refreshSub(){ const d=await api('status',{},true); if(d&&d.ok){ state.sub=d; } return d; }
+
 const ACT = {
   lang:a=>{ L=+a; save(); render(); },
-  login:()=>{ const v=(document.getElementById('keyIn').value||'').trim().toUpperCase();
-    if(/^ARU-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(v)){ state.prev=[]; state.screen = state.onboarded?'home':'onboard'; state.step=0; render(); } else toast(t('bad_key')); },
-  buy:()=>toast(t('pay_toast')),
+  login:async()=>{ if(state.busy) return; const v=(document.getElementById('keyIn').value||'').trim();
+    if(/^ARU-[A-Z0-9]{4}-[A-Z0-9]{4}$/i.test(v)){ state.demo=true; state.sub=null; enterApp(); return; }
+    if(!v){ toast(t('key_ph')); return; }
+    state.busy=true; render(); const d=await api('check',{license_key:v}); state.busy=false;
+    if(!d.ok){ render(); toast(why(d.reason)); return; }
+    state.wKey=v; state.wEmail=d.email||''; state.wm = d.bound?'signin':'create'; render(); if(d.bound) toast(t('r_key_bound')); },
+  wmode:a=>{ state.wm=a; render(); },
+  create:async()=>{ if(state.busy) return; const email=(document.getElementById('emIn').value||'').trim(), password=document.getElementById('pwIn').value||'';
+    state.wEmail=email; state.busy=true; render();
+    const d=await api('activate',{license_key:state.wKey,email,password});
+    if(!d.ok){ state.busy=false; render(); toast(why(d.reason)); if(d.reason==='email_exists'||d.reason==='key_bound'){ state.wm='signin'; render(); } return; }
+    await ACT.signin(email,password,true); },
+  signin:async(em,pw,already)=>{ if(state.busy&&!already) return; const email=typeof em==='string'?em:(document.getElementById('emIn').value||'').trim(), password=typeof pw==='string'?pw:(document.getElementById('pwIn').value||'');
+    state.wEmail=email; state.busy=true; render();
+    const ok=await sbToken('password',{email,password});
+    if(!ok){ state.busy=false; render(); toast(t('r_bad_login')); return; }
+    const d=await refreshSub(); state.busy=false;
+    if(!d.ok||d.status!=='active'){ render(); toast(why(d.ok?'inactive':d.reason)); return; }
+    state.demo=false; enterApp(); },
+  cont:async()=>{ state.busy=true; render(); const d=await refreshSub(); state.busy=false; if(!d.ok){ if(d.reason==='not_signed_in'){ AUTH=null; saveAuth(); state.wm='signin'; } render(); toast(why(d.reason)); return; } if(d.status!=='active'){ render(); toast(why('inactive')); return; } state.demo=false; enterApp(); },
+  testuse:async()=>{ const d=await api('use',{kind:'tryon'},true); if(d.ok){ state.sub=d; render(); toast(t('tryons_left')+': '+d.tryons_left+' / '+d.tryons_limit); } else { if(d.tryons_left!==undefined){ state.sub=d; render(); } toast(why(d.reason)); } },
+  buy:()=>{ window.open(BUY_URL,'_blank','noopener'); },
   obnext:()=>{ if(state.step<2){ state.step++; render(); } else runAnalysis(); },
   obskip:()=>{ state.step++; if(state.step>2) runAnalysis(); else render(); },
   demo:()=>{ state.photos={face:'img/aigerim-face.jpg', body:'img/aigerim-orig.jpg'};
@@ -1370,12 +1457,13 @@ const ACT = {
   passport:()=>{ renderPassport(); window.print(); },
   redo:()=>{ state.step=0; state.prev=[]; state.screen='onboard'; render(); },
   delphotos:()=>{ state.photos={face:null,body:null}; render(); toast(t('photos_deleted')); },
-  logout:()=>{ state.prev=[]; state.screen='welcome'; render(); }
+  logout:()=>{ AUTH=null; saveAuth(); state.sub=null; state.demo=false; state.wm='key'; state.prev=[]; state.screen='welcome'; render(); }
 };
 document.addEventListener('click', e=>{ const el=e.target.closest('[data-act]'); if(!el) return; const f=ACT[el.dataset.act]; if(f){ e.preventDefault(); f(el.dataset.arg, el); } });
 document.addEventListener('keydown', e=>{
   if(e.key!=='Enter') return;
   if(e.target.id==='keyIn') ACT.login();
+  if(e.target.id==='pwIn') (state.wm==='create'?ACT.create():ACT.signin());
   if(e.target.id==='chatIn') ACT.send();
 });
 document.addEventListener('input', e=>{
