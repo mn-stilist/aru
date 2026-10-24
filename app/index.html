@@ -956,7 +956,9 @@ const state = {
   checkType:'top', check:null, checking:false, checks:[], showShop:false, shopDone:{},
   chat:[], typing:false
 };
-function save(){ try{ localStorage.setItem('aru_proto_v1', JSON.stringify({L, onboarded:state.onboarded, wardrobe:state.wardrobe.map(w=>({...w,photo:null})), checks:state.checks.map(c=>({...c,photo:null}))})); }catch(e){} }
+let ONB={}; try{ ONB=JSON.parse(localStorage.getItem('aru_onb_v1')||'{}')||{}; }catch(e){}
+const accId=()=> (typeof AUTH!=='undefined'&&AUTH&&!state.demo)?('u:'+(AUTH.email||'')):'demo';
+function save(){ try{ if(state.onboarded) ONB[accId()]=true; localStorage.setItem('aru_onb_v1',JSON.stringify(ONB)); localStorage.setItem('aru_proto_v1', JSON.stringify({L, onboarded:state.onboarded, wardrobe:state.wardrobe.map(w=>({...w,photo:null})), checks:state.checks.map(c=>({...c,photo:null}))})); }catch(e){} }
 function load(){ try{ const d=JSON.parse(localStorage.getItem('aru_proto_v1')||'null'); if(!d) return; L=d.L||0; state.onboarded=!!d.onboarded; if(Array.isArray(d.wardrobe)&&d.wardrobe.length) state.wardrobe=d.wardrobe; if(Array.isArray(d.checks)) state.checks=d.checks; SEQ=Math.max(SEQ,...state.wardrobe.map(w=>w.id+1)); }catch(e){} }
 
 const harmony = () => { const w=state.wardrobe; return w.length ? Math.round(100*w.filter(x=>x.mine).length/w.length) : 0; };
@@ -971,7 +973,7 @@ function topbar(){
   if(s==='welcome'||s==='analyzing') return '';
   if(s==='onboard') return `<header class="topbar">${state.step>0?`<button class="back" data-act="obback" aria-label="back">${ic('back')}</button>`:'<span class="logo">Aru</span>'}<span class="small muted" style="font-weight:700">${t('step_n',{n:state.step+1})}</span>${langPills()}</header>`;
   if(TITLES[s]) return `<header class="topbar"><button class="back" data-act="back" aria-label="back">${ic('back')}</button><span class="top-title">${t(TITLES[s])}</span>${langPills()}</header>`;
-  return `<header class="topbar"><span class="logo">Aru<small>${t('proto')}</small></span><div class="top-right">${langPills()}<button class="icon-btn" data-act="go" data-arg="profile" aria-label="${t('profile')}">${ic('user',20)}</button></div></header>`;
+  return `<header class="topbar"><span class="logo">Aru<small>${t('proto')}</small></span><div class="top-right">${langPills()}<button class="icon-btn" data-act="go" data-arg="profile" aria-label="${t('profile')}" ${AUTH&&!state.demo?'style="background:var(--berry);color:#fff;font-weight:800;font-size:16px"':''}>${AUTH&&!state.demo?esc((AUTH.email||'?')[0].toUpperCase()):ic('user',20)}</button></div></header>`;
 }
 const tabbar = () => `<nav class="tabbar">${TABS.map(([s,i,k])=> s==='check'
   ? `<button class="tab fab ${state.screen===s?'on':''}" data-act="go" data-arg="${s}"><span class="fab-c">${ic(i,26)}</span>${t(k)}</button>`
@@ -1050,7 +1052,7 @@ SCREENS.home = () => {
   const tile=(scr,icn,bg,k)=>`<button class="tile" data-act="go" data-arg="${scr}"><span class="ti" style="background:${bg}">${ic(icn,22)}</span><b>${t(k)}</b><span>${t(k+'_d')}</span></button>`;
   const lk=LOOKS.work;
   return `<section class="pad">
-  <div class="greet"><div><p class="small muted" style="font-weight:600">${d}</p><h2 class="h">${t('hello')}, ${t('user_name')}</h2></div></div>
+  <div class="greet"><div><p class="small muted" style="font-weight:600">${d}</p><h2 class="h">${t('hello')}, ${t('user_name')}</h2><p class="small muted" style="margin-top:2px">${AUTH&&!state.demo?`${t('signed_as')} <b>${esc(AUTH.email||'')}</b> · <button class="link" data-act="logout" style="font-size:inherit">${t('logout')}</button>`:`${t('demo_mode')} · <button class="link" data-act="logout" style="font-size:inherit">${t('logout')}</button>`}</p></div></div>
   <div class="hero">
     <div class="hero-av"><img src="img/aigerim-face.jpg" alt=""></div>
     <span class="k">${t('your_type')}</span>
@@ -1396,7 +1398,7 @@ async function api(action, body={}, withAuth=false){
   try{ const r=await fetch(API,{method:'POST',headers:h,body:JSON.stringify({action,...body})}); return await r.json(); }catch(e){ return {ok:false,reason:'net'}; }
 }
 const why = (r)=>{ const k='r_'+({gumroad_unreachable:'net',server_error:'net',create_failed:'net',no_subscription:'inactive',not_signed_in:'bad_login'}[r]||r); return S[k]?t(k):t('r_net'); };
-function enterApp(){ state.prev=[]; state.screen = state.onboarded?'home':'onboard'; state.step=0; render(); }
+function enterApp(){ state.prev=[]; state.onboarded=!!ONB[accId()]; if(!state.onboarded){ state.photos={face:null,body:null}; } state.screen = state.onboarded?'home':'onboard'; state.step=0; render(); }
 async function refreshSub(){ const d=await api('status',{},true); if(d&&d.ok){ state.sub=d; } return d; }
 
 const ACT = {
