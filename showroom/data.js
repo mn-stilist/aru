@@ -71,7 +71,7 @@ window.SHOWROOM = [
       { id: "work", t: ["Работа", "Жұмыс", "Work"], img: "../app/img/aigerim-work.jpg", video: "",
         items: [["Жакет — шоколад", "Жакет — шоколад", "Blazer — chocolate"], ["Блуза — горчица", "Блузка — қыша", "Blouse — mustard"], ["Брюки — олива", "Шалбар — зәйтүн", "Trousers — olive"], ["Лодочки — бежевая замша", "Туфли — беж күдері", "Pumps — beige suede"]],
         why: ["Шоколад вместо чёрного держит строгость, а горчица у лица подсвечивает карие глаза.", "Қараның орнына шоколад қатаңдықты сақтайды, қыша қоңыр көзді жарқыратады.", "Chocolate keeps it sharp instead of black; mustard lights up her brown eyes."] },
-      { id: "party", t: ["Праздник", "Мереке", "Celebration"], img: "../app/img/aigerim-party.jpg", video: "",
+      { id: "party", t: ["Праздник", "Мереке", "Celebration"], img: "../app/img/aigerim-party.jpg", video: "L1no5rM151I",
         items: [["Платье миди — марсала", "Миди көйлек — марсала", "Midi dress — marsala"], ["Украшения — золото", "Әшекей — алтын", "Jewellery — gold"]],
         why: ["Марсала — праздничный цвет тёмной осени: торжественно и без резкости чёрного.", "Марсала — қою күздің мерекелік түсі.", "Marsala is Deep Autumn's festive colour."] },
       { id: "weekend", t: ["Выходной", "Демалыс", "Weekend"], img: "../app/img/aigerim-weekend.jpg", video: "",
