@@ -11,9 +11,12 @@ Product ID:     RH0ftOQ4Z1Rnqq17qkMTMw==
 Ключи доступа:  License key — уникальный на каждую покупку, 1 ключ = 1 клиентка
 Отключение:     «Members will lose access when their memberships end» — включено
 
-Коды скидки:    (заполним на следующем шаге)
-  SEMYA — цена $1, 3 применения, для родственников
-  бесплатный код — для собственных тестов
+Коды скидки (раздел Checkout → Discounts, gumroad.com/checkout/discounts):
+  SEMYA   — «Семья»: скидка $28 → цена $1 в месяц, 3 применения, Forever
+            ссылка с кодом: https://kvantor.gumroad.com/l/aru/SEMYA
+  TESTARU — «Тест»: скидка 100% → бесплатно, 20 применений, Forever
+            ссылка с кодом: https://kvantor.gumroad.com/l/aru/TESTARU
+            только для собственных тест-покупок, никому не давать
 
 Тест-покупки:   с почт из Тендер Радара; НЕ с почты, на которую зарегистрирован Gumroad.
 
