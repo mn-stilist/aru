@@ -971,7 +971,7 @@ const TITLES = {colors:'s_colors', hair:'s_hair', clothes:'s_clothes', acc:'s_ac
 function topbar(){
   const s=state.screen;
   if(s==='welcome'||s==='analyzing') return '';
-  if(s==='onboard') return `<header class="topbar">${state.step>0?`<button class="back" data-act="obback" aria-label="back">${ic('back')}</button>`:'<span class="logo">Aru</span>'}<span class="small muted" style="font-weight:700">${t('step_n',{n:state.step+1})}</span>${langPills()}</header>`;
+  if(s==='onboard') return `<header class="topbar"><button class="back" data-act="${state.step>0?'obback':'cover'}" aria-label="back">${ic('back')}</button><span class="small muted" style="font-weight:700">${t('step_n',{n:state.step+1})}</span>${langPills()}</header>`;
   if(TITLES[s]) return `<header class="topbar"><button class="back" data-act="back" aria-label="back">${ic('back')}</button><span class="top-title">${t(TITLES[s])}</span>${langPills()}</header>`;
   return `<header class="topbar"><button class="logo" data-act="cover" aria-label="Aru" style="cursor:pointer">Aru<small>${t('proto')}</small></button><div class="top-right">${langPills()}<button class="icon-btn" data-act="go" data-arg="profile" aria-label="${t('profile')}" ${AUTH&&!state.demo?'style="background:var(--berry);color:#fff;font-weight:800;font-size:16px"':''}>${AUTH&&!state.demo?esc((AUTH.email||'?')[0].toUpperCase()):ic('user',20)}</button></div></header>`;
 }
