@@ -471,7 +471,7 @@ const S = {
   your_type:["Ваш цветотип","Түс типіңіз","Your colour type"],
   soft_autumn:["Тёмная осень","Қою күз","Deep Autumn"],
   sa_desc:["Глубокие тёплые оттенки: шоколад, хвоя, медь, марсала","Терең жылы реңктер: шоколад, қылқан, мыс, марсала","Deep warm shades: chocolate, pine, copper, marsala"],
-  before:["Как было","Бұрын","Before"], after:["Как стало","Кейін","After"], sr_link:["Шоу-рум: женщины от 28 до 67 лет","Шоу-рум: 28-ден 67 жасқа дейінгі әйелдер","Showroom: women aged 28 to 67"], demo_who:["Демо-клиентка","Демо-клиент","Demo client"], why_works:["Почему это работает","Неге жарасады","Why it works"], your_transform:["Ваше превращение","Сіздің өзгерісіңіз","Your transformation"], tryon_ai:["Примерка на фото сделана ИИ: лицо и фигура сохранены","Суреттегі өлшеуді ЖИ жасады: бет пен бітім сақталды","AI try-on on your photo: face and figure kept"], flat_note:["Для этого образа примерка на фото появится в рабочей версии","Бұл бейне үшін суреттегі өлшеу жұмыс нұсқасында болады","Photo try-on for this look comes in the full version"],
+  before:["Как было","Бұрын","Before"], after:["Как стало","Кейін","After"], sr_see:["Посмотреть шоу-рум: превращения женщин 28–67 лет","Шоу-румды көру: 28–67 жастағы әйелдердің өзгерісі","See the showroom: transformations of women aged 28–67"], sr_link:["Шоу-рум: женщины от 28 до 67 лет","Шоу-рум: 28-ден 67 жасқа дейінгі әйелдер","Showroom: women aged 28 to 67"], demo_who:["Демо-клиентка","Демо-клиент","Demo client"], why_works:["Почему это работает","Неге жарасады","Why it works"], your_transform:["Ваше превращение","Сіздің өзгерісіңіз","Your transformation"], tryon_ai:["Примерка на фото сделана ИИ: лицо и фигура сохранены","Суреттегі өлшеуді ЖИ жасады: бет пен бітім сақталды","AI try-on on your photo: face and figure kept"], flat_note:["Для этого образа примерка на фото появится в рабочей версии","Бұл бейне үшін суреттегі өлшеу жұмыс нұсқасында болады","Photo try-on for this look comes in the full version"],
   match:["Совпадение 94%","Сәйкестік 94%","94% match"],
   indicators:["Индикаторы стиля","Стиль көрсеткіштері","Style indicators"],
   undertone:["Подтон","Реңк","Undertone"], warm:["Тёплый","Жылы","Warm"],
@@ -1007,6 +1007,7 @@ SCREENS.welcome = () => `<section class="welcome">
     <div class="drape-strip" aria-hidden="true">${['camel','terracotta','sage','teal','mustard','marsala','peach'].map(k=>`<i style="background:${C[k].hex}"></i>`).join('')}</div>
   </div>
   ${keyCard()}
+  <a href="../showroom/" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;padding:13px 16px;border-radius:16px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;font-weight:800;text-decoration:none">${ic('sparkle',18)} ${t('sr_see')}</a>
   <p class="buy">${t('no_key')} <button class="link" data-act="buy">${t('buy')}</button></p>
   <p class="fine">${ic('lock',14)} ${t('privacy_short')}. ${t('once')}.</p>
 </section>`;
