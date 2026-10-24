@@ -471,7 +471,7 @@ const S = {
   your_type:["Ваш цветотип","Түс типіңіз","Your colour type"],
   soft_autumn:["Тёмная осень","Қою күз","Deep Autumn"],
   sa_desc:["Глубокие тёплые оттенки: шоколад, хвоя, медь, марсала","Терең жылы реңктер: шоколад, қылқан, мыс, марсала","Deep warm shades: chocolate, pine, copper, marsala"],
-  before:["Как было","Бұрын","Before"], after:["Как стало","Кейін","After"], sr_see:["Посмотреть шоу-рум: превращения женщин 28–67 лет","Шоу-румды көру: 28–67 жастағы әйелдердің өзгерісі","See the showroom: transformations of women aged 28–67"], sr_link:["Шоу-рум: женщины от 28 до 67 лет","Шоу-рум: 28-ден 67 жасқа дейінгі әйелдер","Showroom: women aged 28 to 67"], demo_who:["Демо-клиентка","Демо-клиент","Demo client"], why_works:["Почему это работает","Неге жарасады","Why it works"], your_transform:["Ваше превращение","Сіздің өзгерісіңіз","Your transformation"], tryon_ai:["Примерка на фото сделана ИИ: лицо и фигура сохранены","Суреттегі өлшеуді ЖИ жасады: бет пен бітім сақталды","AI try-on on your photo: face and figure kept"], flat_note:["Для этого образа примерка на фото появится в рабочей версии","Бұл бейне үшін суреттегі өлшеу жұмыс нұсқасында болады","Photo try-on for this look comes in the full version"],
+  before:["Как было","Бұрын","Before"], after:["Как стало","Кейін","After"], to_cover:["На обложку Aru (экран входа и шоу-рум)","Aru мұқабасына (кіру және шоу-рум)","Back to the Aru cover (sign-in and showroom)"], sr_see:["Посмотреть шоу-рум: превращения женщин 28–67 лет","Шоу-румды көру: 28–67 жастағы әйелдердің өзгерісі","See the showroom: transformations of women aged 28–67"], sr_link:["Шоу-рум: женщины от 28 до 67 лет","Шоу-рум: 28-ден 67 жасқа дейінгі әйелдер","Showroom: women aged 28 to 67"], demo_who:["Демо-клиентка","Демо-клиент","Demo client"], why_works:["Почему это работает","Неге жарасады","Why it works"], your_transform:["Ваше превращение","Сіздің өзгерісіңіз","Your transformation"], tryon_ai:["Примерка на фото сделана ИИ: лицо и фигура сохранены","Суреттегі өлшеуді ЖИ жасады: бет пен бітім сақталды","AI try-on on your photo: face and figure kept"], flat_note:["Для этого образа примерка на фото появится в рабочей версии","Бұл бейне үшін суреттегі өлшеу жұмыс нұсқасында болады","Photo try-on for this look comes in the full version"],
   match:["Совпадение 94%","Сәйкестік 94%","94% match"],
   indicators:["Индикаторы стиля","Стиль көрсеткіштері","Style indicators"],
   undertone:["Подтон","Реңк","Undertone"], warm:["Тёплый","Жылы","Warm"],
@@ -973,7 +973,7 @@ function topbar(){
   if(s==='welcome'||s==='analyzing') return '';
   if(s==='onboard') return `<header class="topbar">${state.step>0?`<button class="back" data-act="obback" aria-label="back">${ic('back')}</button>`:'<span class="logo">Aru</span>'}<span class="small muted" style="font-weight:700">${t('step_n',{n:state.step+1})}</span>${langPills()}</header>`;
   if(TITLES[s]) return `<header class="topbar"><button class="back" data-act="back" aria-label="back">${ic('back')}</button><span class="top-title">${t(TITLES[s])}</span>${langPills()}</header>`;
-  return `<header class="topbar"><span class="logo">Aru<small>${t('proto')}</small></span><div class="top-right">${langPills()}<button class="icon-btn" data-act="go" data-arg="profile" aria-label="${t('profile')}" ${AUTH&&!state.demo?'style="background:var(--berry);color:#fff;font-weight:800;font-size:16px"':''}>${AUTH&&!state.demo?esc((AUTH.email||'?')[0].toUpperCase()):ic('user',20)}</button></div></header>`;
+  return `<header class="topbar"><button class="logo" data-act="cover" aria-label="Aru" style="cursor:pointer">Aru<small>${t('proto')}</small></button><div class="top-right">${langPills()}<button class="icon-btn" data-act="go" data-arg="profile" aria-label="${t('profile')}" ${AUTH&&!state.demo?'style="background:var(--berry);color:#fff;font-weight:800;font-size:16px"':''}>${AUTH&&!state.demo?esc((AUTH.email||'?')[0].toUpperCase()):ic('user',20)}</button></div></header>`;
 }
 const tabbar = () => `<nav class="tabbar">${TABS.map(([s,i,k])=> s==='check'
   ? `<button class="tab fab ${state.screen===s?'on':''}" data-act="go" data-arg="${s}"><span class="fab-c">${ic(i,26)}</span>${t(k)}</button>`
@@ -984,6 +984,7 @@ const SCREENS = {};
 
 function keyCard(){
   const busy=state.busy?' disabled':'', lbl=(k)=>state.busy?t('wait'):t(k);
+  if(!AUTH&&state.demo&&state.wm==='key') return `<div class="key-card"><label>${t('demo_mode')}</label><button class="btn primary" style="margin-top:10px" data-act="contdemo">${t('cont')}</button><p class="key-note"><button class="link" data-act="keyagain" style="color:#F3D3DF">${t('use_key')}</button></p></div>`;
   if(AUTH&&state.wm==='key') return `<div class="key-card"><label>${t('signed_as')}</label><p style="font-weight:800;margin:6px 0 12px;word-break:break-all">${esc(AUTH.email||'')}</p>
     <button class="btn primary" data-act="cont"${busy}>${lbl('cont')}</button><p class="key-note"><button class="link" data-act="logout" style="color:#F3D3DF">${t('logout')}</button></p></div>`;
   if(state.wm==='create'||state.wm==='signin'){ const cr=state.wm==='create';
@@ -1329,6 +1330,7 @@ SCREENS.profile = () => {
     ${any?`<div class="photos">${['face','body'].map(k=>`<div>${p[k]?`<img src="${p[k]}" alt="">`:ic('user')}</div>`).join('')}</div><p class="tiny muted" style="margin-top:8px">${t('photos_session')}</p>`:`<p class="small muted" style="margin-top:6px">${ic('lock',16)} ${t('no_photos')}</p>`}</div>
 
   <div class="menu">
+    <button data-act="cover">${ic('home')} ${t('to_cover')}</button>
     <button data-act="passport">${ic('download')} ${t('passport')}</button>
     <button data-act="redo">${ic('refresh')} ${t('redo')}</button>
     <button class="danger" data-act="delphotos">${ic('trash')} ${t('delete_photos')}</button>
@@ -1412,6 +1414,9 @@ const ACT = {
     if(!d.ok){ render(); toast(why(d.reason)); return; }
     state.wKey=v; state.wEmail=d.email||''; state.wm = d.bound?'signin':'create'; render(); if(d.bound) toast(t('r_key_bound')); },
   wmode:a=>{ state.wm=a; render(); },
+  cover:()=>{ state.prev=[]; state.wm='key'; state.screen='welcome'; render(); },
+  contdemo:()=>{ enterApp(); },
+  keyagain:()=>{ state.demo=false; state.wm='key'; render(); },
   create:async()=>{ if(state.busy) return; const email=(document.getElementById('emIn').value||'').trim(), password=document.getElementById('pwIn').value||'';
     state.wEmail=email; state.busy=true; render();
     const d=await api('activate',{license_key:state.wKey,email,password});
