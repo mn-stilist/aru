@@ -165,6 +165,12 @@ h3.h{font-family:var(--serif);font-size:24px;line-height:1.1;font-weight:700;col
 .hero{position:relative;border-radius:var(--r-xl);padding:20px;color:var(--white);background:linear-gradient(150deg,#7E3654 0%,#4A1D30 100%);overflow:hidden;box-shadow:var(--lift)}
 .hero .hero-av{position:absolute;right:16px;top:16px;width:92px;height:92px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 3px rgba(255,255,255,.35)}
 .hero .hero-av img{width:100%;height:100%;object-fit:cover;display:block}
+.htiles{display:flex;gap:6px;overflow-x:auto;scroll-snap-type:x mandatory;border-radius:18px;scrollbar-width:none}
+.htiles::-webkit-scrollbar{display:none}
+.htiles div{flex:0 0 74%;aspect-ratio:4/5;border-radius:14px;background-size:300% 100%;background-repeat:no-repeat;scroll-snap-align:center}
+.hframe{position:relative}
+.hframe .ba{top:10px;left:10px}
+.hdots{display:flex;justify-content:center;gap:6px;margin-top:8px;font-size:12px;color:var(--muted);font-weight:700}
 .hair-ph{position:relative}
 .hair-ph img{filter:grayscale(.35) brightness(.92)}
 .ph-over{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:16px;background:linear-gradient(180deg,rgba(109,46,70,.15),rgba(109,46,70,.72));color:#fff}
@@ -498,6 +504,7 @@ const S = {
   another_tip:["Ещё совет","Тағы кеңес","Another tip"],
   today_look:["Образ на сегодня","Бүгінгі бейне","Today's look"],
   open_look:["Открыть образ","Бейнені ашу","Open the look"],
+  swipe3:["листайте: 3 ракурса","парақтаңыз: 3 ракурс","swipe: 3 angles"],
   tab_hair:["Причёски","Шаш үлгілері","Hair"], hair_title:["Причёски","Шаш үлгілері","Hairstyles"],
   hair_sub:["Посмотрите себя с новой стрижкой до похода в салон.","Салонға бармай тұрып, жаңа шаш үлгісімен өзіңізді көріңіз.","See yourself with a new cut before you go to the salon."],
   hair_ph:["Здесь будет ваша примерка","Мұнда сіздің киіп көруіңіз болады","Your try-on will appear here"],
@@ -755,7 +762,8 @@ const HSHADE = {
   elena:{ok:[['#6B5A4E',['Пепельно-русый','Күлгін ақшыл','Ash brown']],['#A69684',['Жемчужный блонд','Інжу аққұба','Pearl blonde']],['#8A7868',['Холодный «мокко»','Суық «мокко»','Cool mocha']]],
          no:[['#9A4A26',['Медь','Мыс','Copper']],['#17171E',['Иссиня-чёрный','Көкшіл қара','Blue-black']]]}
 };
-const HAIRDONE = {aigerim:[], elena:[]}; // какие примерки уже готовы: img/hair/<клиентка>-<стрижка>.jpg
+const HAIRDONE = {aigerim:['bob','lob','curtain','shag','pixie','curls','pony','bun'], elena:[]}; // какие примерки уже готовы: img/hair/<клиентка>-<стрижка>.jpg
+const hairTiles = src => `<div class="htiles">${[0,50,100].map(x=>`<div style="background-image:url('${src}');background-position:${x}% 0"></div>`).join('')}</div>`;
 const hairImg = (who,id) => HAIRDONE[who].includes(id) ? `img/hair/${who}-${id}.jpg` : null;
 
 const TRYCL = {
@@ -1189,7 +1197,7 @@ SCREENS.hair = () => {
   const who=`<div class="who">${['aigerim','elena'].map(k=>`<button class="${c===k?'on':''}" data-act="who" data-arg="${k}"><img src="img/${k}-face.jpg" alt="">${tr(TRYCL[k].name).split(',')[0]}</button>`).join('')}</div>`;
   const before = state.hba==='before';
   const frame = img
-    ? `<div class="tryon-frame"><img src="${before?`img/${c}-hair-orig.jpg`:img}" alt="${tr(h.n)}"><div class="ba"><button data-act="hba" data-arg="before" class="${before?'on':''}">${t('before')}</button><button data-act="hba" data-arg="after" class="${before?'':'on'}">${t('after')}</button></div></div>`
+    ? `<div class="hframe">${hairTiles(before?`img/${c}-hair-orig.jpg`:img)}<div class="ba"><button data-act="hba" data-arg="before" class="${before?'on':''}">${t('before')}</button><button data-act="hba" data-arg="after" class="${before?'':'on'}">${t('after')}</button></div><p class="hdots">← ${t('swipe3')} →</p></div>`
     : `<div class="tryon-frame hair-ph"><img src="img/${c}-hair-orig.jpg" alt=""><div class="ph-over"><span>${ic('scissors',26)}</span><b>${t('hair_ph')}</b><small>${t('hair_ph_d')}</small></div></div>`;
   return `<section class="pad">
   <h2 class="h" style="margin:2px 2px 4px">${t('hair_title')}</h2>
@@ -1213,7 +1221,7 @@ SCREENS.master = () => {
   return `<section class="pad">
   <p class="small muted" style="margin:0 2px 10px">${t('master_sub')}</p>
   <div class="card" style="padding:12px">
-    <div class="tryon-frame ${img?'':'hair-ph'}"><img src="${img||`img/${c}-hair-orig.jpg`}" alt="">${img?'':`<div class="ph-over"><span>${ic('scissors',22)}</span><b>${tr(h.n)}</b></div>`}</div>
+    ${img?`<div class="hframe">${hairTiles(img)}<p class="hdots">← ${t('swipe3')} →</p></div>`:`<div class="tryon-frame hair-ph"><img src="img/${c}-hair-orig.jpg" alt=""><div class="ph-over"><span>${ic('scissors',22)}</span><b>${tr(h.n)}</b></div></div>`}
     <h3 class="h" style="margin:12px 2px 2px">${tr(h.n)}</h3>
     <p class="small muted" style="margin:0 2px;font-weight:700">${tr(TRYCL[c].name)} · ${tr(TRYCL[c].type)}</p>
     <ul class="mlist">${row('m_len',tr(h.len))}${row('m_shape',tr(h.shape))}${row('m_bang',tr(h.bang))}${row('m_part',tr(h.part))}${row('m_style',tr(h.style))}${row('m_color',sh.ok.map(([,n])=>tr(n)).join(', '))}</ul>
