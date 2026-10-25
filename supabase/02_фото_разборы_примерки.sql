@@ -35,3 +35,4 @@ create policy "own tryons read" on public.tryons for select using (auth.uid() = 
 grant select on public.client_profile, public.analyses, public.tryons to authenticated;
 grant all on public.client_profile, public.analyses, public.tryons to service_role;
 grant usage, select on sequence public.analyses_id_seq, public.tryons_id_seq to service_role;
+alter table public.tryons add column if not exists custom_text text;  -- свой вариант её словами (26.10.2026)

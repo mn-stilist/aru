@@ -538,6 +538,16 @@ const S = {
   r_bad_image:["Фото не подошло. Загрузите другое, JPEG до 8 МБ","Сурет жарамады. Басқасын жүктеңіз","This photo didn't work. Please upload another"],
   r_upload_failed:["Не удалось сохранить фото. Попробуйте ещё раз","Суретті сақтау мүмкін болмады","Couldn't save the photo. Please try again"],
   plan_l:["Тариф","Тариф","Plan"], plan_monthly:["Обычный","Қарапайым","Standard"], plan_personal:["Личный","Жеке","Personal"], plan_vip:["VIP","VIP","VIP"], plan_test:["Тестовый","Тест","Test"],
+  q_wish:["Расскажите своими словами (по желанию)","Өз сөзіңізбен айтыңыз (қаласаңыз)","Tell us in your own words (optional)"],
+  q_wish_sub:["Какой хотите выглядеть, что любите, что смущает. Aru учтёт это в разборе и во всех примерках.","Қандай көрінгіңіз келеді, не ұнайды, не ыңғайсыз. Aru мұны талдауда және барлық киіп көруде ескереді.","How you want to look, what you love, what bothers you. Aru will use it in your analysis and every try-on."],
+  wish_ph:["Например: рост 155, хочу выглядеть моложе и стройнее. Люблю короткие жакеты и мини с плотными колготками, не люблю строгий офисный стиль.","Мысалы: бойым 155, жасырақ әрі сымбаттырақ көрінгім келеді. Қысқа жакеттер мен қалың колготкалы мини ұнайды, қатаң кеңсе стилі ұнамайды.","For example: I'm 155 cm, I want to look younger and slimmer. I love cropped jackets and minis with opaque tights, I don't like strict office style."],
+  own_look:["✍ Свой вариант","✍ Өз нұсқам","✍ My own"],
+  own_look_h:["Опишите образ, какой хотите","Қандай бейне қалайтыныңызды жазыңыз","Describe the look you want"],
+  own_look_ph:["Например: красный твидовый жакет до талии, чёрная кожаная мини, плотные колготки, ботильоны на шнуровке","Мысалы: белге дейінгі қызыл твид жакет, қара былғары мини, қалың колготка, бауы бар бәтеңке","For example: a cropped red tweed jacket, black leather mini skirt, opaque tights, lace-up ankle boots"],
+  own_hair_h:["Опишите стрижку, какую хотите","Қандай шаш үлгісін қалайтыныңызды жазыңыз","Describe the haircut you want"],
+  own_hair_ph:["Например: каре с чёлкой, но не короче подбородка, лёгкая волна","Мысалы: кекілді каре, иектен қысқа емес, жеңіл толқын","For example: a bob with a fringe, not shorter than the chin, soft waves"],
+  own_need:["Напишите хотя бы пару слов","Кем дегенде бірнеше сөз жазыңыз","Write at least a few words"],
+  own_demo:["В рабочей версии Aru покажет вас именно в этом образе — на вашем фото.","Жұмыс нұсқасында Aru сізді дәл осы бейнеде — өз суретіңізде көрсетеді.","In the live app Aru shows you in exactly this look, on your own photo."],
   tab_hair:["Причёски","Шаш үлгілері","Hair"], hair_title:["Причёски","Шаш үлгілері","Hairstyles"],
   hair_sub:["Посмотрите себя с новой стрижкой до похода в салон.","Салонға бармай тұрып, жаңа шаш үлгісімен өзіңізді көріңіз.","See yourself with a new cut before you go to the salon."],
   hair_ph:["Здесь будет ваша примерка","Мұнда сіздің киіп көруіңіз болады","Your try-on will appear here"],
@@ -1155,7 +1165,8 @@ SCREENS.onboard = () => {
     <div class="q"><h4>${t('q_life')}</h4><div class="chips">${LIFE.map(([v,l])=>chip('life',v,tr(l),true)).join('')}</div></div>
     <div class="q"><h4>${t('q_budget')}</h4><div class="chips">${[['$','$ < 30'],['$$','$$ 30–100'],['$$$','$$$ 100+']].map(([v,l])=>chip('budget',v,l)).join('')}</div></div>
     <div class="q"><h4>${t('q_like')}</h4><div class="chips">${LIKE.map(([v,l])=>chip('like',v,tr(l),true)).join('')}</div></div>
-    <div class="q"><h4>${t('q_dislike')}</h4><input class="text-in" id="dislike" value="${q.dislike}" placeholder="${t('dislike_ph')}"></div>`;
+    <div class="q"><h4>${t('q_dislike')}</h4><input class="text-in" id="dislike" value="${q.dislike}" placeholder="${t('dislike_ph')}"></div>
+    <div class="q"><h4>${t('q_wish')}</h4><p class="small muted" style="margin:-2px 0 8px">${t('q_wish_sub')}</p><textarea class="text-in" id="wish" rows="5" maxlength="600" placeholder="${t('wish_ph')}" style="resize:vertical;min-height:110px">${esc(q.wish||'')}</textarea></div>`;
   }
   return `<section class="pad"><div class="progress"><i style="width:${pct}%"></i></div>${body}
     <div class="ob-foot"><button class="btn primary" data-act="obnext">${st<2?t('next'):ic('sparkle',20)+' '+t('analyze')}</button>${st<2?`<button class="btn gold" data-act="demo">${ic('user',20)} ${t('demo_client')}</button><button class="link" data-act="obskip">${t('skip')}</button>`:''}</div></section>`;
@@ -1255,20 +1266,32 @@ function tryBlock(kind,key,label){
   return `${frame}<button class="btn ${got?'ghost':'primary'}" style="width:100%;margin-top:12px" data-act="aitry" data-arg="${kind}|${key}" ${busy?'disabled':''}>${ic('sparkle',18)} ${busy?t('ai_tryon_wait'):(got?t('ai_again'):t('ai_tryon'))}</button>
     <p class="small muted" style="text-align:center;margin-top:6px">${t('ai_tryon_n',{n:left})}</p>`;
 }
+
+function customBlock(kind){
+  const txt=(state.customTxt&&state.customTxt[kind])||'', got=((state.ai&&state.ai.tryons)||[]).filter(x=>x.kind===kind&&x.key==='custom');
+  const busy=state.aiBusy===kind+':custom', left=state.sub?state.sub.tryons_left:'';
+  return `<div class="card" style="margin-top:12px;padding:14px">
+    <h3 class="h" style="font-size:22px;margin-bottom:8px">${t(kind==='hair'?'own_hair_h':'own_look_h')}</h3>
+    <textarea class="text-in" id="customTxt" data-kind="${kind}" rows="4" maxlength="400" placeholder="${t(kind==='hair'?'own_hair_ph':'own_look_ph')}" style="width:100%;resize:vertical;min-height:96px">${esc(txt)}</textarea>
+    <button class="btn primary" style="width:100%;margin-top:12px" data-act="aicustom" data-arg="${kind}" ${busy?'disabled':''}>${ic('sparkle',18)} ${busy?t('ai_tryon_wait'):t('ai_tryon')}</button>
+    <p class="small muted" style="text-align:center;margin-top:6px">${t('ai_tryon_n',{n:left})}</p>
+    ${got.map(x=>`<div style="margin-top:14px"><div class="tryon-frame"><img src="${x.url}" alt=""></div>${x.text?`<p class="small muted" style="margin:6px 2px 0">«${esc(x.text)}»</p>`:''}</div>`).join('')}
+  </div>`;
+}
 function realHair(){
   const h=HAIRSTYLES.find(x=>x.id===state.hcut)||HAIRSTYLES[0], a=AN();
   const ok=(a&&a.hair_shades)||[], no=(a&&a.hair_avoid)||[];
   return `<section class="pad">
   <h2 class="h" style="margin:2px 2px 4px">${t('hair_title')}</h2>
   <p class="small muted" style="margin:0 2px 12px">${t('hair_sub')}</p>
-  <div class="occ">${HAIRSTYLES.map(x=>`<button class="chip ${h.id===x.id?'on':''}" data-act="hcut" data-arg="${x.id}">${tr(x.n)}</button>`).join('')}</div>
-  <div class="card" style="margin-top:12px;padding:12px">
+  <div class="occ">${HAIRSTYLES.map(x=>`<button class="chip ${state.hcut===x.id?'on':''}" data-act="hcut" data-arg="${x.id}">${tr(x.n)}</button>`).join('')}<button class="chip ${state.hcut==='custom'?'on':''}" data-act="hcut" data-arg="custom">${t('own_look')}</button></div>
+  ${state.hcut==='custom'?customBlock('hair'):`<div class="card" style="margin-top:12px;padding:12px">
     ${tryBlock('hair',h.id,tr(h.n))}
     <div class="look-head" style="margin-top:12px"><div><h3 class="h">${tr(h.n)}</h3><p class="small muted" style="font-weight:700">${tr(h.len)} · ${tr(h.bang)}</p></div></div>
     <div class="whybox"><b>${t('why_hair')}</b>${tr(h.why)}</div>
     ${ok.length?`<p class="small" style="font-weight:800;margin:14px 2px 8px">${t('shade_t')}</p><div class="hairc">${ok.map(c=>`<button class="on-none"><i style="background:${esc(c.hex)}"></i>${esc(cname(c))}</button>`).join('')}${no.map(c=>`<button class="avoid"><i style="background:${esc(c.hex)}"></i>${esc(cname(c))}</button>`).join('')}</div>`:''}
     <button class="btn ghost" style="width:100%;margin-top:16px" data-act="go" data-arg="master">${ic('scissors',18)} ${t('show_master')}</button>
-  </div>
+  </div>`}
 </section>`;
 }
 const REAL_OCC=[['work',['Работа','Жұмыс','Work']],['day',['Выходной','Демалыс','Weekend']],['party',['Праздник','Мереке','Celebration']],['date',['Свидание','Кездесу','Date']],['travel',['Путешествие','Саяхат','Travel']],['toi',['Той','Той','Toi']]];
@@ -1276,11 +1299,11 @@ function realLooks(){
   const o=REAL_OCC.find(x=>x[0]===state.rocc)||REAL_OCC[0], a=AN();
   return `<section class="pad">
   <h2 class="h" style="margin:2px 2px 12px">${t('s_looks')}</h2>
-  <div class="occ">${REAL_OCC.map(([k,n])=>`<button class="chip ${o[0]===k?'on':''}" data-act="rocc" data-arg="${k}">${tr(n)}</button>`).join('')}</div>
-  <div class="card" style="margin-top:12px;padding:12px">
+  <div class="occ">${REAL_OCC.map(([k,n])=>`<button class="chip ${state.rocc!=='custom'&&o[0]===k?'on':''}" data-act="rocc" data-arg="${k}">${tr(n)}</button>`).join('')}<button class="chip ${state.rocc==='custom'?'on':''}" data-act="rocc" data-arg="custom">${t('own_look')}</button></div>
+  ${state.rocc==='custom'?customBlock('look'):`<div class="card" style="margin-top:12px;padding:12px">
     ${tryBlock('look',o[0],tr(o[1]))}
     ${a?`<p class="small" style="font-weight:800;margin:14px 2px 8px">${t('ai_palette')}</p><div class="strip-mini" style="display:flex;border-radius:10px;overflow:hidden;height:22px">${(a.best_colors||[]).slice(0,10).map(c=>`<i style="flex:1;background:${esc(c.hex)}"></i>`).join('')}</div>`:''}
-  </div>
+  </div>`}
 </section>`;
 }
 SCREENS.hair = () => {
@@ -1387,6 +1410,7 @@ SCREENS.looks = () => {
     <div class="whybox"><b>${t('why_works')}</b>${tr(tl.why)}</div>
     <div class="row" style="margin-top:14px"><button class="btn primary sm" style="flex:1" data-act="savelook">${ic('heart',18)} ${t('save_look')}</button></div>
   </div>
+  <div class="card" style="margin-top:12px;padding:14px"><h3 class="h" style="font-size:20px;margin-bottom:6px">${t('own_look')} · ${t('own_look_h')}</h3><textarea class="text-in" rows="3" disabled placeholder="${t('own_look_ph')}" style="width:100%;opacity:.7"></textarea><p class="small muted" style="margin-top:6px">${t('own_demo')}</p></div>
   <a href="../showroom/" class="card" style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding:14px 16px;text-decoration:none;color:var(--berry);font-weight:800">${ic('sparkle',20)}<span style="flex:1">${t('sr_link')}</span>→</a>
 </section>`;
 };
@@ -1624,7 +1648,7 @@ async function aiApi(action, body={}){
   try{ const r=await fetch(AI_API,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+tk},body:JSON.stringify({action,...body})}); return await r.json(); }catch(e){ return {ok:false,reason:'net'}; }
 }
 async function loadAI(){ const d=await aiApi('list'); if(d&&d.ok){ state.ai=d; render(); } return d; }
-function quizAnswers(){ const q=state.quiz||{}; return {age:q.age, height:q.height, life:q.life, budget:q.budget, like:q.like, dislike:q.dislike}; }
+function quizAnswers(){ const q=state.quiz||{}; return {age:q.age, height:q.height, life:q.life, budget:q.budget, like:q.like, dislike:q.dislike, wish:q.wish||''}; }
 async function realAnalysis(){
   const sv=await aiApi('save_photos',{face:PHOTO_HI.face, body:PHOTO_HI.body, answers:quizAnswers()});
   if(!sv.ok) return sv;
@@ -1633,10 +1657,10 @@ async function realAnalysis(){
   return an;
 }
 const lastTry = (kind,key) => ((state.ai&&state.ai.tryons)||[]).find(x=>x.kind===kind&&x.key===key);
-async function doTryon(kind,key){
+async function doTryon(kind,key,text){
   if(state.aiBusy) return; state.aiBusy=kind+':'+key; render();
-  const d=await aiApi('tryon',{kind,key}); state.aiBusy=null;
-  if(d.ok){ state.ai=state.ai||{tryons:[]}; state.ai.tryons=[{id:d.id,kind,key,url:d.url}, ...(state.ai.tryons||[])]; state.ai.tryons_used=d.tryons_used; if(state.sub){ state.sub.tryons_used=d.tryons_used; state.sub.tryons_left=Math.max(0,d.tryons_limit-d.tryons_used); } }
+  const d=await aiApi('tryon',{kind,key,text}); state.aiBusy=null;
+  if(d.ok){ state.ai=state.ai||{tryons:[]}; state.ai.tryons=[{id:d.id,kind,key,text:d.text,url:d.url}, ...(state.ai.tryons||[])]; state.ai.tryons_used=d.tryons_used; if(state.sub){ state.sub.tryons_used=d.tryons_used; state.sub.tryons_left=Math.max(0,d.tryons_limit-d.tryons_used); } }
   render(); if(!d.ok) toast(why(d.reason));
 }
 async function refreshSub(){ const d=await api('status',{},true); if(d&&d.ok){ state.sub=d; } return d; }
@@ -1709,6 +1733,7 @@ const ACT = {
   redo:()=>{ state.step=0; state.prev=[]; state.screen='onboard'; render(); },
   delphotos:async()=>{ state.photos={face:null,body:null}; PHOTO_HI={face:null,body:null}; if(REAL()){ const d=await aiApi('delete_photos'); if(!d.ok){ toast(why(d.reason)); return; } await loadAI(); } render(); toast(t('photos_deleted')); },
   aitry:a=>{ const [k,key]=a.split('|'); doTryon(k,key); },
+  aicustom:a=>{ const txt=((state.customTxt&&state.customTxt[a])||'').trim(); if(txt.length<3){ toast(t('own_need')); return; } doTryon(a,'custom',txt); },
   airun:async()=>{ if(!PHOTO_HI.face && !(state.ai&&state.ai.face)){ toast(t('ai_need_photo')); state.onboarded=false; state.step=0; state.screen='onboard'; render(); return; } state.aiBusy='analyze'; render(); const d=PHOTO_HI.face?await realAnalysis():await aiApi('analyze'); if(!PHOTO_HI.face) await loadAI(); state.aiBusy=null; render(); if(!d.ok) toast(why(d.reason)); },
   logout:()=>{ AUTH=null; saveAuth(); state.sub=null; state.demo=false; state.wm='key'; state.prev=[]; state.screen='welcome'; render(); }
 };
@@ -1722,6 +1747,8 @@ document.addEventListener('keydown', e=>{
 document.addEventListener('input', e=>{
   if(e.target.id==='hRange'){ state.quiz.height=+e.target.value; const b=document.getElementById('hVal'); if(b) b.textContent=state.quiz.height+' '+t('cm'); }
   if(e.target.id==='dislike'){ state.quiz.dislike=e.target.value; }
+  if(e.target.id==='wish'){ state.quiz.wish=e.target.value; }
+  if(e.target.id==='customTxt'){ state.customTxt=state.customTxt||{}; state.customTxt[e.target.dataset.kind]=e.target.value; }
 });
 
 let CMP=null;

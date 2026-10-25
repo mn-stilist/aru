@@ -2,7 +2,7 @@
 // Все действия — POST JSON { action, ... } с заголовком Authorization: Bearer <токен входа>.
 //   save_photos   { face?, body?, answers? }  — сохранить фото (dataURL/base64 JPEG) и анкету
 //   analyze       {}                          — разбор цветотипа по её фото
-//   tryon         { kind: "look"|"hair", key } — примерка (тратит 1 из месячного лимита)
+//   tryon         { kind: "look"|"hair", key, text? } — примерка (тратит 1 из лимита); key "custom" + text — свой вариант её словами
 //   list          {}                          — всё сохранённое: разбор, примерки, ссылки на фото
 //   delete_photos {}                          — удалить все её фото и примерки
 // Живые клиентки обрабатываются только на платном тарифе Google (секрет GEMINI_PAID = 1).
@@ -44,6 +44,8 @@ const LOOK: Record<string, string> = {
   travel: "a travel look: a long coat or trench, a fine knit top, comfortable trousers, ankle boots and a roomy bag",
   toi: "a festive Kazakh toi look: a modern long velvet kamzol with traditional ornament over a floor-length dress, traditional Kazakh jewellery and elegant shoes",
 };
+const clean = (v: unknown, n = 400) => String(v ?? "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, n);
+const wishLine = (answers: any) => { const w = clean(answers?.wish, 600); return w ? `Her own wishes in her words (follow them where possible, but keep her face and colour palette): "${w}". ` : ""; };
 const FACE_RULE =
   "MOST IMPORTANT: this must be exactly the same woman as in the attached photos — copy her face precisely: the same face shape, eyes, eyebrows, nose, lips, smile, skin tone and moles. Do not beautify, slim or change her face or body; keep her real age and proportions. ";
 
@@ -52,23 +54,25 @@ function palette(a: any) {
   const avoid = (a?.avoid_colors ?? []).map((c: any) => (typeof c === "string" ? c : c?.name_en || c?.name)).filter(Boolean).slice(0, 4);
   return { best: best.join(", "), avoid: avoid.join(", "), metal: a?.metal_en || a?.metal || "" };
 }
-function hairPrompt(key: string, a: any) {
+function hairPrompt(key: string, a: any, answers?: any, text?: string) {
   const shade = (a?.hair_shades ?? []).map((c: any) => c?.name_en || c?.name).filter(Boolean)[0] || "her natural hair colour";
   return FACE_RULE +
     "Create one wide image made of three side-by-side head-and-shoulders photos of her against a plain soft light grey studio background. " +
     "Show the hairstyle from different angles: left — head turned to the left with a happy smile, middle — three-quarter view to the right glancing at the camera over her shoulder, right — looking slightly up and to the side, joyful expression. " +
     "Fresh natural makeup, glowing skin. She wears a simple cream crew-neck top so the hair is the focus. " +
-    `Hairstyle: ${HAIR[key]}, hair colour: ${shade}, glossy and healthy. ` +
+    `Hairstyle: ${key === "custom" ? clean(text) : HAIR[key]}, hair colour: ${shade}, glossy and healthy. ` + (key === "custom" ? "" : wishLine(answers)) +
     "Modern hair-salon campaign photo, natural soft daylight, realistic, no text, no logos.";
 }
-function lookPrompt(key: string, a: any, answers: any) {
+function lookPrompt(key: string, a: any, answers: any, text?: string) {
   const p = palette(a);
   const h = Number(answers?.height) || 0;
   const petite = h && h < 160 ? "She is petite: use high-waisted bottoms, jackets cropped at the waist, a defined waist and heeled shoes to lengthen the legs. " : "";
   return FACE_RULE +
     "Create one wide image made of two side-by-side photos of her on a plain light grey studio wall and concrete floor: left — full-length front view showing the whole outfit and shoes, right — a closer waist-up shot where her face is large and clearly visible, natural smile. " +
-    `Outfit: ${LOOK[key]}. Use only colours from her personal palette: ${p.best}. Avoid: ${p.avoid}. Jewellery in ${p.metal || "a metal that suits her"}. ` +
-    petite +
+    (key === "custom"
+      ? `Outfit exactly as she describes it in her own words: "${clean(text)}". Where she does not name colours, use colours from her personal palette: ${p.best}. `
+      : `Outfit: ${LOOK[key]}. Use only colours from her personal palette: ${p.best}. Avoid: ${p.avoid}. `) +
+    `Jewellery in ${p.metal || "a metal that suits her"}. ` + petite + wishLine(answers) +
     "Modern 2026 style, premium fabrics, perfect fit, no visible logos or brand names. Natural soft daylight, realistic photo, no text.";
 }
 const ANALYZE_PROMPT = (answers: any) => `You are an experienced personal stylist and colour analyst. Look at the woman in the photos (the first is a close-up of the face, the second, if present, is full length).
@@ -160,8 +164,8 @@ Deno.serve(async (req) => {
 
     if (action === "list") {
       const { data: an } = await db.from("analyses").select("result,created_at").eq("user_id", uid).order("created_at", { ascending: false }).limit(1).maybeSingle();
-      const { data: tr } = await db.from("tryons").select("id,kind,key,image_path,created_at").eq("user_id", uid).eq("status", "done").order("created_at", { ascending: false }).limit(60);
-      const tryons = await Promise.all((tr ?? []).map(async (x) => ({ id: x.id, kind: x.kind, key: x.key, created_at: x.created_at, url: await signed(x.image_path) })));
+      const { data: tr } = await db.from("tryons").select("id,kind,key,image_path,created_at,custom_text").eq("user_id", uid).eq("status", "done").order("created_at", { ascending: false }).limit(60);
+      const tryons = await Promise.all((tr ?? []).map(async (x) => ({ id: x.id, kind: x.kind, key: x.key, text: x.custom_text ?? null, created_at: x.created_at, url: await signed(x.image_path) })));
       return json({
         ok: true, enabled,
         analysis: an?.result ?? null, analysis_at: an?.created_at ?? null,
@@ -213,11 +217,12 @@ Deno.serve(async (req) => {
       // tryon
       const kind = b.kind === "hair" ? "hair" : "look";
       const key = String(b.key ?? "");
-      if (!(kind === "hair" ? HAIR : LOOK)[key]) return json({ ok: false, reason: "bad_input" });
+      const text = clean(b.text);
+      if (key === "custom" ? text.length < 3 : !(kind === "hair" ? HAIR : LOOK)[key]) return json({ ok: false, reason: "bad_input" });
       if (client.tryons_used >= client.tryons_limit) return json({ ok: false, reason: "quota" });
       const { data: an } = await db.from("analyses").select("result").eq("user_id", uid).order("created_at", { ascending: false }).limit(1).maybeSingle();
       if (!an) return json({ ok: false, reason: "need_analysis" });
-      const prompt = kind === "hair" ? hairPrompt(key, an.result) : lookPrompt(key, an.result, prof?.answers);
+      const prompt = kind === "hair" ? hairPrompt(key, an.result, prof?.answers, text) : lookPrompt(key, an.result, prof?.answers, text);
       let last: any = null;
       for (const model of IMAGE_MODELS) {
         const { status, d } = await gemini(model, [...imgs, { text: prompt }], { responseModalities: ["TEXT", "IMAGE"] }, 120000);
@@ -228,14 +233,14 @@ Deno.serve(async (req) => {
         if (!data) continue;
         const mime = part?.inlineData?.mimeType ?? part?.inline_data?.mime_type ?? "image/png";
         const ext = mime.includes("jpeg") ? "jpg" : "png";
-        const { data: row } = await db.from("tryons").insert({ user_id: uid, kind, key, status: "done", model }).select("id").single();
+        const { data: row } = await db.from("tryons").insert({ user_id: uid, kind, key, status: "done", model, custom_text: key === "custom" ? text : null }).select("id").single();
         const path = `${uid}/tryons/${row!.id}.${ext}`;
         await db.storage.from(BUCKET).upload(path, decodeBase64(data), { contentType: mime, upsert: true });
         await db.from("tryons").update({ image_path: path }).eq("id", row!.id);
         await db.from("usage_log").insert({ user_id: uid, kind: "tryon" });
         const used = client.tryons_used + 1;
         await db.from("clients").update({ tryons_used: used }).eq("user_id", uid);
-        return json({ ok: true, id: row!.id, kind, key, url: await signed(path), tryons_used: used, tryons_limit: client.tryons_limit });
+        return json({ ok: true, id: row!.id, kind, key, text: key === "custom" ? text : null, url: await signed(path), tryons_used: used, tryons_limit: client.tryons_limit });
       }
       if (last && isQuota(last.status, last.d)) return json({ ok: false, reason: "billing" });
       console.error("tryon failed", JSON.stringify(last?.d)?.slice(0, 500));
