@@ -1535,6 +1535,18 @@ function renderSide(){
   <p style="font-weight:800;margin-top:20px">${t('side_try')}</p><ul>${['side_0','side_1','side_2','side_3','side_4'].map((k,i)=>`<li>${ic(['scissors','hanger','palette','camera','chat'][i])}<span>${t(k)}</span></li>`).join('')}</ul>`;
 }
 function renderPassport(){
+  if(REAL()&&AN()){ const a=AN(), ht=(state.ai.tryons||[]), HN=k=>{const h=HAIRSTYLES.find(x=>x.id===k);return h?tr(h.n):k;}, ON=k=>{const o=REAL_OCC.find(x=>x[0]===k);return o?tr(o[1]):k;};
+    const sw=list=>`<div class="pg">${(list||[]).map(c=>`<div><i style="background:${esc(c.hex)}"></i>${esc(cname(c))}</div>`).join('')}</div>`;
+    const seen=new Set(), pics=ht.filter(x=>{const id=x.kind+x.key; if(seen.has(id)) return false; seen.add(id); return true;});
+    document.getElementById('passport').innerHTML = `<h1>Aru</h1><p><b>${t('passport_t')}</b>: ${esc((state.sub&&state.sub.email)||'')} · ${fmtDate(new Date())}</p>
+    <h2>${t('your_type')}: ${esc(seasonName(a))}</h2><p>${esc(a.why||'')}</p>
+    <p>${esc(a.undertone||'')} · ${esc(a.contrast||'')} · ${esc(a.chroma||'')} · ${esc(a.metal||'')}${a.face_shape?' · '+t('ai_face').toLowerCase()+': '+esc(a.face_shape):''}</p>
+    <h2>${t('my_colors')}</h2>${sw(a.best_colors)}
+    <h2>${t('not_mine')}</h2>${sw(a.avoid_colors)}
+    <h2>${t('shade_t')}</h2>${sw(a.hair_shades)}
+    ${a.lips?`<h2>${t('makeup_n')}</h2>${sw(a.lips)}`:''}
+    ${pics.length?`<h2>${t('s_hair')} · ${t('s_looks')}</h2>${pics.map(x=>`<div style="break-inside:avoid;margin:10px 0"><p><b>${x.kind==='hair'?HN(x.key):ON(x.key)}</b></p><img src="${x.url}" style="width:100%;border-radius:8px"></div>`).join('')}`:''}`;
+    return; }
   document.getElementById('passport').innerHTML = `<h1>Aru</h1><p><b>${t('passport_t')}</b>: ${t('user_name')}</p>
   <h2>${t('your_type')}: ${t('soft_autumn')}</h2><p>${t('sa_desc')}</p>
   <h2>${t('my_colors')}</h2><div class="pg">${MINE.map(k=>`<div><i style="background:${C[k].hex}"></i>${tr(C[k].n)}</div>`).join('')}</div>
@@ -1684,7 +1696,7 @@ const ACT = {
   rm:a=>{ state.wardrobe=state.wardrobe.filter(x=>x.id!==+a); save(); render(); toast(t('removed')); },
   quick:a=>ask(tr(QUICK[+a])),
   send:()=>{ const el=document.getElementById('chatIn'); const v=el.value; el.value=''; ask(v); },
-  passport:()=>{ renderPassport(); window.print(); },
+  passport:async()=>{ renderPassport(); const imgs=[...document.querySelectorAll('#passport img')]; await Promise.all(imgs.map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r; setTimeout(r,8000);}))); window.print(); },
   redo:()=>{ state.step=0; state.prev=[]; state.screen='onboard'; render(); },
   delphotos:async()=>{ state.photos={face:null,body:null}; PHOTO_HI={face:null,body:null}; if(REAL()){ const d=await aiApi('delete_photos'); if(!d.ok){ toast(why(d.reason)); return; } await loadAI(); } render(); toast(t('photos_deleted')); },
   aitry:a=>{ const [k,key]=a.split('|'); doTryon(k,key); },
