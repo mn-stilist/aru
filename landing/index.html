@@ -190,6 +190,16 @@ nav .btn{height:42px;padding:0 16px;font-size:14px;border-radius:12px}
 #vipModal .btn{display:block;text-align:center;margin-top:18px;text-decoration:none}
 #vipModal .x{position:absolute;top:12px;right:12px;width:38px;height:38px;border-radius:50%;background:#F7E6EC;color:var(--berry);font-size:22px;font-weight:800;border:0;cursor:pointer}
 @media (max-width:860px){.plans{grid-template-columns:1fr}}
+.cmp{position:relative;border-radius:18px;overflow:hidden;background:#D8D8D5;touch-action:pan-y;user-select:none;cursor:ew-resize}
+.cmp img{width:100%;display:block;pointer-events:none}
+.cmp .bef{position:absolute;inset:0;clip-path:inset(0 calc(100% - var(--x,50%)) 0 0)}
+.cmp .bef img{width:100%;height:100%;object-fit:cover}
+.cmp .line{position:absolute;top:0;bottom:0;left:var(--x,50%);width:3px;margin-left:-1.5px;background:#fff;box-shadow:0 0 12px rgba(0,0,0,.35)}
+.cmp .knob{position:absolute;top:50%;left:var(--x,50%);width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:#fff;color:var(--berry);display:grid;place-items:center;font-weight:800;font-size:18px;box-shadow:0 6px 16px rgba(0,0,0,.35)}
+.cmp .lb{position:absolute;top:12px;font-size:12.5px;font-weight:800;padding:6px 12px;border-radius:20px;background:rgba(255,255,255,.92);color:var(--muted)}
+.cmp .lb.l{left:12px}.cmp .lb.r{right:12px;background:var(--berry);color:#fff}
+.cmp .play{position:absolute;right:14px;bottom:14px;z-index:2}
+.hint{font-size:13px;color:var(--muted);text-align:center;margin-top:8px}
 /* price */
 .price-wrap{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center}
 .price{background:#fff;border-radius:28px;padding:34px;border:1.5px solid var(--line);box-shadow:0 30px 60px -36px rgba(74,29,48,.6)}
@@ -349,6 +359,7 @@ const S = {
   before:["Как было","Бұрын","Before"], after:["Как стало","Кейін","After"],
   save:["Сохранить образ","Бейнені сақтау","Save this look"], saved:["Образ сохранён в демо-режиме","Бейне демо режимде сақталды","Look saved in demo mode"],
   ai_note:["Демо-клиентки вымышлены, их изображения созданы ИИ.","Демо-клиенттер ойдан шығарылған, суреттерін ЖИ жасаған.","The demo clients are fictional; their images were created with AI."],
+  cmp_hint:["← тяните линию, чтобы увидеть превращение →","← өзгерісті көру үшін сызықты тартыңыз →","← drag the line to see the transformation →"],
   hair_h:["Причёски: увидеть себя до салона","Шаш үлгілері: салонға дейін өзіңізді көріңіз","Hairstyles: see yourself before the salon"],
   hair_sub:["Отрезать — страшно. Aru показывает 8 стрижек на вашем фото с трёх сторон, а мастеру — готовую карточку: что именно сделать.","Қию — қорқынышты. Aru суретіңізде 8 шаш үлгісін үш жақтан көрсетеді, ал шеберге — нақты не істеу керегі жазылған дайын карта.","Cutting is scary. Aru shows 8 cuts on your photo from three angles, plus a ready card telling your stylist exactly what to do."],
   master_pill:["✂ Карточка «Показать мастеру» — в приложении","✂ «Шеберге көрсету» картасы — қосымшада","✂ A Show-my-stylist card in the app"],
@@ -483,6 +494,17 @@ function garment(type,hex){
 const t=k=>S[k][L], tr=a=>a[L];
 function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),2800);}
 
+
+/* ---------- ползунок «Как было / Как стало» ---------- */
+function cmpHTML(after, before, alt, extra){
+  return `<div class="cmp" style="--x:50%"><img src="${after}" alt="${alt}"><div class="bef"><img src="${before}" alt=""></div><div class="line"></div><div class="knob">⇆</div><span class="lb l">${t('before')}</span><span class="lb r">${t('after')}</span>${extra||''}</div><p class="hint">${t('cmp_hint')}</p>`;
+}
+let CMP=null;
+function cmpMove(e){ if(!CMP) return; const r=CMP.getBoundingClientRect(); CMP.style.setProperty('--x', Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100))+'%'); }
+document.addEventListener('pointerdown',e=>{ const c=e.target.closest('.cmp'); if(!c||e.target.closest('.play')) return; CMP=c; cmpMove(e); });
+document.addEventListener('pointermove',e=>{ if(CMP) cmpMove(e); });
+document.addEventListener('pointerup',()=>{ CMP=null; });
+function cmpSweep(root){ const c=root&&root.querySelector('.cmp'); if(!c) return; const t0=performance.now(); const f=n=>{ const k=Math.min(1,(n-t0)/1600); if(CMP===c) return; c.style.setProperty('--x',(85-63*Math.sin(k*Math.PI))+'%'); if(k<1) requestAnimationFrame(f); else c.style.setProperty('--x','50%'); }; requestAnimationFrame(f); }
 function renderDemo(){
   const c=CL[who];
   document.getElementById('who').innerHTML=['aigerim','elena','bibigul'].map(k=>`<button class="${who===k?'on':''}" data-who="${k}" aria-pressed="${who===k}"><img src="${IMG[k].front}" alt="">${tr(CL[k].name)}</button>`).join('');
@@ -495,7 +517,7 @@ function renderDemo(){
   const l=c.looks[lk];
   if(TRY[who]){
     const src = ba==='before' ? TRY[who].orig : TRY[who][lk];
-    document.getElementById('look').innerHTML=`<div class="look tryon"><div class="tryon-frame"><img src="${src}" alt="${tr(c.name)}, ${tr(l.t)}"><div class="ba"><button data-ba="before" class="${ba==='before'?'on':''}">${t('before')}</button><button data-ba="after" class="${ba==='after'?'on':''}">${t('after')}</button></div>${(VIDEO[who]||{})[lk]?`<button class="play" data-video="${VIDEO[who][lk]}">▶ ${t('video')}</button>`:''}</div>
+    document.getElementById('look').innerHTML=`<div class="look tryon">${cmpHTML(TRY[who][lk], TRY[who].orig, `${tr(c.name)}, ${tr(l.t)}`, (VIDEO[who]||{})[lk]?`<button class="play" data-video="${VIDEO[who][lk]}">▶ ${t('video')}</button>`:'')}
       <div class="tryon-text"><div><h3>${tr(l.t)}</h3><ul>${l.items.map(([tp,h,n,cn])=>`<li><i style="background:${h}"></i>${tr(n)}, ${tr(cn)}</li>`).join('')}</ul></div>
       <div><div class="why"><b>${t('why')}</b>${tr(l.why)}</div><button class="btn line-dark" data-save="1">${ic('heart',18)} ${t('save')}</button></div></div></div>`;
     return;
@@ -521,7 +543,7 @@ let hk='curtain', hba='after';
 function renderHair(){
   const h=HAIR.find(x=>x[0]===hk);
   document.getElementById('hchips').innerHTML=HAIR.map(x=>`<button class="${x[0]===hk?'on':''}" data-hair="${x[0]}">${tr(x[1])}</button>`).join('');
-  document.getElementById('hairFrame').innerHTML=`<div class="tryon-frame"><img src="${hba==='before'?HIMG.orig:HIMG[hk]}" alt="${tr(h[1])}"><div class="ba"><button data-hba="before" class="${hba==='before'?'on':''}">${t('before')}</button><button data-hba="after" class="${hba==='after'?'on':''}">${t('after')}</button></div></div>`;
+  document.getElementById('hairFrame').innerHTML=cmpHTML(HIMG[hk], HIMG.orig, tr(h[1]), '');
   document.getElementById('hairCard').innerHTML=`<h3>${tr(h[1])}</h3><div class="meta">${tr(h[2])}</div><div class="why"><b>${t('why')}</b>${tr(h[3])}</div><span class="master-pill">${t('master_pill')}</span>`;
 }
 function render(){
@@ -545,12 +567,12 @@ document.addEventListener('click',e=>{
   const g=e.target.closest('[data-lang],[data-who],[data-look],[data-save],[data-ba],[data-video],[data-close],[data-hair],[data-hba],[data-vclose],#vipModal,#vipBtn,#buyBtn'); if(!g) return;
   if(g.dataset.ba){ba=g.dataset.ba; renderDemo(); return;}
   if(g.dataset.lang!=null){L=+g.dataset.lang; try{localStorage.setItem('aru_landing_lang',L)}catch(_){} render();}
-  else if(g.dataset.hair){hk=g.dataset.hair; hba='after'; renderHair();}
+  else if(g.dataset.hair){hk=g.dataset.hair; hba='after'; renderHair(); cmpSweep(document.getElementById('hairFrame'));}
   else if(g.dataset.hba){hba=g.dataset.hba; renderHair();}
   else if(g.dataset.video){document.getElementById('vid').innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(g.dataset.video)}?autoplay=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;document.getElementById('vmodal').classList.add('on');}
   else if(g.dataset.close!==undefined){document.getElementById('vmodal').classList.remove('on');document.getElementById('vid').innerHTML='';}
-  else if(g.dataset.who){who=g.dataset.who; renderDemo();}
-  else if(g.dataset.look){lk=g.dataset.look; ba='after'; renderDemo();}
+  else if(g.dataset.who){who=g.dataset.who; renderDemo(); cmpSweep(document.getElementById('look'));}
+  else if(g.dataset.look){lk=g.dataset.look; ba='after'; renderDemo(); cmpSweep(document.getElementById('look'));}
   else if(g.dataset.save){toast(t('saved'));}
   else if(g.id==='vipBtn'){ document.getElementById('vipModal').classList.add('on'); }
   else if(g.dataset.vclose!==undefined || g.id==='vipModal'){ document.getElementById('vipModal').classList.remove('on'); }
@@ -558,6 +580,7 @@ document.addEventListener('click',e=>{
 });
 try{const s=localStorage.getItem('aru_landing_lang'); if(s!=null) L=+s; else if((navigator.language||'').startsWith('en')) L=2; else if((navigator.language||'').startsWith('kk')) L=1;}catch(_){}
 render();
+try{ const io=new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting){ cmpSweep(en.target); io.unobserve(en.target); } }),{threshold:.5}); ['look','hairFrame'].forEach(id=>{ const el=document.getElementById(id); if(el) io.observe(el); }); }catch(_){}
 </script>
 </body>
 </html>

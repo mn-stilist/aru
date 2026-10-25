@@ -171,6 +171,14 @@ h3.h{font-family:var(--serif);font-size:24px;line-height:1.1;font-weight:700;col
 .hframe{position:relative}
 .hframe .ba{top:10px;left:10px}
 .hdots{display:flex;justify-content:center;gap:6px;margin-top:8px;font-size:12px;color:var(--muted);font-weight:700}
+.cmp{position:relative;border-radius:18px;overflow:hidden;background:#D8D8D5;touch-action:pan-y;user-select:none}
+.cmp img{width:100%;display:block;pointer-events:none}
+.cmp .bef{position:absolute;inset:0;clip-path:inset(0 calc(100% - var(--x,50%)) 0 0)}
+.cmp .bef img{width:100%;height:100%;object-fit:cover}
+.cmp .line{position:absolute;top:0;bottom:0;left:var(--x,50%);width:3px;margin-left:-1.5px;background:#fff;box-shadow:0 0 10px rgba(0,0,0,.35)}
+.cmp .knob{position:absolute;top:50%;left:var(--x,50%);width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:#fff;color:var(--berry);display:grid;place-items:center;font-weight:800;font-size:16px;box-shadow:0 6px 16px rgba(0,0,0,.35)}
+.cmp .lb{position:absolute;top:10px;font-size:12px;font-weight:800;padding:5px 10px;border-radius:20px;background:rgba(255,255,255,.92);color:var(--muted)}
+.cmp .lb.l{left:10px}.cmp .lb.r{right:10px;background:var(--berry);color:#fff}
 .hair-ph{position:relative}
 .hair-ph img{filter:grayscale(.35) brightness(.92)}
 .ph-over{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:16px;background:linear-gradient(180deg,rgba(109,46,70,.15),rgba(109,46,70,.72));color:#fff}
@@ -504,6 +512,7 @@ const S = {
   another_tip:["Ещё совет","Тағы кеңес","Another tip"],
   today_look:["Образ на сегодня","Бүгінгі бейне","Today's look"],
   open_look:["Открыть образ","Бейнені ашу","Open the look"],
+  cmp_hint:["тяните линию","сызықты тартыңыз","drag the line"],
   swipe3:["листайте: 3 ракурса","парақтаңыз: 3 ракурс","swipe: 3 angles"],
   ai_pending_t:["Ваш разбор скоро будет готов","Сіздің талдауыңыз жақында дайын болады","Your analysis is almost ready"],
   ai_pending_d:["Фото и анкета сохранены. Как только ИИ-стилист включится, здесь появятся ваш цветотип, палитра и примерки.","Суреттер мен сауалнама сақталды. ИИ-стилист қосылғанда мұнда түс типіңіз, палитраңыз және киіп көрулер шығады.","Your photos and answers are saved. As soon as the AI stylist is switched on, your colour type, palette and try-ons will appear here."],
@@ -1371,7 +1380,7 @@ SCREENS.looks = () => {
   ${who}
   <div class="occ">${occs.map(o=>`<button class="chip ${state.occ===o?'on':''}" data-act="occ" data-arg="${o}">${t('occ_'+o)}</button>`).join('')}</div>
   <div class="card" style="margin-top:12px;padding:12px">
-    <div class="tryon-frame"><img src="${src}" alt="${tr(cl.name)}, ${tr(tl.t)}"><div class="ba"><button data-act="ba" data-arg="before" class="${state.ba==='before'?'on':''}">${t('before')}</button><button data-act="ba" data-arg="after" class="${state.ba==='after'?'on':''}">${t('after')}</button></div></div>
+    <div class="cmp" style="--x:50%"><img src="img/${c}-${key}.jpg" alt="${tr(cl.name)}, ${tr(tl.t)}"><div class="bef"><img src="img/${c}-orig.jpg" alt=""></div><div class="line"></div><div class="knob">⇆</div><span class="lb l">${t('before')}</span><span class="lb r">${t('after')}</span></div><p class="hdots">← ${t('cmp_hint')} →</p>
     <p class="small muted" style="margin:8px 2px 0">${t('tryon_ai')}</p>
     <div class="look-head" style="margin-top:10px"><div><h3 class="h">${tr(tl.t)}</h3><p class="small muted" style="font-weight:700">${tr(cl.type)}</p></div></div>
     <ul class="tlist">${tl.items.map(([tp,h,n,cn])=>`<li><i style="background:${h}"></i><span>${tr(n)}, ${tr(cn)}</span></li>`).join('')}</ul>
@@ -1714,6 +1723,12 @@ document.addEventListener('input', e=>{
   if(e.target.id==='hRange'){ state.quiz.height=+e.target.value; const b=document.getElementById('hVal'); if(b) b.textContent=state.quiz.height+' '+t('cm'); }
   if(e.target.id==='dislike'){ state.quiz.dislike=e.target.value; }
 });
+
+let CMP=null;
+function cmpMove(e){ if(!CMP) return; const r=CMP.getBoundingClientRect(); CMP.style.setProperty('--x', Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100))+'%'); }
+document.addEventListener('pointerdown',e=>{ const c=e.target.closest('.cmp'); if(!c) return; CMP=c; cmpMove(e); });
+document.addEventListener('pointermove',e=>{ if(CMP) cmpMove(e); });
+document.addEventListener('pointerup',()=>{ CMP=null; });
 document.addEventListener('change', e=>{
   const inp=e.target; if(!inp.matches('input[type=file]')||!inp.files[0]) return;
   const kind=inp.dataset.file, file=inp.files[0];
