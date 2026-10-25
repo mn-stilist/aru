@@ -37,6 +37,7 @@ th{color:var(--muted);font-size:12.5px}
 </head>
 <body>
 <div class="wrap">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><a href="../landing/" style="color:var(--berry);font-weight:700;text-decoration:none">← На сайт Aru</a><button class="ghost hide" id="logout" style="padding:8px 14px;font-size:14px">Выйти</button></div>
   <h1>Aru — Управление</h1>
   <p class="sub">Только для Мурата. Индивидуальные тарифы с оплатой через Kaspi.</p>
 
@@ -53,9 +54,9 @@ th{color:var(--muted);font-size:12.5px}
       <h2>Выдать или продлить доступ</h2>
       <p class="sub" style="margin:0">Если такой почты ещё нет — создаётся новый аккаунт. Если есть — срок продлевается от текущей даты окончания.</p>
       <label>Почта клиентки</label>
-      <input id="email" type="email" placeholder="name@gmail.com">
+      <input id="email" type="email" placeholder="name@gmail.com" autocomplete="off" name="client_email_x">
       <label>Пароль для неё <small>(не меньше 6 знаков; для продления можно оставить пустым)</small></label>
-      <input id="pass" type="text" placeholder="например, Aru-2026-mira">
+      <input id="pass" type="text" placeholder="например, Aru-2026-mira" autocomplete="off" name="client_pass_x">
       <div class="row">
         <div><label>Тариф</label><select id="plan"><option value="personal">Личный</option><option value="vip">VIP</option><option value="monthly">Обычный</option></select></div>
         <div><label>Срок, месяцев</label><input id="months" type="number" min="1" max="24" value="1"></div>
@@ -94,13 +95,15 @@ function show(el,ok,text){el.className='msg '+(ok?'ok':'err');el.textContent=tex
 async function load(){
   const r=await call({action:'admin_list'});
   if(!r.ok){ $('panel').classList.add('hide'); $('lock').classList.remove('hide'); show($('lockMsg'),false,WHY[r.reason]||'Не получилось войти.'); return false; }
-  $('lock').classList.add('hide'); $('panel').classList.remove('hide');
+  $('lock').classList.add('hide'); $('panel').classList.remove('hide'); $('logout').classList.remove('hide');
   $('list').innerHTML=r.clients.map(c=>`<tr><td>${esc(c.email)}<div class="tag">${c.source==='manual'?'Kaspi / вручную':'Gumroad'}</div></td><td>${esc(PLAN[c.plan]||c.plan)}</td><td><span class="pill ${esc(c.status)}">${c.status==='active'?'активна':c.status==='expired'?'истекла':esc(c.status)}</span></td><td>${fmt(c.paid_until)}</td><td>${c.tryons_used} / ${c.tryons_limit}</td><td>${esc(c.note||'')}</td></tr>`).join('')||'<tr><td colspan="6">Пока никого</td></tr>';
   return true;
 }
 $('enter').onclick=async()=>{CODE=$('code').value.trim(); if(await load()){try{sessionStorage.setItem('aru_admin',CODE)}catch(_){}}};
 $('code').onkeydown=e=>{if(e.key==='Enter')$('enter').click()};
 $('reload').onclick=load;
+$('logout').onclick=()=>{CODE='';try{sessionStorage.removeItem('aru_admin')}catch(_){} $('code').value=''; $('email').value=''; $('pass').value=''; $('panel').classList.add('hide'); $('logout').classList.add('hide'); $('lock').classList.remove('hide'); $('lockMsg').className='msg';};
+setTimeout(()=>{$('email').value='';$('pass').value='';},300);
 $('grant').onclick=async()=>{
   const b=$('grant'); b.disabled=true; b.textContent='Выдаю…';
   const email=$('email').value.trim(), pass=$('pass').value.trim();
