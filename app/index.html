@@ -600,11 +600,12 @@ const S = {
   passport_t:["Стиль-паспорт","Стиль-паспорт","Style passport"],
   side_p:["Это интерактивный прототип Aru. Всё нажимается, а цвет вещей на ваших фото считывается по-настоящему.","Бұл Aru интерактивті прототипі. Бәрі басылады, ал суреттегі заттың түсі шын мәнінде оқылады.","This is an interactive Aru prototype. Everything is clickable, and colours on your photos are read for real."],
   side_try:["Что попробовать","Нені көру керек","Things to try"],
+  side_0:["8 стрижек и «Показать мастеру» во вкладке «Причёски»","«Шаш үлгілері» бетінде 8 үлгі және «Шеберге көрсету»","8 cuts and Show my stylist in Hair"],
   side_1:["«Как было / Как стало» во вкладке «Образы»","«Бейнелер» бетіндегі «Бұрын / Кейін»","Before / After in Looks"],
   side_2:["Тест драпировки в разделе «Цвета»","«Түстер» бөліміндегі драпировка сынағы","The drape test in Colours"],
   side_3:["Сфотографировать любую вещь во вкладке «Проверить»","«Тексеру» бетінде кез келген затты суретке түсіру","Photograph any item in Check"],
   side_4:["Спросить стилиста, что надеть на свадьбу","Стилисттен тойға не кию керегін сұрау","Ask the stylist what to wear to a wedding"],
-  side_ver:["Прототип v0.3, 23 октября 2026","Прототип v0.3, 2026 жылғы 23 қазан","Prototype v0.3, 23 October 2026"],
+  side_ver:["Прототип v0.5, 25 октября 2026","Прототип v0.5, 2026 жылғы 25 қазан","Prototype v0.5, 25 October 2026"],
   user_name:["Айгерим","Айгерім","Aigerim"]
 };
 const t = (k, v) => { let s = S[k] ? S[k][L] : k; if (v) for (const x in v) s = s.split('{'+x+'}').join(v[x]); return s; };
@@ -1437,7 +1438,7 @@ SCREENS.profile = () => {
 /* ---------- side panel & passport ---------- */
 function renderSide(){
   document.getElementById('side').innerHTML = `<div class="mark">Aru</div><p class="ver">${t('side_ver')}</p><p>${t('side_p')}</p>
-  <p style="font-weight:800;margin-top:20px">${t('side_try')}</p><ul>${['side_1','side_2','side_3','side_4'].map((k,i)=>`<li>${ic(['hanger','palette','camera','chat'][i])}<span>${t(k)}</span></li>`).join('')}</ul>`;
+  <p style="font-weight:800;margin-top:20px">${t('side_try')}</p><ul>${['side_0','side_1','side_2','side_3','side_4'].map((k,i)=>`<li>${ic(['scissors','hanger','palette','camera','chat'][i])}<span>${t(k)}</span></li>`).join('')}</ul>`;
 }
 function renderPassport(){
   document.getElementById('passport').innerHTML = `<h1>Aru</h1><p><b>${t('passport_t')}</b>: ${t('user_name')}</p>
