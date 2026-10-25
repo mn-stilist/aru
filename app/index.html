@@ -407,7 +407,7 @@ h3.h{font-family:var(--serif);font-size:24px;line-height:1.1;font-weight:700;col
 
 <script>
 /* =========================================================
-   Aru — prototype v0.1
+   Aru — личный стилист
    Everything below runs locally in the browser. No photos
    leave the device; colour reading uses <canvas>.
    ========================================================= */
@@ -455,7 +455,7 @@ const S = {
   once:["Подписка — отменить можно в любой момент","Жазылым — кез келген уақытта тоқтатуға болады","Subscription — cancel anytime"],
   privacy_short:["Фото видите только вы. Удалить — одной кнопкой в профиле","Суреттерді тек сіз көресіз. Профильде бір батырмамен өшіріледі","Only you can see your photos. Delete them with one tap in your profile"],
   bad_key:["Такой ключ не найден. Для демо: ARU-DEMO-2026","Мұндай кілт табылмады. Демо үшін: ARU-DEMO-2026","Key not found. For the demo use ARU-DEMO-2026"],
-  pay_toast:["В прототипе оплата выключена. В рабочей версии здесь откроется страница оплаты","Прототипте төлем өшірулі. Жұмыс нұсқасында мұнда төлем беті ашылады","Payment is off in the prototype. In the live app the payment page opens here"],
+  pay_toast:["Это демо. Чтобы начать со своими фото, купите Aru на сайте","Бұл — демо. Өз суреттеріңізбен бастау үшін Aru-ды сайттан сатып алыңыз","This is a demo. To start with your own photos, get Aru on the website"],
   step_n:["Шаг {n} из 3","{n}-қадам, барлығы 3","Step {n} of 3"],
   face_title:["Фото лица","Бет суреті","Your face"],
   face_sub:["По нему Aru определит ваш цветотип","Осы сурет бойынша Aru түс типіңізді анықтайды","Aru reads your colour type from this photo"],
@@ -494,7 +494,7 @@ const S = {
   your_type:["Ваш цветотип","Түс типіңіз","Your colour type"],
   soft_autumn:["Тёмная осень","Қою күз","Deep Autumn"],
   sa_desc:["Глубокие тёплые оттенки: шоколад, хвоя, медь, марсала","Терең жылы реңктер: шоколад, қылқан, мыс, марсала","Deep warm shades: chocolate, pine, copper, marsala"],
-  before:["Как было","Бұрын","Before"], after:["Как стало","Кейін","After"], to_cover:["На обложку Aru (экран входа и шоу-рум)","Aru мұқабасына (кіру және шоу-рум)","Back to the Aru cover (sign-in and showroom)"], sr_see:["Посмотреть шоу-рум: превращения женщин 28–67 лет","Шоу-румды көру: 28–67 жастағы әйелдердің өзгерісі","See the showroom: transformations of women aged 28–67"], sr_link:["Шоу-рум: женщины от 28 до 67 лет","Шоу-рум: 28-ден 67 жасқа дейінгі әйелдер","Showroom: women aged 28 to 67"], demo_who:["Демо-клиентка","Демо-клиент","Demo client"], why_works:["Почему это работает","Неге жарасады","Why it works"], your_transform:["Ваше превращение","Сіздің өзгерісіңіз","Your transformation"], tryon_ai:["Примерка на фото сделана ИИ: лицо и фигура сохранены","Суреттегі өлшеуді ЖИ жасады: бет пен бітім сақталды","AI try-on on your photo: face and figure kept"], flat_note:["Для этого образа примерка на фото появится в рабочей версии","Бұл бейне үшін суреттегі өлшеу жұмыс нұсқасында болады","Photo try-on for this look comes in the full version"],
+  before:["Как было","Бұрын","Before"], after:["Как стало","Кейін","After"], to_cover:["На обложку Aru (экран входа и шоу-рум)","Aru мұқабасына (кіру және шоу-рум)","Back to the Aru cover (sign-in and showroom)"], sr_see:["Посмотреть шоу-рум: превращения женщин 28–67 лет","Шоу-румды көру: 28–67 жастағы әйелдердің өзгерісі","See the showroom: transformations of women aged 28–67"], sr_link:["Шоу-рум: женщины от 28 до 67 лет","Шоу-рум: 28-ден 67 жасқа дейінгі әйелдер","Showroom: women aged 28 to 67"], demo_who:["Демо-клиентка","Демо-клиент","Demo client"], why_works:["Почему это работает","Неге жарасады","Why it works"], your_transform:["Ваше превращение","Сіздің өзгерісіңіз","Your transformation"], tryon_ai:["Примерка на фото сделана ИИ: лицо и фигура сохранены","Суреттегі өлшеуді ЖИ жасады: бет пен бітім сақталды","AI try-on on your photo: face and figure kept"], flat_note:["В демо этот образ показан схемой. В вашем аккаунте Aru примерит его на ваше фото","Демода бұл бейне сызбамен көрсетілген. Аккаунтыңызда Aru оны суретіңізге киіп көрсетеді","In the demo this look is shown as a sketch. In your account Aru tries it on your photo"],
   match:["Совпадение 94%","Сәйкестік 94%","94% match"],
   indicators:["Индикаторы стиля","Стиль көрсеткіштері","Style indicators"],
   undertone:["Подтон","Реңк","Undertone"], warm:["Тёплый","Жылы","Warm"],
@@ -547,11 +547,11 @@ const S = {
   own_hair_h:["Опишите стрижку, какую хотите","Қандай шаш үлгісін қалайтыныңызды жазыңыз","Describe the haircut you want"],
   own_hair_ph:["Например: каре с чёлкой, но не короче подбородка, лёгкая волна","Мысалы: кекілді каре, иектен қысқа емес, жеңіл толқын","For example: a bob with a fringe, not shorter than the chin, soft waves"],
   own_need:["Напишите хотя бы пару слов","Кем дегенде бірнеше сөз жазыңыз","Write at least a few words"],
-  own_demo:["В рабочей версии Aru покажет вас именно в этом образе — на вашем фото.","Жұмыс нұсқасында Aru сізді дәл осы бейнеде — өз суретіңізде көрсетеді.","In the live app Aru shows you in exactly this look, on your own photo."],
+  own_demo:["В вашем аккаунте Aru покажет вас именно в этом образе — на вашем фото.","Сіздің аккаунтыңызда Aru сізді дәл осы бейнеде — өз суретіңізде көрсетеді.","In your account Aru shows you in exactly this look, on your own photo."],
   tab_hair:["Причёски","Шаш үлгілері","Hair"], hair_title:["Причёски","Шаш үлгілері","Hairstyles"],
   hair_sub:["Посмотрите себя с новой стрижкой до похода в салон.","Салонға бармай тұрып, жаңа шаш үлгісімен өзіңізді көріңіз.","See yourself with a new cut before you go to the salon."],
   hair_ph:["Здесь будет ваша примерка","Мұнда сіздің киіп көруіңіз болады","Your try-on will appear here"],
-  hair_ph_d:["В рабочей версии Aru «наденет» эту стрижку на ваше фото — вид с трёх сторон.","Жұмыс нұсқасында Aru бұл шаш үлгісін суретіңізге «кигізеді» — үш жақтан.","In the live app Aru puts this cut on your photo, seen from three angles."],
+  hair_ph_d:["В вашем аккаунте Aru «наденет» эту стрижку на ваше фото — вид с трёх сторон.","Сіздің аккаунтыңызда Aru бұл шаш үлгісін суретіңізге «кигізеді» — үш жақтан.","In your account Aru puts this cut on your photo, seen from three angles."],
   why_hair:["Почему вам идёт","Неге жарасады","Why it suits you"],
   shade_t:["Оттенок под ваш цветотип","Түс типіңізге сай реңк","Shade for your colour type"],
   show_master:["Показать мастеру","Шеберге көрсету","Show my stylist"],
@@ -560,8 +560,8 @@ const S = {
   m_len:["Длина","Ұзындығы","Length"], m_shape:["Форма и слои","Пішіні мен қабаттары","Shape and layers"], m_bang:["Чёлка","Кекіл","Fringe"], m_part:["Пробор","Айырым","Parting"], m_style:["Укладка","Сәндеу","Styling"], m_color:["Цвет","Түсі","Colour"],
   m_say:["Скажите мастеру","Шеберге айтыңыз","Tell your stylist"], m_care:["Уход дома","Үйдегі күтім","Care at home"],
   m_save:["Сохранить карточку","Картаны сақтау","Save the card"], m_send:["Отправить в WhatsApp","WhatsApp-қа жіберу","Send via WhatsApp"],
-  m_save_toast:["В рабочей версии карточка сохранится в PDF и в ваш профиль","Жұмыс нұсқасында карта PDF-ке және профиліңізге сақталады","In the live app the card is saved as a PDF and to your profile"],
-  m_send_toast:["В рабочей версии откроется WhatsApp с карточкой","Жұмыс нұсқасында карта бар WhatsApp ашылады","In the live app WhatsApp opens with the card"],
+  m_save_toast:["Карточка сохраняется в ваш стиль-паспорт PDF","Карта PDF стиль-паспортыңызға сақталады","The card is saved to your PDF style passport"],
+  m_send_toast:["Откроется WhatsApp — выберите мастера","WhatsApp ашылады — шеберді таңдаңыз","WhatsApp opens — choose your stylist"],
   hair_n_of:["{n} стрижек","{n} шаш үлгісі","{n} cuts"],
   tab_home:["Панель","Панель","Panel"], tab_looks:["Образы","Бейнелер","Looks"], tab_check:["Проверить","Тексеру","Check"], tab_wardrobe:["Гардероб","Гардероб","Wardrobe"], tab_chat:["Стилист","Стилист","Stylist"],
   drape_title:["Тест драпировки","Драпировка сынағы","Drape test"],
@@ -646,16 +646,16 @@ const S = {
   seri_t:["Мужская версия","Ерлерге арналған нұсқа","Menswear edition"],
   seri_d:["Скоро: тот же стилист для мужского гардероба","Жақында: ер адамдар гардеробына арналған сол стилист","Coming soon: the same stylist for men"],
   logout:["Выйти","Шығу","Sign out"],
-  proto:["прототип","прототип","prototype"],
+  proto:["демо","демо","demo"],
   passport_t:["Стиль-паспорт","Стиль-паспорт","Style passport"],
-  side_p:["Это интерактивный прототип Aru. Всё нажимается, а цвет вещей на ваших фото считывается по-настоящему.","Бұл Aru интерактивті прототипі. Бәрі басылады, ал суреттегі заттың түсі шын мәнінде оқылады.","This is an interactive Aru prototype. Everything is clickable, and colours on your photos are read for real."],
+  side_p:["Это Aru. Нажмите «Показать на демо-клиентке», чтобы посмотреть, как всё работает, или войдите со своим ключом.","Бұл — Aru. Бәрі қалай жұмыс істейтінін көру үшін «Демо-клиентте көрсету» батырмасын басыңыз немесе өз кілтіңізбен кіріңіз.","This is Aru. Tap Show on a demo client to see how it works, or sign in with your key."],
   side_try:["Что попробовать","Нені көру керек","Things to try"],
   side_0:["8 стрижек и «Показать мастеру» во вкладке «Причёски»","«Шаш үлгілері» бетінде 8 үлгі және «Шеберге көрсету»","8 cuts and Show my stylist in Hair"],
   side_1:["«Как было / Как стало» во вкладке «Образы»","«Бейнелер» бетіндегі «Бұрын / Кейін»","Before / After in Looks"],
   side_2:["Тест драпировки в разделе «Цвета»","«Түстер» бөліміндегі драпировка сынағы","The drape test in Colours"],
   side_3:["Сфотографировать любую вещь во вкладке «Проверить»","«Тексеру» бетінде кез келген затты суретке түсіру","Photograph any item in Check"],
   side_4:["Спросить стилиста, что надеть на свадьбу","Стилисттен тойға не кию керегін сұрау","Ask the stylist what to wear to a wedding"],
-  side_ver:["Прототип v0.5, 25 октября 2026","Прототип v0.5, 2026 жылғы 25 қазан","Prototype v0.5, 25 October 2026"],
+  side_ver:["Aru v0.6, 26 октября 2026","Aru v0.6, 2026 жылғы 26 қазан","Aru v0.6, 26 October 2026"],
   user_name:["Айгерим","Айгерім","Aigerim"]
 };
 const t = (k, v) => { let s = S[k] ? S[k][L] : k; if (v) for (const x in v) s = s.split('{'+x+'}').join(v[x]); return s; };
@@ -868,7 +868,7 @@ const ACC = {
   det:[['Черепаховая оправа','Тасбақа сауытты көзілдірік','Tortoiseshell frames'],['Шёлковый платок с тёплым принтом','Жылы принтті жібек орамал','Silk scarf, warm print'],['Тонкий пояс коньячного цвета','Коньяк түсті жіңішке белдік','Thin cognac belt']]
 };
 
-/* ---------- chat knowledge (prototype) ---------- */
+/* ---------- chat knowledge (частые вопросы) ---------- */
 const CHAT = [
   {k:['свадьб','той','wedding','ұзату'], sw:['marsala','coral','softgold'], a:[
     'На свадьбу выберите платье миди цвета марсала или пыльного коралла — это ваши праздничные оттенки. Туфли цвета мягкого золота и золотые серьги завершат образ.\n\nБелоснежный оставьте невесте, а чёрный рядом с вашим лицом подчеркнёт тени.',
@@ -904,9 +904,9 @@ const CHAT = [
     'Frames in tortoiseshell or honey brown, in a soft shape: a gentle cat-eye or round.']}
 ];
 const CHAT_FALLBACK = [
-  'Хороший вопрос. В рабочей версии я отвечу подробно с учётом вашего цветотипа «Тёмная осень», фигуры и гардероба. В прототипе спросите о свадьбе, офисе, свидании, чёрном цвете, джинсах, волосах или очках.',
-  'Жақсы сұрақ. Жұмыс нұсқасында «Жұмсақ күз» түс типіңізді, бітіміңізді және гардеробыңызды ескеріп, толық жауап беремін. Прототипте той, кеңсе, кездесу, қара түс, джинсы, шаш немесе көзілдірік туралы сұраңыз.',
-  'Good question. In the live app I answer in detail using your Soft Autumn type, figure and wardrobe. In the prototype, ask about weddings, the office, a date, black, jeans, hair or glasses.'
+  'Хороший вопрос. Пока я отвечаю на самые частые вопросы: что надеть на свадьбу, в офис, на свидание, можно ли мне чёрный, джинсы, какая причёска или очки. Спросите об этом — или примерьте образ во вкладке «Образы».',
+  'Жақсы сұрақ. Әзірге жиі қойылатын сұрақтарға жауап беремін: тойға, кеңсеге, кездесуге не кию, қара түс, джинсы, шаш үлгісі немесе көзілдірік. Солар туралы сұраңыз — немесе «Бейнелер» бетінде бейнені киіп көріңіз.',
+  'Good question. For now I answer the most common questions: what to wear to a wedding, the office or a date, black, jeans, hair or glasses. Ask about those, or try a look in the Looks tab.'
 ];
 const QUICK = [['Что надеть на свадьбу?','Тойға не киемін?','What should I wear to a wedding?'],['Образ для офиса','Кеңсеге арналған бейне','An outfit for the office'],['Можно ли мне чёрный?','Маған қара жараса ма?','Can I wear black?'],['Какой цвет волос выбрать?','Шашты қай түске бояған жөн?','Which hair colour suits me?'],['Золото или серебро?','Алтын ба, күміс пе?','Gold or silver?'],['Иду на свидание','Кездесуге барамын','I have a date']];
 
@@ -1101,7 +1101,7 @@ function topbar(){
   if(s==='welcome'||s==='analyzing') return '';
   if(s==='onboard') return `<header class="topbar"><button class="back" data-act="${state.step>0?'obback':'cover'}" aria-label="back">${ic('back')}</button><span class="small muted" style="font-weight:700">${t('step_n',{n:state.step+1})}</span>${langPills()}</header>`;
   if(TITLES[s]) return `<header class="topbar"><button class="back" data-act="back" aria-label="back">${ic('back')}</button><span class="top-title">${t(TITLES[s])}</span>${langPills()}</header>`;
-  return `<header class="topbar"><button class="logo" data-act="cover" aria-label="Aru" style="cursor:pointer">Aru<small>${t('proto')}</small></button><div class="top-right">${langPills()}<button class="icon-btn" data-act="go" data-arg="profile" aria-label="${t('profile')}" ${AUTH&&!state.demo?'style="background:var(--berry);color:#fff;font-weight:800;font-size:16px"':''}>${AUTH&&!state.demo?esc((AUTH.email||'?')[0].toUpperCase()):ic('user',20)}</button></div></header>`;
+  return `<header class="topbar"><button class="logo" data-act="cover" aria-label="Aru" style="cursor:pointer">Aru${REAL()?'':`<small>${t('proto')}</small>`}</button><div class="top-right">${langPills()}<button class="icon-btn" data-act="go" data-arg="profile" aria-label="${t('profile')}" ${AUTH&&!state.demo?'style="background:var(--berry);color:#fff;font-weight:800;font-size:16px"':''}>${AUTH&&!state.demo?esc((AUTH.email||'?')[0].toUpperCase()):ic('user',20)}</button></div></header>`;
 }
 const tabbar = () => `<nav class="tabbar">${TABS.map(([s,i,k])=> s==='check'
   ? `<button class="tab fab ${state.screen===s?'on':''}" data-act="go" data-arg="${s}"><span class="fab-c">${ic(i,26)}</span>${t(k)}</button>`
@@ -1707,8 +1707,10 @@ const ACT = {
   hcut:a=>{ state.hcut=a; state.hba='after'; render(); },
   rocc:a=>{ state.rocc=a; render(); },
   hba:a=>{ state.hba=a; render(); },
-  msave:()=>toast(t('m_save_toast')),
-  msend:()=>toast(t('m_send_toast')),
+  msave:()=>{ if(REAL()){ ACT.passport(); } else toast(t('m_save_toast')); },
+  msend:()=>{ const h=HAIRSTYLES.find(x=>x.id===state.hcut)||HAIRSTYLES[0]; 
+    const txt=`${tr(h.n)}\n${t('m_len')}: ${tr(h.len)}\n${t('m_bang')}: ${tr(h.bang)}\n${t('m_part')}: ${tr(h.part)}\n${t('m_style')}: ${tr(h.style)}\n\n${t('m_say')}: «${tr(h.say)}»`;
+    toast(t('m_send_toast')); window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank','noopener'); },
   hairc:a=>{ state.hairc=a; render(); },
   lip:a=>{ state.lip=a; render(); },
   occ:a=>{ state.occ=a; state.showShop=false; state.ba='after'; render(); },
