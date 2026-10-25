@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Aru — Управление</title>
+<style>
+:root{--berry:#6D2E46;--rose:#C2456E;--ink:#2B1A22;--muted:#7A6470;--line:#EED9E1;--paper:#FBF6F8;--ok:#3E8A68;--bad:#B8434F}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--paper);color:var(--ink);font-size:16px}
+.wrap{max-width:860px;margin:0 auto;padding:20px 16px 60px}
+h1{font-family:Georgia,serif;color:var(--berry);font-size:30px;margin:6px 0 4px}
+h2{color:var(--berry);font-size:20px;margin:0 0 12px}
+.sub{color:var(--muted);margin:0 0 18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:16px}
+label{display:block;font-weight:700;font-size:14px;margin:12px 0 5px}
+label small{font-weight:400;color:var(--muted)}
+input,select,textarea{width:100%;font:inherit;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+button{font:inherit;font-weight:800;border:0;border-radius:12px;padding:13px 18px;cursor:pointer}
+.primary{background:var(--berry);color:#fff;width:100%;margin-top:16px}
+.ghost{background:#F7E6EC;color:var(--berry)}
+.msg{margin-top:12px;padding:12px;border-radius:10px;display:none;white-space:pre-wrap}
+.msg.ok{display:block;background:#EAF4EE;color:#24573F}
+.msg.err{display:block;background:#FBEAEC;color:#8D2F3A}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-size:12.5px}
+.pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:800}
+.pill.active{background:#EAF4EE;color:#24573F}.pill.expired,.pill.refunded{background:#FBEAEC;color:#8D2F3A}
+.tag{color:var(--muted);font-size:12px}
+.hide{display:none}
+.copy{margin-top:10px;background:#FCEFD9;border-radius:10px;padding:12px;font-size:14px;white-space:pre-wrap}
+@media(max-width:640px){.row{grid-template-columns:1fr}.tbl{overflow-x:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Aru — Управление</h1>
+  <p class="sub">Только для Мурата. Индивидуальные тарифы с оплатой через Kaspi.</p>
+
+  <div class="card" id="lock">
+    <h2>Вход</h2>
+    <label>Код администратора <small>(из папки 98_Секреты)</small></label>
+    <input id="code" type="password" autocomplete="current-password">
+    <button class="primary" id="enter">Войти</button>
+    <div class="msg" id="lockMsg"></div>
+  </div>
+
+  <div id="panel" class="hide">
+    <div class="card">
+      <h2>Выдать или продлить доступ</h2>
+      <p class="sub" style="margin:0">Если такой почты ещё нет — создаётся новый аккаунт. Если есть — срок продлевается от текущей даты окончания.</p>
+      <label>Почта клиентки</label>
+      <input id="email" type="email" placeholder="name@gmail.com">
+      <label>Пароль для неё <small>(не меньше 6 знаков; для продления можно оставить пустым)</small></label>
+      <input id="pass" type="text" placeholder="например, Aru-2026-mira">
+      <div class="row">
+        <div><label>Тариф</label><select id="plan"><option value="personal">Личный</option><option value="vip">VIP</option><option value="monthly">Обычный</option></select></div>
+        <div><label>Срок, месяцев</label><input id="months" type="number" min="1" max="24" value="1"></div>
+        <div><label>Примерок в месяц</label><input id="limit" type="number" min="1" max="10000" value="100"></div>
+      </div>
+      <label>Заметка <small>(сумма, дата оплаты Kaspi, договорённость)</small></label>
+      <textarea id="note" rows="2" placeholder="Kaspi 25.10, 30 000 ₸, 100 причёсок и образов + 2 видео"></textarea>
+      <button class="primary" id="grant">Выдать доступ</button>
+      <div class="msg" id="grantMsg"></div>
+      <div class="copy hide" id="copyBox"></div>
+      <button class="ghost hide" id="copyBtn" style="margin-top:8px">Скопировать текст для клиентки</button>
+    </div>
+
+    <div class="card">
+      <h2 style="display:flex;justify-content:space-between;align-items:center">Все клиентки <button class="ghost" id="reload" style="padding:8px 12px;font-size:14px">Обновить</button></h2>
+      <div class="tbl"><table><thead><tr><th>Почта</th><th>Тариф</th><th>Статус</th><th>До</th><th>Примерки</th><th>Заметка</th></tr></thead><tbody id="list"></tbody></table></div>
+    </div>
+  </div>
+</div>
+<script>
+const API='https://cgefoqmwqwcxtozcurqo.supabase.co/functions/v1/aru-api';
+const KEY='sb_publishable_7iWgF0qLKanDVI4-NFvhXg_6MqMc2Gt';
+const APP='https://mn-stilist.github.io/aru/app/';
+const PLAN={personal:'Личный',vip:'VIP',monthly:'Обычный'};
+const $=id=>document.getElementById(id);
+let CODE='';
+try{CODE=sessionStorage.getItem('aru_admin')||''}catch(_){}
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=d=>d?new Date(d).toLocaleDateString('ru-RU'):'—';
+const WHY={bad_code:'Неверный код администратора.',bad_input:'Проверьте почту и пароль (не меньше 6 знаков).',email_exists:'Такая почта уже есть в системе, но не как клиентка. Напишите Claude.',create_failed:'Не удалось создать аккаунт. Попробуйте ещё раз.',server_error:'Ошибка сервера. Попробуйте ещё раз.'};
+async function call(body){
+  const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY},body:JSON.stringify({...body,code:CODE})});
+  return r.json().catch(()=>({ok:false,reason:'server_error'}));
+}
+function show(el,ok,text){el.className='msg '+(ok?'ok':'err');el.textContent=text;}
+async function load(){
+  const r=await call({action:'admin_list'});
+  if(!r.ok){ $('panel').classList.add('hide'); $('lock').classList.remove('hide'); show($('lockMsg'),false,WHY[r.reason]||'Не получилось войти.'); return false; }
+  $('lock').classList.add('hide'); $('panel').classList.remove('hide');
+  $('list').innerHTML=r.clients.map(c=>`<tr><td>${esc(c.email)}<div class="tag">${c.source==='manual'?'Kaspi / вручную':'Gumroad'}</div></td><td>${esc(PLAN[c.plan]||c.plan)}</td><td><span class="pill ${esc(c.status)}">${c.status==='active'?'активна':c.status==='expired'?'истекла':esc(c.status)}</span></td><td>${fmt(c.paid_until)}</td><td>${c.tryons_used} / ${c.tryons_limit}</td><td>${esc(c.note||'')}</td></tr>`).join('')||'<tr><td colspan="6">Пока никого</td></tr>';
+  return true;
+}
+$('enter').onclick=async()=>{CODE=$('code').value.trim(); if(await load()){try{sessionStorage.setItem('aru_admin',CODE)}catch(_){}}};
+$('code').onkeydown=e=>{if(e.key==='Enter')$('enter').click()};
+$('reload').onclick=load;
+$('grant').onclick=async()=>{
+  const b=$('grant'); b.disabled=true; b.textContent='Выдаю…';
+  const email=$('email').value.trim(), pass=$('pass').value.trim();
+  const r=await call({action:'admin_grant',email,password:pass,plan:$('plan').value,months:+$('months').value,tryons_limit:+$('limit').value,note:$('note').value.trim()});
+  b.disabled=false; b.textContent='Выдать доступ';
+  if(!r.ok){show($('grantMsg'),false,WHY[r.reason]||'Не получилось.');return;}
+  const c=r.client;
+  show($('grantMsg'),true,(r.created?'Аккаунт создан.':'Доступ продлён.')+` Тариф: ${PLAN[c.plan]||c.plan}, до ${fmt(c.paid_until)}, примерок в месяц: ${c.tryons_limit}.`);
+  const text=`Здравствуйте! Ваш доступ к Aru готов.\n\nСсылка: ${APP}\nПочта: ${c.email}\n`+(pass?`Пароль: ${pass}\n`:'')+`\nОткройте ссылку → внизу «Уже есть аккаунт? Войти по почте» → введите почту и пароль.\nТариф «${PLAN[c.plan]||c.plan}» действует до ${fmt(c.paid_until)}.`;
+  $('copyBox').textContent=text; $('copyBox').classList.remove('hide'); $('copyBtn').classList.remove('hide');
+  $('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(text);$('copyBtn').textContent='Скопировано ✓'}catch(_){$('copyBtn').textContent='Выделите текст выше и нажмите Ctrl + C'}};
+  load();
+};
+if(CODE) load();
+</script>
+</body>
+</html>

@@ -4,6 +4,8 @@
 //   activate  { license_key, email, password }     — привязать ключ, создать аккаунт
 //   status    (заголовок Authorization: Bearer <токен входа>) — доступ и счётчики
 //   use       { kind: "tryon" | "analysis" } (+ токен) — списать одну примерку/анализ
+//   admin_list  { code }                         — (Мурат) все клиентки
+//   admin_grant { code, email, password?, plan, months, tryons_limit, note } — (Мурат) ручной доступ, оплата Kaspi
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 
 const PRODUCT_ID = "RH0ftOQ4Z1Rnqq17qkMTMw=="; // Aru — Your Personal AI Stylist (Gumroad)
@@ -69,8 +71,13 @@ async function freshClient(userId: string) {
   const { data: c } = await db.from("clients").select("*").eq("user_id", userId).maybeSingle();
   if (!c) return null;
   const patch: Record<string, unknown> = {};
+  if (c.source === "manual") {
+    const live = c.paid_until && new Date(c.paid_until).getTime() > Date.now();
+    const st = live ? "active" : "expired";
+    if (st !== c.status) patch.status = st;
+  }
   const last = c.last_checked_at ? new Date(c.last_checked_at).getTime() : 0;
-  if (Date.now() - last > RECHECK_HOURS * 3600e3) {
+  if (c.source !== "manual" && Date.now() - last > RECHECK_HOURS * 3600e3) {
     const v = await verifyGumroad(c.license_key);
     if (v.reason !== "gumroad_unreachable") {
       patch.status = v.ok ? "active" : (v.reason === "refunded" ? "refunded" : "expired");
@@ -91,6 +98,7 @@ async function freshClient(userId: string) {
 
 const publicView = (c: any) => ({
   email: c.email,
+  plan: c.plan,
   status: c.status,
   paid_until: c.paid_until,
   tryons_used: c.tryons_used,
@@ -153,6 +161,45 @@ Deno.serve(async (req) => {
       const used = kind === "tryon" ? c.tryons_used + 1 : c.tryons_used;
       const { data: u } = await db.from("clients").update({ tryons_used: used }).eq("user_id", user.id).select("*").single();
       return json({ ok: true, ...publicView(u ?? c) });
+    }
+
+    if (action === "admin_list" || action === "admin_grant") {
+      const ADMIN = Deno.env.get("ADMIN_CODE") ?? "";
+      if (!ADMIN || String(b.code ?? "") !== ADMIN) return json({ ok: false, reason: "bad_code" }, 403);
+      if (action === "admin_list") {
+        const { data } = await db.from("clients").select("email,plan,source,status,paid_until,tryons_used,tryons_limit,note,created_at").order("created_at", { ascending: false });
+        return json({ ok: true, clients: data ?? [] });
+      }
+      const email = String(b.email ?? "").trim().toLowerCase();
+      const password = String(b.password ?? "");
+      const plan = String(b.plan ?? "personal").slice(0, 40) || "personal";
+      const months = Math.max(1, Math.min(24, Number(b.months ?? 1) || 1));
+      const limit = Math.max(1, Math.min(10000, Number(b.tryons_limit ?? 100) || 100));
+      const note = String(b.note ?? "").slice(0, 300);
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json({ ok: false, reason: "bad_input" });
+      const { data: ex } = await db.from("clients").select("*").eq("email", email).maybeSingle();
+      if (ex) {
+        const base = ex.paid_until && new Date(ex.paid_until).getTime() > Date.now() ? new Date(ex.paid_until) : new Date();
+        if (password) {
+          if (password.length < 6) return json({ ok: false, reason: "bad_input" });
+          await db.auth.admin.updateUserById(ex.user_id, { password });
+        }
+        const { data: u } = await db.from("clients").update({
+          plan, source: "manual", status: "active", paid_until: addMonths(base, months).toISOString(),
+          tryons_limit: limit, note: note || ex.note,
+        }).eq("user_id", ex.user_id).select("*").single();
+        return json({ ok: true, created: false, client: publicView(u) });
+      }
+      if (password.length < 6) return json({ ok: false, reason: "bad_input" });
+      const { data: created, error } = await db.auth.admin.createUser({ email, password, email_confirm: true });
+      if (error || !created?.user) return json({ ok: false, reason: /already|registered|exists/i.test(error?.message ?? "") ? "email_exists" : "create_failed" });
+      const { data: u, error: insErr } = await db.from("clients").insert({
+        user_id: created.user.id, email, license_key: null, source: "manual", plan, status: "active",
+        paid_until: addMonths(new Date(), months).toISOString(), tryons_limit: limit, note,
+        last_checked_at: new Date().toISOString(),
+      }).select("*").single();
+      if (insErr) { await db.auth.admin.deleteUser(created.user.id); return json({ ok: false, reason: "create_failed" }); }
+      return json({ ok: true, created: true, client: publicView(u) });
     }
 
     return json({ ok: false, reason: "unknown_action" }, 400);
