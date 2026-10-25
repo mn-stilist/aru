@@ -173,6 +173,23 @@ nav .btn{height:42px;padding:0 16px;font-size:14px;border-radius:12px}
 .hair-card .why{margin-top:12px}
 .master-pill{display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:10px 16px;border-radius:30px;background:#F7E6EC;color:var(--berry);font-weight:800;font-size:14px}
 @media (max-width:900px){.hair-grid{grid-template-columns:1fr}}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:22px;align-items:stretch}
+.plans .price{display:flex;flex-direction:column}
+.plans .price ul{flex:1}
+.price.vip{background:linear-gradient(160deg,#4A1D30,#6D2E46);color:#fff;border-color:#6D2E46}
+.price.vip li{color:#F7E6EC}
+.price.vip .ic{color:#D9A441}
+.plan-tag{display:inline-block;align-self:flex-start;padding:5px 12px;border-radius:20px;background:#F7E6EC;color:var(--berry);font-weight:800;font-size:13px;margin-bottom:10px}
+.plan-tag.gold{background:#D9A441;color:#3B1A26}
+.vip-amt{font-family:var(--serif);font-size:44px !important;line-height:1.05;color:#fff !important}
+.plan-note{font-size:13.5px;color:var(--muted);margin-top:10px;text-align:center}
+.price.vip .plan-note{color:#EAC3D2}
+#vipModal .vbox{background:#fff;border-radius:22px;max-width:480px;width:100%;padding:26px;position:relative;max-height:90vh;overflow:auto}
+#vipModal h3{font-family:var(--serif);color:var(--berry);font-size:28px;margin:6px 0 8px}
+#vipModal ul,#vipModal ol{margin:10px 0 0 20px;display:grid;gap:6px;font-size:15px}
+#vipModal .btn{display:block;text-align:center;margin-top:18px;text-decoration:none}
+#vipModal .x{position:absolute;top:12px;right:12px;width:38px;height:38px;border-radius:50%;background:#F7E6EC;color:var(--berry);font-size:22px;font-weight:800;border:0;cursor:pointer}
+@media (max-width:860px){.plans{grid-template-columns:1fr}}
 /* price */
 .price-wrap{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center}
 .price{background:#fff;border-radius:28px;padding:34px;border:1.5px solid var(--line);box-shadow:0 30px 60px -36px rgba(74,29,48,.6)}
@@ -263,14 +280,25 @@ footer .logo{color:#fff;font-size:30px}
 
   <div class="band"><div class="wrap"><h2 data-t="lang_h"></h2><div class="tri"><span>Қазақша</span><span>Русский</span><span>English</span></div></div></div>
 
-  <section id="price"><div class="wrap price-wrap">
-    <div><h2 data-t="price_h"></h2><p class="sub" data-t="price_sub"></p>
-      <div class="privacy"><span data-ic="lock" data-s="26"></span><div><b data-t="priv_h"></b><p class="sub" style="font-size:15px" data-t="priv_d"></p></div></div></div>
-    <div class="price">
-      <div class="amt">$29<small data-t="once"></small></div>
-      <ul id="incl"></ul>
-      <button class="btn berry" id="buyBtn" data-t="buy_btn"></button>
+  <section id="price"><div class="wrap">
+    <h2 data-t="price_h"></h2><p class="sub" data-t="price_sub"></p>
+    <div class="plans">
+      <div class="price">
+        <span class="plan-tag" data-t="plan_std"></span>
+        <div class="amt">$29<small data-t="once"></small></div>
+        <ul id="incl"></ul>
+        <button class="btn berry" id="buyBtn" data-t="buy_btn"></button>
+        <p class="plan-note" data-t="std_note"></p>
+      </div>
+      <div class="price vip">
+        <span class="plan-tag gold" data-t="plan_vip"></span>
+        <div class="amt vip-amt" data-t="vip_price"></div>
+        <ul id="inclVip"></ul>
+        <button class="btn gold" id="vipBtn" data-t="vip_btn"></button>
+        <p class="plan-note" data-t="vip_note"></p>
+      </div>
     </div>
+    <div class="privacy" style="max-width:720px;margin-top:26px"><span data-ic="lock" data-s="26"></span><div><b data-t="priv_h"></b><p class="sub" style="font-size:15px" data-t="priv_d"></p></div></div>
   </div></section>
 
   <section style="padding-top:0"><div class="wrap">
@@ -280,6 +308,13 @@ footer .logo{color:#fff;font-size:30px}
 </main>
 <footer><div class="wrap"><span class="logo">Aru</span><span data-t="foot"></span></div></footer>
 <div class="vmodal" id="vmodal"><div class="box"><button class="x" data-close aria-label="close">×</button><div id="vid" style="width:100%;height:100%"></div></div></div>
+<div class="vmodal" id="vipModal"><div class="vbox"><button class="x" data-vclose aria-label="close">×</button>
+  <span class="plan-tag gold" data-t="plan_vip"></span><h3 data-t="vip_m_h"></h3><p data-t="vip_m_p"></p>
+  <ul id="vipList"></ul>
+  <p style="font-weight:800;margin-top:14px" data-t="vip_how_h"></p><ol id="vipHow"></ol>
+  <a class="btn gold" id="waBtn" target="_blank" rel="noopener" data-t="vip_wa"></a>
+  <p class="plan-note" data-t="vip_pay"></p>
+</div></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -320,17 +355,31 @@ const S = {
   feat_h:["Что внутри Aru","Aru ішінде не бар","What's inside Aru"],
   feat_sub:["Всё, что делает стилист, — в одном приложении, и всё согласовано между собой.","Стилист істейтіннің бәрі — бір қосымшада, бәрі бір-бірімен үйлескен.","Everything a stylist does, in one app, and all of it fits together."],
   lang_h:["На вашем языке","Өз тіліңізде","In your language"],
-  price_h:["Личный стилист — $29 в месяц","Жеке стилист — айына $29","Your personal stylist — $29 a month"],
-  price_sub:["Отменить можно в любой момент, одной кнопкой. После оплаты вы получаете на почту личный ключ доступа и сразу открываете свою панель.","Бір батырмамен кез келген уақытта тоқтатуға болады. Төлемнен кейін поштаңызға жеке кілт келеді де, панеліңізді бірден ашасыз.","Cancel anytime with one click. After payment you get a personal access key by email and open your panel right away."],
+  price_h:["Выберите свой вариант","Өз нұсқаңызды таңдаңыз","Choose your option"],
+  price_sub:["Стандарт подключается сразу после оплаты: на почту приходит личный ключ, и вы открываете свою панель. VIP — индивидуальный подход под вашу задачу.","Стандарт төлемнен кейін бірден қосылады: поштаға жеке кілт келеді, панеліңізді ашасыз. VIP — сіздің міндетіңізге жеке тәсіл.","Standard switches on right after payment: you get a personal key by email and open your panel. VIP is a personal approach built around your goal."],
   priv_h:["Ваши фото — только ваши","Суреттеріңіз — тек сіздікі","Your photos stay yours"],
   priv_d:["Фото хранятся в закрытом хранилище, их видите только вы. Они нужны, чтобы примерять образы и причёски на вас. В профиле всегда есть кнопка «Удалить мои фото» — она стирает всё.","Суреттер жабық қоймада сақталады, оларды тек сіз көресіз. Олар бейнелер мен шаш үлгілерін сізге киіп көру үшін керек. Профильде әрдайым «Суреттерімді өшіру» батырмасы бар — ол бәрін өшіреді.","Your photos are kept in private storage that only you can see. They are used to try looks and hairstyles on you. Your profile always has a Delete my photos button that erases everything."],
   once:["в месяц","айына","a month"],
   video:["Смотреть видео","Видеоны көру","Watch video"],
   buy_btn:["Купить","Сатып алу","Buy now"],
+  plan_std:["Стандарт","Стандарт","Standard"], plan_vip:["VIP · индивидуально","VIP · жеке","VIP · personal"],
+  std_note:["Отменить можно в любой момент","Кез келген уақытта тоқтатуға болады","Cancel anytime"],
+  vip_price:["Цена — по договорённости","Бағасы — келісім бойынша","Price by agreement"],
+  vip_btn:["Купить VIP","VIP сатып алу","Get VIP"],
+  vip_note:["Если стандарта мало — расширим под вас","Стандарт аз болса — сізге қарай кеңейтеміз","If Standard is not enough, we expand it for you"],
+  vip_m_h:["Aru под вашу задачу","Aru — сіздің міндетіңізге","Aru built around your goal"],
+  vip_m_p:["Стандарт — это 30 примерок в месяц и готовые сценарии. Если вам нужно больше или иначе — соберём Aru лично под вас.","Стандарт — айына 30 киіп көру және дайын сценарийлер. Көбірек немесе басқаша керек болса — Aru-ды сізге жеке жинаймыз.","Standard is 30 try-ons a month and ready scenarios. If you need more or something different, we set Aru up personally for you."],
+  vip_how_h:["Как это работает","Қалай жұмыс істейді","How it works"],
+  vip_wa:["Написать в WhatsApp","WhatsApp-қа жазу","Message us on WhatsApp"],
+  vip_pay:["Оплата удобным способом — в тенге (Kaspi) или в долларах картой","Төлем ыңғайлы тәсілмен — теңгемен (Kaspi) немесе долларда картамен","Pay the way you prefer: in tenge (Kaspi) or in dollars by card"],
+  vip_wa_text:["Здравствуйте! Хочу Aru VIP. Расскажу, какая у меня задача.","Сәлеметсіз бе! Aru VIP алғым келеді. Міндетімді айтып берейін.","Hello! I would like Aru VIP. Let me tell you about my goal."],
   buy_toast:["Открываем страницу оплаты…","Төлем беті ашылуда…","Opening checkout…"],
   faq_h:["Вопросы","Сұрақтар","Questions"],
   foot:["© 2026 Aru. Демо-клиентки на этой странице созданы ИИ.","© 2026 Aru. Бұл беттегі демо-клиенттерді ЖИ жасаған.","© 2026 Aru. Demo clients on this page were created with AI."]
 };
+const INCL_VIP = [["Сколько угодно примерок образов и причёсок","Шексіз дерлік бейне мен шаш үлгісін киіп көру","As many outfit and hairstyle try-ons as you need"],["Видео в ваших образах","Бейнелеріңіздегі бейне","Videos of you in your looks"],["Разбор ваших вещей и вопросов","Заттарыңыз бен сұрақтарыңызды талдау","Review of your clothes and questions"],["Образы под ваше событие: той, свадьба, поездка","Оқиғаңызға бейне: той, үйлену, сапар","Looks for your event: toi, wedding, trip"],["Личная связь и приоритет","Жеке байланыс және басымдық","Personal contact and priority"]];
+const VIP_HOW = [["Напишите нам в WhatsApp","Бізге WhatsApp-қа жазыңыз","Message us on WhatsApp"],["Обсудим вашу задачу и объём","Міндетіңіз бен көлемді талқылаймыз","We discuss your goal and volume"],["Согласуем цену и оплату","Бағасы мен төлемді келісеміз","We agree on price and payment"],["Откроем вам личный доступ","Сізге жеке қолжетімділік ашамыз","We open your personal access"]];
+const WA_NUMBER = ''; // номер WhatsApp Мурата, только цифры, например 77011234567
 const INCL = [["Цветотип, 16 ваших цветов и 8 «не ваших»","Түс типі, 16 сіздікі және 8 сіздікі емес түс","Colour type, 16 best colours and 8 to avoid"],["Тест драпировки на вашем лице","Бетіңіздегі драпировка сынағы","Drape test on your face"],["Стрижки и оттенки волос","Шаш үлгілері мен реңктері","Haircuts and hair shades"],["Одежда, обувь, аксессуары, макияж","Киім, аяқ киім, аксессуарлар, макияж","Clothes, shoes, accessories, makeup"],["Готовые образы на 5 поводов","5 жағдайға дайын бейнелер","Ready looks for 5 occasions"],["«Проверь вещь» в магазине","Дүкенде «Затты тексер»","Check an item in the store"],["Чат со стилистом и стиль-паспорт в PDF","Стилист-чат және PDF стиль-паспорт","Stylist chat and a PDF style passport"],["Три языка, 30 примерок в месяц","Үш тіл, айына 30 киіп көру","Three languages, 30 try-ons a month"]];
 const FEATS = [
   ["palette","#C2456E",["Цветотип","Түс типі","Colour type"],["16 цветов, в которых вы сияете, и 8, которых лучше избегать.","Сізді жарқырататын 16 түс және аулақ болатын 8 түс.","16 colours that make you glow and 8 to avoid."]],
@@ -487,9 +536,13 @@ function render(){
   document.getElementById('faq').innerHTML=FAQ.map(([q,a])=>`<details><summary>${tr(q)}</summary><p>${tr(a)}</p></details>`).join('');
   renderDemo();
   renderHair();
+  document.getElementById('inclVip').innerHTML=INCL_VIP.map(x=>`<li>${ic('check',20)}<span>${tr(x)}</span></li>`).join('');
+  document.getElementById('vipList').innerHTML=INCL_VIP.map(x=>`<li>${tr(x)}</li>`).join('');
+  document.getElementById('vipHow').innerHTML=VIP_HOW.map(x=>`<li>${tr(x)}</li>`).join('');
+  const wa=document.getElementById('waBtn'); if(WA_NUMBER){ wa.href='https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(t('vip_wa_text')); wa.style.display=''; } else { wa.removeAttribute('href'); wa.style.display='none'; }
 }
 document.addEventListener('click',e=>{
-  const g=e.target.closest('[data-lang],[data-who],[data-look],[data-save],[data-ba],[data-video],[data-close],[data-hair],[data-hba],#buyBtn'); if(!g) return;
+  const g=e.target.closest('[data-lang],[data-who],[data-look],[data-save],[data-ba],[data-video],[data-close],[data-hair],[data-hba],[data-vclose],#vipModal,#vipBtn,#buyBtn'); if(!g) return;
   if(g.dataset.ba){ba=g.dataset.ba; renderDemo(); return;}
   if(g.dataset.lang!=null){L=+g.dataset.lang; try{localStorage.setItem('aru_landing_lang',L)}catch(_){} render();}
   else if(g.dataset.hair){hk=g.dataset.hair; hba='after'; renderHair();}
@@ -499,6 +552,8 @@ document.addEventListener('click',e=>{
   else if(g.dataset.who){who=g.dataset.who; renderDemo();}
   else if(g.dataset.look){lk=g.dataset.look; ba='after'; renderDemo();}
   else if(g.dataset.save){toast(t('saved'));}
+  else if(g.id==='vipBtn'){ document.getElementById('vipModal').classList.add('on'); }
+  else if(g.dataset.vclose!==undefined || g.id==='vipModal'){ document.getElementById('vipModal').classList.remove('on'); }
   else if(g.id==='buyBtn'){ if(GUMROAD_URL) location.href=GUMROAD_URL; else toast(t('buy_toast')); }
 });
 try{const s=localStorage.getItem('aru_landing_lang'); if(s!=null) L=+s; else if((navigator.language||'').startsWith('en')) L=2; else if((navigator.language||'').startsWith('kk')) L=1;}catch(_){}

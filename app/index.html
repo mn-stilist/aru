@@ -431,23 +431,23 @@ const S = {
   paid_until:["Оплачено до","Төленген мерзім","Paid until"], tryons_left:["Примерок осталось","Қалған өлшеу","Try-ons left"],
   demo_mode:["Демо-режим: подписка не нужна","Демо режим: жазылым қажет емес","Demo mode: no subscription needed"],
   test_use:["Тест: списать 1 примерку","Тест: 1 өлшеуді есептен шығару","Test: use 1 try-on"],
-  manage_sub:["Управлять подпиской в Gumroad","Gumroad-та жазылымды басқару","Manage subscription on Gumroad"],
+  manage_sub:["Управлять подпиской","Жазылымды басқару","Manage subscription"],
   r_key_not_found:["Ключ не найден. Проверьте, что скопировали его полностью","Кілт табылмады. Толық көшірілгенін тексеріңіз","Key not found. Check you copied it in full"],
   r_subscription_ended:["Подписка закончилась. Продлите её, чтобы продолжить","Жазылым аяқталды. Жалғастыру үшін ұзартыңыз","Your subscription has ended. Renew to continue"],
-  r_payment_failed:["Оплата подписки не прошла. Проверьте карту в Gumroad","Жазылым төлемі өтпеді. Gumroad-тағы картаны тексеріңіз","Subscription payment failed. Check your card on Gumroad"],
+  r_payment_failed:["Оплата подписки не прошла. Проверьте карту по ссылке в письме об оплате","Жазылым төлемі өтпеді. Төлем хатындағы сілтеме арқылы картаны тексеріңіз","Your subscription payment failed. Check your card via the link in your payment email"],
   r_refunded:["Покупка отменена — ключ не действует","Сатып алу жойылды — кілт жарамсыз","The purchase was refunded — the key is no longer valid"],
   r_key_bound:["Этот ключ уже привязан к аккаунту — войдите по почте","Бұл кілт аккаунтқа байланған — поштамен кіріңіз","This key is already linked to an account — sign in with email"],
   r_email_exists:["Аккаунт с этой почтой уже есть — войдите","Бұл поштамен аккаунт бар — кіріңіз","An account with this email exists — please sign in"],
   r_bad_input:["Проверьте почту; пароль — не короче 6 знаков","Поштаны тексеріңіз; құпиясөз — кемінде 6 таңба","Check your email; the password needs 6+ characters"],
   r_bad_login:["Неверная почта или пароль","Пошта немесе құпиясөз қате","Wrong email or password"],
   r_net:["Нет связи с сервером. Попробуйте ещё раз","Сервермен байланыс жоқ. Қайталап көріңіз","Can't reach the server. Please try again"],
-  r_inactive:["Подписка неактивна. Продлите её в Gumroad","Жазылым белсенді емес. Gumroad-та ұзартыңыз","Your subscription is inactive. Renew it on Gumroad"],
-  r_quota:["Примерки на этот месяц закончились","Осы айдағы өлшеулер таусылды","You've used all try-ons for this month"],
+  r_inactive:["Подписка неактивна. Продлите её на странице оплаты","Жазылым белсенді емес. Төлем бетінде ұзартыңыз","Your subscription is inactive. Renew it on the payment page"],
+  r_quota:["Примерки на этот месяц закончились. Нужно больше — спросите о тарифе VIP","Осы айдағы киіп көрулер таусылды. Көбірек керек болса — VIP тарифі туралы сұраңыз","You have used all try-ons for this month. Need more? Ask about VIP"],
   r_rate:["Слишком часто — попробуйте через час","Тым жиі — бір сағаттан кейін көріңіз","Too many in a row — try again in an hour"],
   once:["Подписка — отменить можно в любой момент","Жазылым — кез келген уақытта тоқтатуға болады","Subscription — cancel anytime"],
   privacy_short:["Фото видите только вы. Удалить — одной кнопкой в профиле","Суреттерді тек сіз көресіз. Профильде бір батырмамен өшіріледі","Only you can see your photos. Delete them with one tap in your profile"],
   bad_key:["Такой ключ не найден. Для демо: ARU-DEMO-2026","Мұндай кілт табылмады. Демо үшін: ARU-DEMO-2026","Key not found. For the demo use ARU-DEMO-2026"],
-  pay_toast:["В прототипе оплата выключена. В рабочей версии здесь откроется Gumroad","Прототипте төлем өшірулі. Жұмыс нұсқасында мұнда Gumroad ашылады","Payment is off in the prototype. The live app opens Gumroad here"],
+  pay_toast:["В прототипе оплата выключена. В рабочей версии здесь откроется страница оплаты","Прототипте төлем өшірулі. Жұмыс нұсқасында мұнда төлем беті ашылады","Payment is off in the prototype. In the live app the payment page opens here"],
   step_n:["Шаг {n} из 3","{n}-қадам, барлығы 3","Step {n} of 3"],
   face_title:["Фото лица","Бет суреті","Your face"],
   face_sub:["По нему Aru определит ваш цветотип","Осы сурет бойынша Aru түс типіңізді анықтайды","Aru reads your colour type from this photo"],
@@ -521,7 +521,7 @@ const S = {
   ai_need_photo:["Сначала загрузите фото лица в разборе","Алдымен талдауда бет суретін жүктеңіз","Upload a face photo in the analysis first"],
   r_not_enabled:["Примерки включатся в ближайшие дни — ваши фото уже сохранены","Киіп көру жақын күндері қосылады — суреттеріңіз сақталды","Try-ons are switching on in the next few days — your photos are saved"],
   r_billing:["Примерки временно недоступны. Попробуйте позже","Киіп көру уақытша қолжетімсіз. Кейінірек көріңіз","Try-ons are temporarily unavailable. Please try later"],
-  r_quota:["Примерки на этот месяц закончились","Осы айдағы киіп көрулер таусылды","You've used all try-ons for this month"],
+  r_quota:["Примерки на этот месяц закончились. Нужно больше — спросите о тарифе VIP","Осы айдағы киіп көрулер таусылды. Көбірек керек болса — VIP тарифі туралы сұраңыз","You have used all try-ons for this month. Need more? Ask about VIP"],
   r_rate:["Слишком часто. Подождите немного и попробуйте снова","Тым жиі. Сәл күтіп, қайталаңыз","Too many in a row. Wait a little and try again"],
   r_need_photo:["Сначала загрузите фото лица","Алдымен бет суретін жүктеңіз","Upload a face photo first"],
   r_need_analysis:["Сначала нужен разбор цветотипа","Алдымен түс типін талдау керек","Run your colour analysis first"],
@@ -1588,7 +1588,7 @@ function runAnalysis(){
     if(d&&d.ok) toast(t('done_toast')); else if(d&&d.reason!=='not_enabled') toast(why(d.reason)); });
 }
 
-/* ---------- server: Supabase + Gumroad ---------- */
+/* ---------- server: Supabase + оплата ---------- */
 const SB_URL='https://cgefoqmwqwcxtozcurqo.supabase.co', SB_KEY='sb_publishable_7iWgF0qLKanDVI4-NFvhXg_6MqMc2Gt';
 const API=SB_URL+'/functions/v1/aru-api', AI_API=SB_URL+'/functions/v1/aru-ai', BUY_URL='https://kvantor.gumroad.com/l/aru';
 let AUTH=null; try{ AUTH=JSON.parse(localStorage.getItem('aru_auth_v1')||'null'); }catch(e){}
