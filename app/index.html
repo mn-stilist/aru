@@ -165,6 +165,15 @@ h3.h{font-family:var(--serif);font-size:24px;line-height:1.1;font-weight:700;col
 .hero{position:relative;border-radius:var(--r-xl);padding:20px;color:var(--white);background:linear-gradient(150deg,#7E3654 0%,#4A1D30 100%);overflow:hidden;box-shadow:var(--lift)}
 .hero .hero-av{position:absolute;right:16px;top:16px;width:92px;height:92px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 3px rgba(255,255,255,.35)}
 .hero .hero-av img{width:100%;height:100%;object-fit:cover;display:block}
+.hair-ph{position:relative}
+.hair-ph img{filter:grayscale(.35) brightness(.92)}
+.ph-over{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:16px;background:linear-gradient(180deg,rgba(109,46,70,.15),rgba(109,46,70,.72));color:#fff}
+.ph-over span{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.95);color:var(--berry);display:grid;place-items:center}
+.ph-over b{font-size:16px;text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.ph-over small{font-size:12.5px;max-width:300px;opacity:.95}
+.mlist{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:0}
+.mlist li{display:grid;grid-template-columns:118px 1fr;gap:10px;padding:9px 2px;border-bottom:1px solid var(--line);font-size:13.5px}
+.mlist li span{color:var(--muted);font-weight:700}
 .tryon-frame{position:relative;border-radius:18px;overflow:hidden;background:#D8D8D5}
 .tryon-frame img{width:100%;display:block}
 .ba{position:absolute;left:10px;top:10px;display:flex;background:rgba(255,255,255,.93);border-radius:30px;padding:3px;box-shadow:0 8px 20px -10px rgba(0,0,0,.5)}
@@ -480,7 +489,7 @@ const S = {
   harmony:["Гардероб в палитре","Палитрадағы гардероб","Wardrobe in palette"],
   sections:["Ваш разбор","Сіздің талдауыңыз","Your analysis"],
   s_colors:["Цвета","Түстер","Colours"], s_colors_d:["16 ваших, 8 не ваших","16 сіздікі, 8 сіздікі емес","16 yours, 8 not yours"],
-  s_hair:["Причёска","Шаш үлгісі","Hair"], s_hair_d:["3 стрижки, 4 оттенка","3 үлгі, 4 реңк","3 cuts, 4 shades"],
+  s_hair:["Причёски","Шаш үлгілері","Hairstyles"], s_hair_d:["8 стрижек на вашем фото","Суретіңізде 8 шаш үлгісі","8 cuts on your photo"],
   s_clothes:["Одежда","Киім","Clothes"], s_clothes_d:["Фигура «песочные часы»","«Құм сағат» бітімі","Hourglass figure"],
   s_acc:["Обувь и аксессуары","Аяқ киім, аксессуарлар","Shoes & accessories"], s_acc_d:["Золото и коньяк","Алтын мен коньяк","Gold and cognac"],
   s_makeup:["Макияж","Макияж","Makeup"], s_makeup_d:["Тёплая роза, бронза","Жылы раушан, қола","Warm rose, bronze"],
@@ -489,6 +498,21 @@ const S = {
   another_tip:["Ещё совет","Тағы кеңес","Another tip"],
   today_look:["Образ на сегодня","Бүгінгі бейне","Today's look"],
   open_look:["Открыть образ","Бейнені ашу","Open the look"],
+  tab_hair:["Причёски","Шаш үлгілері","Hair"], hair_title:["Причёски","Шаш үлгілері","Hairstyles"],
+  hair_sub:["Посмотрите себя с новой стрижкой до похода в салон.","Салонға бармай тұрып, жаңа шаш үлгісімен өзіңізді көріңіз.","See yourself with a new cut before you go to the salon."],
+  hair_ph:["Здесь будет ваша примерка","Мұнда сіздің киіп көруіңіз болады","Your try-on will appear here"],
+  hair_ph_d:["В рабочей версии Aru «наденет» эту стрижку на ваше фото — вид с трёх сторон.","Жұмыс нұсқасында Aru бұл шаш үлгісін суретіңізге «кигізеді» — үш жақтан.","In the live app Aru puts this cut on your photo, seen from three angles."],
+  why_hair:["Почему вам идёт","Неге жарасады","Why it suits you"],
+  shade_t:["Оттенок под ваш цветотип","Түс типіңізге сай реңк","Shade for your colour type"],
+  show_master:["Показать мастеру","Шеберге көрсету","Show my stylist"],
+  master_t:["Карточка для мастера","Шеберге арналған карта","Card for your stylist"],
+  master_sub:["Откройте в салоне и покажите мастеру — он сразу поймёт, что делать.","Салонда ашып, шеберге көрсетіңіз — ол не істеу керегін бірден түсінеді.","Open it at the salon and show your stylist: they'll know exactly what to do."],
+  m_len:["Длина","Ұзындығы","Length"], m_shape:["Форма и слои","Пішіні мен қабаттары","Shape and layers"], m_bang:["Чёлка","Кекіл","Fringe"], m_part:["Пробор","Айырым","Parting"], m_style:["Укладка","Сәндеу","Styling"], m_color:["Цвет","Түсі","Colour"],
+  m_say:["Скажите мастеру","Шеберге айтыңыз","Tell your stylist"], m_care:["Уход дома","Үйдегі күтім","Care at home"],
+  m_save:["Сохранить карточку","Картаны сақтау","Save the card"], m_send:["Отправить в WhatsApp","WhatsApp-қа жіберу","Send via WhatsApp"],
+  m_save_toast:["В рабочей версии карточка сохранится в PDF и в ваш профиль","Жұмыс нұсқасында карта PDF-ке және профиліңізге сақталады","In the live app the card is saved as a PDF and to your profile"],
+  m_send_toast:["В рабочей версии откроется WhatsApp с карточкой","Жұмыс нұсқасында карта бар WhatsApp ашылады","In the live app WhatsApp opens with the card"],
+  hair_n_of:["{n} стрижек","{n} шаш үлгісі","{n} cuts"],
   tab_home:["Панель","Панель","Panel"], tab_looks:["Образы","Бейнелер","Looks"], tab_check:["Проверить","Тексеру","Check"], tab_wardrobe:["Гардероб","Гардероб","Wardrobe"], tab_chat:["Стилист","Стилист","Stylist"],
   drape_title:["Тест драпировки","Драпировка сынағы","Drape test"],
   drape_sub:["Нажмите на цвет и посмотрите на лицо","Түсті басып, бетке қараңыз","Tap a colour and watch the face"],
@@ -681,6 +705,58 @@ const LOOKS = {
     why:['Всё сочетается со всем — удобно собирать чемодан.','Бәрі бір-бірімен үйлеседі — чемодан жинау оңай.','Everything goes with everything, so packing is easy.']}
 };
 const OCC = ['work','day','party','date','travel'];
+/* ---------- причёски: 8 стрижек (примерка на фото + карточка для мастера) ---------- */
+const HAIRSTYLES = [
+ {id:'bob', n:['Боб до подбородка','Иекке дейінгі боб','Chin-length bob'],
+  len:['До подбородка','Иекке дейін','Chin length'], shape:['Ровный срез, лёгкая текстура, объём на макушке','Түзу кесу, жеңіл текстура, төбеде көлем','Blunt line, light texture, crown volume'],
+  bang:['Без чёлки','Кекілсіз','No fringe'], part:['Сбоку','Бүйірден','Side part'], style:['Кончики слегка наружу, фен с круглой щёткой','Ұштары сәл сыртқа, дөңгелек тарақпен фен','Ends flicked out, round-brush blow-dry'],
+  why:['Открывает шею и скулы, лицо выглядит свежее и моложе.','Мойын мен бет сүйегін ашады, бет сергек әрі жас көрінеді.','Opens up neck and cheekbones; the face looks fresher and younger.'],
+  say:['Боб до подбородка, срез ровный, но с лёгкой текстурой по краю. Объём на макушке, пробор сбоку, кончики чуть наружу.','Иекке дейінгі боб, кесу түзу, шетінде жеңіл текстура. Төбеде көлем, айырым бүйірден, ұштары сәл сыртқа.','Chin-length bob, blunt line with a little texture at the edge. Volume at the crown, side part, ends flicked slightly out.']},
+ {id:'lob', n:['Удлинённый боб с волной','Толқынды ұзартылған боб','Long bob with waves'],
+  len:['До ключиц','Бұғанаға дейін','Collarbone length'], shape:['Лёгкая градуировка спереди','Алдында жеңіл градуировка','Light graduation at the front'],
+  bang:['Без чёлки','Кекілсіз','No fringe'], part:['Глубокий боковой','Терең бүйір айырым','Deep side part'], style:['Небрежные «пляжные» волны, плойка 32 мм','Еркін «жағажай» толқындары, 32 мм бұйралағыш','Loose beach waves, 32 mm curling iron'],
+  why:['Самая универсальная длина: и в офис, и на праздник.','Ең әмбебап ұзындық: кеңсеге де, мерекеге де.','The most versatile length: office or celebration.'],
+  say:['Удлинённый боб до ключиц, спереди чуть длиннее. Глубокий боковой пробор, укладка — небрежные волны.','Бұғанаға дейінгі ұзартылған боб, алдында сәл ұзынырақ. Терең бүйір айырым, сәндеу — еркін толқындар.','Long bob to the collarbone, slightly longer at the front. Deep side part, styled in loose waves.']},
+ {id:'curtain', n:['Каскад с чёлкой-шторкой','Перде-кекілді каскад','Layers with curtain bangs'],
+  len:['Ниже плеч','Иықтан төмен','Below the shoulders'], shape:['Каскад, пряди обрамляют лицо от скул','Каскад, шаш шоқтары бетті бет сүйегінен бастап жиектейді','Layers, face-framing from the cheekbones'],
+  bang:['Шторка, разделена на две стороны','Перде кекіл, екі жаққа бөлінген','Curtain bangs, parted in the middle'], part:['Прямой, по центру','Тік, ортасынан','Centre part'], style:['Объёмная укладка феном, кончики внутрь','Фенмен көлемді сәндеу, ұштары ішке','Bouncy blow-dry, ends turned in'],
+  why:['Шторка смягчает черты и визуально молодит.','Перде кекіл бет пішінін жұмсартып, жасартады.','Curtain bangs soften features and take off years.'],
+  say:['Каскад ниже плеч, пряди у лица начинаются от скул. Чёлка-шторка на две стороны, пробор по центру.','Иықтан төмен каскад, бет жанындағы шоқтар бет сүйегінен басталады. Екі жаққа перде кекіл, айырым ортасынан.','Layers below the shoulders, face-framing from the cheekbones. Curtain bangs, centre part.']},
+ {id:'shag', n:['Рваное каре-шегги','Жыртық каре-шегги','Shag cut'],
+  len:['До плеч','Иыққа дейін','Shoulder length'], shape:['Много рваных слоёв, текстура','Көп жыртық қабат, текстура','Lots of choppy layers, texture'],
+  bang:['Лёгкая рваная','Жеңіл жыртық','Wispy'], part:['По центру или без пробора','Ортасынан немесе айырымсыз','Centre or none'], style:['Текстурирующий спрей, сушка руками','Текстура спрейі, қолмен кептіру','Texture spray, scrunch-dry'],
+  why:['Самая молодёжная стрижка: живая, лёгкая, не требует долгой укладки.','Ең жастарға тән шаш үлгісі: жеңіл, ұзақ сәндеуді қажет етпейді.','The most youthful cut: lively, light and low-effort.'],
+  say:['Шегги до плеч: много рваных слоёв по всей длине, лёгкая рваная чёлка. Укладка — текстура, сушка руками.','Иыққа дейінгі шегги: бүкіл ұзындықта көп жыртық қабат, жеңіл жыртық кекіл. Сәндеу — текстура, қолмен кептіру.','Shoulder-length shag: choppy layers throughout, wispy fringe. Texture spray and scrunch-dry.']},
+ {id:'pixie', n:['Пикси с длинной чёлкой','Ұзын кекілді пикси','Pixie with long fringe'],
+  len:['Короткая','Қысқа','Short'], shape:['Короткие виски и затылок, объём сверху','Қысқа самай мен желке, үстінде көлем','Short sides and nape, volume on top'],
+  bang:['Длинная косая','Ұзын қиғаш','Long side-swept'], part:['Сбоку','Бүйірден','Side part'], style:['Немного воска на кончики','Ұштарына аз балауыз','A touch of wax on the ends'],
+  why:['Смелый вариант: открывает глаза и шею, выглядит дерзко и молодо.','Батыл нұсқа: көз бен мойынды ашады, жас әрі батыл көрінеді.','The bold option: opens up eyes and neck, looks daring and young.'],
+  say:['Пикси: короткие виски и затылок, сверху длина для объёма, длинная косая чёлка набок.','Пикси: қысқа самай мен желке, үстінде көлемге арналған ұзындық, ұзын қиғаш кекіл.','Pixie: short sides and nape, length on top for volume, long side-swept fringe.']},
+ {id:'curls', n:['Длинные голливудские локоны','Ұзын голливуд бұйралары','Long Hollywood curls'],
+  len:['Длинные, ниже лопаток','Ұзын, жауырыннан төмен','Long, below the shoulder blades'], shape:['Лёгкий каскад для движения','Қозғалыс үшін жеңіл каскад','Light layers for movement'],
+  bang:['Без чёлки','Кекілсіз','No fringe'], part:['Сбоку','Бүйірден','Side part'], style:['Крупные локоны, плойка 38 мм, расчесать пальцами','Ірі бұйралар, 38 мм бұйралағыш, саусақпен тарау','Big curls, 38 mm iron, brushed out with fingers'],
+  why:['Женственно и празднично; блики у лица освежают кожу.','Әйелдік әрі мерекелік; бет жанындағы жалтырлар теріні сергітеді.','Feminine and festive; highlights near the face brighten skin.'],
+  say:['Длину сохранить, лёгкий каскад для движения. Мягкие блики у лица на 1–2 тона светлее.','Ұзындықты сақтау, қозғалыс үшін жеңіл каскад. Бет жанында 1–2 тонға ашық жұмсақ жалтырлар.','Keep the length, light layers for movement. Soft highlights near the face, 1–2 shades lighter.']},
+ {id:'pony', n:['Высокий гладкий хвост','Биік тегіс құйрық','Sleek high ponytail'],
+  len:['Длинные','Ұзын','Long'], shape:['Без стрижки — укладка','Қиюсыз — сәндеу','No cut, styling only'],
+  bang:['Пряди у лица','Бет жанындағы шоқтар','Face-framing strands'], part:['Без пробора','Айырымсыз','No part'], style:['Гладко зачесать, объём на макушке, резинку обернуть прядью','Тегіс тарау, төбеде көлем, резеңкені шоқпен орау','Smooth back, crown volume, wrap the band with a strand'],
+  why:['Подтягивает черты лица — быстрый «эффект лифтинга».','Бет пішінін тартады — жылдам «лифтинг әсері».','Lifts the features: an instant face-lift effect.'],
+  say:['Высокий гладкий хвост с объёмом на макушке, оставить по пряди у лица, резинку спрятать под прядь.','Төбеде көлемі бар биік тегіс құйрық, бет жанында бір-бір шоқ қалдыру, резеңкені шоқтың астына жасыру.','High sleek ponytail with crown volume, a strand left at each side of the face, band hidden under a strand.']},
+ {id:'bun', n:['Небрежный высокий пучок','Еркін биік түйін','Messy high bun'],
+  len:['Средние и длинные','Орташа және ұзын','Medium to long'], shape:['Без стрижки — укладка','Қиюсыз — сәндеу','No cut, styling only'],
+  bang:['Выпущенные прядки','Шығарылған шоқтар','Loose tendrils'], part:['Без пробора','Айырымсыз','No part'], style:['Собрать на макушке, слегка растрепать, закрепить шпильками','Төбеге жинап, сәл ұйпалап, түйреуішпен бекіту','Gather at the crown, loosen, pin in place'],
+  why:['Лёгкий молодёжный образ на каждый день и в дорогу.','Күнделікті және жолға жеңіл жастық бейне.','Easy, youthful look for every day and travel.'],
+  say:['Небрежный высокий пучок на макушке, у лица выпустить тонкие прядки.','Төбеде еркін биік түйін, бет жанына жіңішке шоқтар шығару.','Messy high bun on the crown, with fine tendrils left out around the face.']}
+];
+const HSHADE = {
+  aigerim:{ok:[['#3B2418',['Тёмный шоколад','Қою шоколад','Dark chocolate']],['#6E3F24',['Золотистый каштан','Алтын құба','Golden chestnut']],['#9A4A26',['Медные блики','Мыс жалтырлары','Copper highlights']]],
+           no:[['#17171E',['Иссиня-чёрный','Көкшіл қара','Blue-black']],['#BDB6A8',['Пепельный блонд','Күлгін аққұба','Ash blonde']]]},
+  elena:{ok:[['#6B5A4E',['Пепельно-русый','Күлгін ақшыл','Ash brown']],['#A69684',['Жемчужный блонд','Інжу аққұба','Pearl blonde']],['#8A7868',['Холодный «мокко»','Суық «мокко»','Cool mocha']]],
+         no:[['#9A4A26',['Медь','Мыс','Copper']],['#17171E',['Иссиня-чёрный','Көкшіл қара','Blue-black']]]}
+};
+const HAIRDONE = {aigerim:[], elena:[]}; // какие примерки уже готовы: img/hair/<клиентка>-<стрижка>.jpg
+const hairImg = (who,id) => HAIRDONE[who].includes(id) ? `img/hair/${who}-${id}.jpg` : null;
+
 const TRYCL = {
   aigerim:{name:["Айгерим, 28","Айгерім, 28","Aigerim, 28"],
     type:["Тёмная осень","Қою күз","Deep Autumn"],
@@ -951,7 +1027,7 @@ const mkItem = (type, key, hex, photo) => { hex = hex || C[key].hex; const n = k
 const state = {
   screen:'welcome', prev:[], onboarded:false, step:0, photos:{face:null, body:null},
   quiz:{age:'26–35', height:165, life:['office','events'], budget:'$$', like:['classic','minimal'], dislike:''},
-  drape:'terracotta', cut:'lob', hairc:'chestnut', lip:'rose', occ:'work', tip:0, client:'aigerim', ba:'after', wm:'key', busy:false, sub:null, demo:false, wKey:'', wEmail:'',
+  drape:'terracotta', cut:'lob', hcut:'curtain', hba:'after', hairc:'chestnut', lip:'rose', occ:'work', tip:0, client:'aigerim', ba:'after', wm:'key', busy:false, sub:null, demo:false, wKey:'', wEmail:'',
   wardrobe: DEMO_W.map(([tp,k]) => mkItem(tp,k)), wf:'all', addOpen:false, addType:'top',
   checkType:'top', check:null, checking:false, checks:[], showShop:false, shopDone:{},
   chat:[], typing:false
@@ -966,8 +1042,8 @@ const owns = (type, key) => state.wardrobe.some(w => (w.type===type || (type==='
 
 /* ---------- chrome ---------- */
 const langPills = () => `<div class="langs" role="group" aria-label="Language">${['RU','KZ','EN'].map((x,i)=>`<button class="${i===L?'on':''}" data-act="lang" data-arg="${i}" aria-pressed="${i===L}">${x}</button>`).join('')}</div>`;
-const TABS = [['home','home','tab_home'],['looks','hanger','tab_looks'],['check','camera','tab_check'],['wardrobe','wardrobe','tab_wardrobe'],['chat','chat','tab_chat']];
-const TITLES = {colors:'s_colors', hair:'s_hair', clothes:'s_clothes', acc:'s_acc', makeup:'s_makeup', profile:'profile'};
+const TABS = [['home','home','tab_home'],['hair','scissors','tab_hair'],['check','camera','tab_check'],['looks','hanger','tab_looks'],['chat','chat','tab_chat']];
+const TITLES = {colors:'s_colors', master:'master_t', clothes:'s_clothes', acc:'s_acc', makeup:'s_makeup', profile:'profile'};
 function topbar(){
   const s=state.screen;
   if(s==='welcome'||s==='analyzing') return '';
@@ -1108,22 +1184,40 @@ SCREENS.colors = () => {
 };
 
 SCREENS.hair = () => {
-  const hc=HAIRC[state.hairc];
+  const c=state.client in HSHADE?state.client:'aigerim', h=HAIRSTYLES.find(x=>x.id===state.hcut)||HAIRSTYLES[0], img=hairImg(c,h.id), sh=HSHADE[c];
+  const who=`<div class="who">${['aigerim','elena'].map(k=>`<button class="${c===k?'on':''}" data-act="who" data-arg="${k}"><img src="img/${k}-face.jpg" alt="">${tr(TRYCL[k].name).split(',')[0]}</button>`).join('')}</div>`;
+  const before = state.hba==='before';
+  const frame = img
+    ? `<div class="tryon-frame"><img src="${before?`img/${c}-hair-orig.jpg`:img}" alt="${tr(h.n)}"><div class="ba"><button data-act="hba" data-arg="before" class="${before?'on':''}">${t('before')}</button><button data-act="hba" data-arg="after" class="${before?'':'on'}">${t('after')}</button></div></div>`
+    : `<div class="tryon-frame hair-ph"><img src="img/${c}-hair-orig.jpg" alt=""><div class="ph-over"><span>${ic('scissors',26)}</span><b>${t('hair_ph')}</b><small>${t('hair_ph_d')}</small></div></div>`;
   return `<section class="pad">
-  <div class="card" style="display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center">
-    <div class="av" style="width:150px;height:150px;border-radius:50%;overflow:hidden">${avatar({cut:state.cut,hair:hc.hex,dull:!hc.ok,drape:C.camel.hex})}</div>
-    <div><p class="small muted" style="font-weight:700">${t('tryon')}</p><div class="cname">${tr(CUTS[state.cut].n)}</div>
-      <p class="small" style="margin-top:4px">${tr(hc.n)}</p>
-      <span class="verdict ${hc.ok?'ok':'bad'}">${ic(hc.ok?'check':'cross',16,2.4)} ${hc.ok?t('rec'):t('not_rec')}</span></div>
+  <h2 class="h" style="margin:2px 2px 4px">${t('hair_title')}</h2>
+  <p class="small muted" style="margin:0 2px 12px">${t('hair_sub')}</p>
+  ${who}
+  <div class="occ">${HAIRSTYLES.map(x=>`<button class="chip ${h.id===x.id?'on':''}" data-act="hcut" data-arg="${x.id}">${tr(x.n)}</button>`).join('')}</div>
+  <div class="card" style="margin-top:12px;padding:12px">
+    ${frame}
+    <div class="look-head" style="margin-top:12px"><div><h3 class="h">${tr(h.n)}</h3><p class="small muted" style="font-weight:700">${tr(h.len)} · ${tr(h.bang)}</p></div></div>
+    <div class="whybox"><b>${t('why_hair')}</b>${tr(h.why)}</div>
+    <p class="small" style="font-weight:800;margin:14px 2px 8px">${t('shade_t')}</p>
+    <div class="hairc">${sh.ok.map(([hex,n])=>`<button class="on-none"><i style="background:${hex}"></i>${tr(n)}</button>`).join('')}${sh.no.map(([hex,n])=>`<button class="avoid"><i style="background:${hex}"></i>${tr(n)}</button>`).join('')}</div>
+    <button class="btn primary" style="width:100%;margin-top:16px" data-act="go" data-arg="master">${ic('scissors',18)} ${t('show_master')}</button>
   </div>
-  <div class="seg" style="margin-top:12px">${Object.keys(CUTS).map(k=>`<button class="${state.cut===k?'on':''}" data-act="cut" data-arg="${k}">${tr(CUTS[k].n)}</button>`).join('')}</div>
-  <h3 class="sec">${t('hair_shades')}</h3>
-  <div class="hairc">${Object.keys(HAIRC).map(k=>`<button class="${state.hairc===k?'on':''} ${HAIRC[k].ok?'':'avoid'}" data-act="hairc" data-arg="${k}"><i style="background:${HAIRC[k].hex}"></i>${tr(HAIRC[k].n)}</button>`).join('')}</div>
-  <h3 class="sec">${t('cuts')}</h3>
-  ${Object.keys(CUTS).map(k=>`<button class="card cut-card ${state.cut===k?'on':''}" data-act="cut" data-arg="${k}" style="width:100%;text-align:left"><div class="av">${avatar({cut:k,hair:HAIRC.chestnut.hex,drape:C.sage.hex})}</div><div><b>${tr(CUTS[k].n)}</b><p>${tr(CUTS[k].w)}</p></div></button>`).join('')}
-  <div class="card" style="margin-top:12px;display:grid;grid-template-columns:70px 1fr;gap:14px;align-items:center">
-    <svg viewBox="0 0 70 90" width="70" height="90" aria-hidden="true"><ellipse cx="35" cy="45" rx="24" ry="33" fill="#F7E6EC" stroke="#6D2E46" stroke-width="2"/><path d="M8 45 H62 M35 8 V82" stroke="#C2456E" stroke-dasharray="3 3"/></svg>
-    <div><p class="small muted" style="font-weight:700">${t('face_shape')}</p><div class="cname">${t('oval')}</div><p class="small muted">${t('oval_d')}</p></div>
+</section>`;
+};
+
+SCREENS.master = () => {
+  const c=state.client in HSHADE?state.client:'aigerim', h=HAIRSTYLES.find(x=>x.id===state.hcut)||HAIRSTYLES[0], img=hairImg(c,h.id), sh=HSHADE[c];
+  const row=(k,v)=>`<li><span>${t(k)}</span><b>${v}</b></li>`;
+  return `<section class="pad">
+  <p class="small muted" style="margin:0 2px 10px">${t('master_sub')}</p>
+  <div class="card" style="padding:12px">
+    <div class="tryon-frame ${img?'':'hair-ph'}"><img src="${img||`img/${c}-hair-orig.jpg`}" alt="">${img?'':`<div class="ph-over"><span>${ic('scissors',22)}</span><b>${tr(h.n)}</b></div>`}</div>
+    <h3 class="h" style="margin:12px 2px 2px">${tr(h.n)}</h3>
+    <p class="small muted" style="margin:0 2px;font-weight:700">${tr(TRYCL[c].name)} · ${tr(TRYCL[c].type)}</p>
+    <ul class="mlist">${row('m_len',tr(h.len))}${row('m_shape',tr(h.shape))}${row('m_bang',tr(h.bang))}${row('m_part',tr(h.part))}${row('m_style',tr(h.style))}${row('m_color',sh.ok.map(([,n])=>tr(n)).join(', '))}</ul>
+    <div class="whybox"><b>${t('m_say')}</b>«${tr(h.say)}»</div>
+    <div class="row" style="margin-top:14px;gap:10px"><button class="btn ghost sm" style="flex:1" data-act="msave">${ic('heart',18)} ${t('m_save')}</button><button class="btn primary sm" style="flex:1" data-act="msend">${ic('chat',18)} ${t('m_send')}</button></div>
   </div>
 </section>`;
 };
@@ -1361,13 +1455,14 @@ let lastScreen=null;
 function render(){
   const cont=document.getElementById('content');
   const keep = (cont && lastScreen===state.screen) ? cont.scrollTop : 0;
-  const tabs = ['home','looks','check','wardrobe','chat'].includes(state.screen);
+  const tabs = ['home','hair','looks','check','wardrobe','chat'].includes(state.screen);
   phone.innerHTML = topbar() + `<main class="content ${tabs?'has-tabs':''}" id="content">${SCREENS[state.screen]()}</main>` + (tabs?tabbar():'') + `<div class="toast" id="toast" role="status" aria-live="polite"></div>`;
   document.documentElement.lang = ['ru','kk','en'][L];
   document.title = 'Aru — ' + t('tagline');
   renderSide();
   const c2=document.getElementById('content');
   if(state.screen==='chat') c2.scrollTop = c2.scrollHeight; else c2.scrollTop = keep;
+  const onc=document.querySelector('.occ .chip.on'); if(onc&&onc.parentElement) onc.parentElement.scrollLeft=onc.offsetLeft-onc.parentElement.clientWidth/2+onc.clientWidth/2;
   lastScreen=state.screen;
 }
 function go(s){ if(s!==state.screen) state.prev.push(state.screen); state.screen=s; render(); }
@@ -1444,6 +1539,10 @@ const ACT = {
   back:()=>{ state.screen=state.prev.pop()||'home'; render(); },
   drape:a=>{ state.drape=a; render(); },
   cut:a=>{ state.cut=a; render(); },
+  hcut:a=>{ state.hcut=a; state.hba='after'; render(); },
+  hba:a=>{ state.hba=a; render(); },
+  msave:()=>toast(t('m_save_toast')),
+  msend:()=>toast(t('m_send_toast')),
   hairc:a=>{ state.hairc=a; render(); },
   lip:a=>{ state.lip=a; render(); },
   occ:a=>{ state.occ=a; state.showShop=false; state.ba='after'; render(); },
