@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Aru — личный стилист в телефоне</title>
-<meta name="description" content="Aru — личный ИИ-стилист: цветотип, причёска, одежда и готовые образы в одной панели. $29, один раз, без подписки.">
+<meta name="description" content="Aru — личный ИИ-стилист: цветотип, причёска, одежда и готовые образы в одной панели. $29 в месяц, отменить можно в любой момент.">
 <meta name="theme-color" content="#6D2E46">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -257,16 +257,16 @@ footer .logo{color:#fff;font-size:30px}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-const GUMROAD_URL = ''; // вставить ссылку на товар Gumroad после публикации
+const GUMROAD_URL = 'https://kvantor.gumroad.com/l/aru'; // товар Aru в Gumroad
 let L = 0;
 const S = {
-  nav_buy:["Купить за $29","$29-ға алу","Get it for $29"],
+  nav_buy:["Купить · $29/мес","Алу · $29/ай","Get it · $29/mo"],
   h1a:["Ваш личный стилист","Жеке стилистіңіз","Your personal stylist"],
   h1b:["в телефоне","телефоныңызда","in your phone"],
   lead:["Цветотип, причёска, одежда и готовые образы — в одной панели. Как будто вас одевал один стилист: от причёски до обуви.","Түс типі, шаш үлгісі, киім және дайын бейнелер — бір панельде. Шаштан аяқ киімге дейін бір стилист киіндіргендей.","Colour type, haircut, clothes and ready looks in one panel. As if one stylist dressed you, from hair to shoes."],
-  cta_buy:["Получить Aru за $29","Aru-ды $29-ға алу","Get Aru for $29"],
+  cta_buy:["Получить Aru — $29 в месяц","Aru алу — айына $29","Get Aru — $29 a month"],
   cta_demo:["Посмотреть пример","Мысалды көру","See an example"],
-  hero_note:["Одна оплата, без подписки. Фото удаляются сразу после анализа.","Бір реттік төлем, жазылымсыз. Фото талдаудан кейін бірден өшіріледі.","One payment, no subscription. Photos are deleted right after analysis."],
+  hero_note:["Подписка $29 в месяц, отменить можно в любой момент. Фото удаляются сразу после анализа.","Жазылым айына $29, кез келген уақытта тоқтатуға болады. Фото талдаудан кейін бірден өшіріледі.","$29 a month, cancel anytime. Photos are deleted right after analysis."],
   your_type:["Цветотип","Түс типі","Colour type"],
   deep_autumn:["Тёмная осень","Қою күз","Deep Autumn"],
   pain_h:["Знакомо?","Таныс па?","Sound familiar?"],
@@ -291,17 +291,17 @@ const S = {
   feat_h:["Что внутри Aru","Aru ішінде не бар","What's inside Aru"],
   feat_sub:["Всё, что делает стилист, — в одном приложении, и всё согласовано между собой.","Стилист істейтіннің бәрі — бір қосымшада, бәрі бір-бірімен үйлескен.","Everything a stylist does, in one app, and all of it fits together."],
   lang_h:["На вашем языке","Өз тіліңізде","In your language"],
-  price_h:["Одна оплата — стилист навсегда","Бір төлем — стилист мәңгі","Pay once, keep your stylist"],
-  price_sub:["Никаких подписок. После оплаты вы получаете на почту личный ключ доступа и сразу открываете свою панель.","Ешқандай жазылым жоқ. Төлемнен кейін поштаңызға жеке кілт келеді де, панеліңізді бірден ашасыз.","No subscriptions. After payment you get a personal access key by email and open your panel right away."],
+  price_h:["Личный стилист — $29 в месяц","Жеке стилист — айына $29","Your personal stylist — $29 a month"],
+  price_sub:["Отменить можно в любой момент, одной кнопкой в Gumroad. После оплаты вы получаете на почту личный ключ доступа и сразу открываете свою панель.","Gumroad-та бір батырмамен кез келген уақытта тоқтатуға болады. Төлемнен кейін поштаңызға жеке кілт келеді де, панеліңізді бірден ашасыз.","Cancel anytime with one click in Gumroad. After payment you get a personal access key by email and open your panel right away."],
   priv_h:["Ваши фото — только ваши","Суреттеріңіз — тек сіздікі","Your photos stay yours"],
   priv_d:["Фото используются только для анализа и удаляются сразу после него. В профиле всегда есть кнопка «Удалить мои фото».","Фото тек талдау үшін қолданылады және одан кейін бірден өшіріледі. Профильде әрдайым «Суреттерімді өшіру» батырмасы бар.","Photos are used only for the analysis and deleted right after it. Your profile always has a Delete my photos button."],
-  once:["один раз","бір рет","one time"],
+  once:["в месяц","айына","a month"],
   buy_btn:["Купить на Gumroad","Gumroad-та сатып алу","Buy on Gumroad"],
-  buy_toast:["Это страница-образец: кнопка заработает после публикации товара на Gumroad","Бұл үлгі бет: батырма Gumroad-та тауар жарияланғаннан кейін іске қосылады","This is a sample page: the button goes live once the product is published on Gumroad"],
+  buy_toast:["Открываем Gumroad…","Gumroad ашылуда…","Opening Gumroad…"],
   faq_h:["Вопросы","Сұрақтар","Questions"],
   foot:["© 2026 Aru. Демо-клиентки на этой странице созданы ИИ.","© 2026 Aru. Бұл беттегі демо-клиенттерді ЖИ жасаған.","© 2026 Aru. Demo clients on this page were created with AI."]
 };
-const INCL = [["Цветотип, 16 ваших цветов и 8 «не ваших»","Түс типі, 16 сіздікі және 8 сіздікі емес түс","Colour type, 16 best colours and 8 to avoid"],["Тест драпировки на вашем лице","Бетіңіздегі драпировка сынағы","Drape test on your face"],["Стрижки и оттенки волос","Шаш үлгілері мен реңктері","Haircuts and hair shades"],["Одежда, обувь, аксессуары, макияж","Киім, аяқ киім, аксессуарлар, макияж","Clothes, shoes, accessories, makeup"],["Готовые образы на 5 поводов","5 жағдайға дайын бейнелер","Ready looks for 5 occasions"],["«Проверь вещь» в магазине","Дүкенде «Затты тексер»","Check an item in the store"],["Чат со стилистом и стиль-паспорт в PDF","Стилист-чат және PDF стиль-паспорт","Stylist chat and a PDF style passport"],["Три языка, доступ навсегда","Үш тіл, мерзімсіз қолжетімділік","Three languages, lifetime access"]];
+const INCL = [["Цветотип, 16 ваших цветов и 8 «не ваших»","Түс типі, 16 сіздікі және 8 сіздікі емес түс","Colour type, 16 best colours and 8 to avoid"],["Тест драпировки на вашем лице","Бетіңіздегі драпировка сынағы","Drape test on your face"],["Стрижки и оттенки волос","Шаш үлгілері мен реңктері","Haircuts and hair shades"],["Одежда, обувь, аксессуары, макияж","Киім, аяқ киім, аксессуарлар, макияж","Clothes, shoes, accessories, makeup"],["Готовые образы на 5 поводов","5 жағдайға дайын бейнелер","Ready looks for 5 occasions"],["«Проверь вещь» в магазине","Дүкенде «Затты тексер»","Check an item in the store"],["Чат со стилистом и стиль-паспорт в PDF","Стилист-чат және PDF стиль-паспорт","Stylist chat and a PDF style passport"],["Три языка, 30 примерок в месяц","Үш тіл, айына 30 киіп көру","Three languages, 30 try-ons a month"]];
 const FEATS = [
   ["palette","#C2456E",["Цветотип","Түс типі","Colour type"],["16 цветов, в которых вы сияете, и 8, которых лучше избегать.","Сізді жарқырататын 16 түс және аулақ болатын 8 түс.","16 colours that make you glow and 8 to avoid."]],
   ["face","#9A4A26",["Тест драпировки","Драпировка сынағы","Drape test"],["Нажмите на цвет и увидите, как он меняет лицо.","Түсті басып, оның бетті қалай өзгертетінін көріңіз.","Tap a colour and see how it changes your face."]],
@@ -313,7 +313,7 @@ const FEATS = [
   ["chat","#3E8A68",["Стилист в чате","Стилист-чат","Stylist chat"],["Знает ваш цветотип, фигуру и гардероб.","Түс типіңізді, бітіміңізді, гардеробыңызды біледі.","Knows your colour type, figure and wardrobe."]]
 ];
 const FAQ = [
-  [["Это подписка?","Бұл жазылым ба?","Is it a subscription?"],["Нет. Вы платите один раз $29 и пользуетесь Aru без ограничения срока.","Жоқ. Бір рет $29 төлеп, Aru-ды мерзімсіз пайдаланасыз.","No. You pay $29 once and use Aru with no time limit."]],
+  [["Это подписка?","Бұл жазылым ба?","Is it a subscription?"],["Да, $29 в месяц. Отменить можно в любой момент — по ссылке в письме Gumroad. Доступ сохраняется до конца оплаченного месяца.","Иә, айына $29. Gumroad хатындағы сілтеме арқылы кез келген уақытта тоқтатуға болады. Төленген ай соңына дейін қолжетімді.","Yes, $29 a month. Cancel anytime from the link in your Gumroad email. Access stays until the end of the paid month."]],
   [["Нужно ли скачивать приложение?","Қосымшаны жүктеу керек пе?","Do I need to download an app?"],["Нет. Aru открывается в браузере телефона или компьютера по ссылке и ключу.","Жоқ. Aru телефонның не компьютердің браузерінде сілтеме мен кілт арқылы ашылады.","No. Aru opens in your phone or computer browser with a link and your key."]],
   [["Что будет с моими фото?","Суреттеріме не болады?","What happens to my photos?"],["Они используются только для анализа и сразу удаляются. Мы их не храним и никому не передаём.","Олар тек талдау үшін қолданылып, бірден өшіріледі. Біз оларды сақтамаймыз және ешкімге бермейміз.","They are used only for the analysis and deleted right away. We don't store or share them."]],
   [["Как я получу доступ?","Қолжетімділікті қалай аламын?","How do I get access?"],["Сразу после оплаты на почту приходит личный ключ и ссылка на Aru.","Төлемнен кейін бірден поштаға жеке кілт пен Aru сілтемесі келеді.","Right after payment you get a personal key and the link to Aru by email."]],
