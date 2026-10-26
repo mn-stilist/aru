@@ -1205,7 +1205,7 @@ SCREENS.home = () => {
     ${tile('clothes','dress','#6D2E46','s_clothes')}${tile('acc','gem','#B8892F','s_acc')}
     ${tile('makeup','lipstick','#B5605A','s_makeup')}${tile('looks','hanger','#3F7F7A','s_looks')}`}
   </div>
-  <div class="tipcard">${ic('sparkle',24)}<div><p style="font-size:12px;font-weight:800;color:#8A5A12">${t('tip_day')}</p><p>${tr(TIPS[state.tip])}</p><button data-act="tip">${t('another_tip')}</button></div></div>
+  <div class="tipcard">${ic('sparkle',24)}<div><p style="font-size:12px;font-weight:800;color:#8A5A12">${t('tip_day')}</p><p>${tr(curTips()[state.tip%curTips().length])}</p><button data-act="tip">${t('another_tip')}</button></div></div>
   ${REAL()?'':`<h3 class="sec">${t('your_transform')} <span class="count">${tr(TRYCL.aigerim.looks.work.t)}</span></h3>
   <button class="card" data-act="openlook" data-arg="work" style="display:block;width:100%;text-align:left;padding:12px">
     <div class="tryon-frame"><img src="img/aigerim-work.jpg" alt=""></div>
@@ -1239,6 +1239,19 @@ SCREENS.colors = () => {
 
 /* ---------- настоящая клиентка: разбор, причёски, образы с сервера ---------- */
 const AN = () => state.ai && state.ai.analysis;
+// Советы дня: у настоящей клиентки — из её разбора, в демо — общие
+function realTips(a){
+  const b=(a.best_colors||[]), av=(a.avoid_colors||[]), hs=(a.hair_shades||[]), n=(c,i)=>c&&(i===2?(c.name_en||c.name):c.name)||'';
+  const T=[];
+  if(b[0]) T.push([0,1,2].map(i=>[`Ваш главный цвет — ${n(b[0],i)}. Носите его у лица: в блузе, шарфе или серьгах.`,`Басты түсіңіз — ${n(b[0],i)}. Оны бетке жақын киіңіз: блузка, орамал немесе сырға.`,`Your key colour is ${n(b[0],i)}. Wear it near your face: a blouse, scarf or earrings.`][i]));
+  if(av[0]&&b[1]) T.push([0,1,2].map(i=>[`Вместо цвета «${n(av[0],0)}» выбирайте ${n(b[1],0).toLowerCase()} — лицо будет свежее.`,`«${n(av[0],0)}» түсінің орнына ${n(b[1],0).toLowerCase()} таңдаңыз — бет сергек көрінеді.`,`Instead of ${n(av[0],2)}, choose ${n(b[1],2).toLowerCase()} — your face will look fresher.`][i]));
+  if(a.metal) T.push([`Ваш металл — ${a.metal}. Украшения и фурнитура в этом цвете собирают образ.`,`Сіздің металыңыз — ${a.metal}. Осы түстегі әшекейлер бейнені біріктіреді.`,`Your metal is ${a.metal_en||a.metal}. Jewellery and hardware in it pull the look together.`]);
+  if(hs[0]) T.push([`Оттенок волос, который вам идёт: ${hs[0].name}. Покажите его мастеру в карточке причёски.`,`Сізге жарасатын шаш реңкі: ${hs[0].name}. Оны шеберіңізге шаш карточкасында көрсетіңіз.`,`A hair shade that suits you: ${hs[0].name}. Show it to your stylist on the hair card.`]);
+  if(b[2]&&b[3]) T.push([0,1,2].map(i=>[`Удачная пара на завтра: ${n(b[2],0).toLowerCase()} + ${n(b[3],0).toLowerCase()}.`,`Ертеңге сәтті жұп: ${n(b[2],0).toLowerCase()} + ${n(b[3],0).toLowerCase()}.`,`A good pair for tomorrow: ${n(b[2],2).toLowerCase()} + ${n(b[3],2).toLowerCase()}.`][i]));
+  return T.length?T:TIPS;
+}
+function curTips(){ return (typeof REAL==='function'&&REAL()&&AN())?realTips(AN()):TIPS; }
+
 const seasonName = a => a ? ([a.season, a.season_kk||a.season, a.season_en||a.season][L]) : '';
 const cname = c => typeof c==='string' ? c : (L===2 ? (c.name_en||c.name) : c.name);
 function realHero(){
@@ -1717,7 +1730,7 @@ const ACT = {
   who:a=>{ state.client=a; state.ba='after'; if(a==='elena'&&!['work','day','party'].includes(state.occ)) state.occ='work'; render(); },
   ba:a=>{ state.ba=a; render(); },
   openlook:a=>{ state.occ=a; state.client='aigerim'; state.ba='after'; state.prev=[]; go('looks'); },
-  tip:()=>{ state.tip=(state.tip+1)%TIPS.length; render(); },
+  tip:()=>{ state.tip=(state.tip+1)%curTips().length; render(); },
   shop:()=>{ state.showShop=!state.showShop; render(); },
   shopitem:a=>{ state.shopDone[a]=!state.shopDone[a]; render(); },
   savelook:()=>toast(t('saved')),
