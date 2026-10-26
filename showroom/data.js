@@ -83,6 +83,30 @@ window.SHOWROOM = [
     ]
   },
   {
+    id: "irina", age: 21,
+    name: ["Ирина", "Ирина", "Irina"],
+    voice: ["Я носила хаки и бежевый — как все вокруг. А в зеркале была какая-то серая. Aru показал мне кобальт, фуксию и белый — и я впервые увидела себя яркой. Теперь меня на фото узнают с первого взгляда.", "Мен хаки мен бежевый киетінмін — бәрі сияқты. Ал айнада сұрғылт едім. Aru маған кобальт, фуксия және ақ түстерді көрсетті — алғаш рет өзімді жарқын көрдім. Енді суретте мені бірден таниды.", "I wore khaki and beige — like everyone around me. In the mirror I looked kind of grey. Aru showed me cobalt, fuchsia and white — and for the first time I saw myself bright. Now people spot me in photos at first glance."],
+    type: ["Яркая зима", "Жарқын қыс", "Bright Winter"],
+    story: ["Чёрные волосы, тёмные глаза, фарфоровая кожа с холодным подтоном — высокий контраст. Землистые хаки и бежевый её «гасят», а чистые яркие холодные цвета делают лицо сияющим.",
+            "Қара шаш, қою көз, салқын реңкті фарфор тері — контраст жоғары. Жерлі хаки мен бежевый оны солғындатады, ал таза жарқын салқын түстер бетті нұрландырады.",
+            "Black hair, dark eyes, porcelain skin with a cool undertone — high contrast. Earthy khaki and beige dull her, while clear bright cool colours make her face glow."],
+    face: "img/irina-face.jpg", orig: "img/irina-orig.jpg",
+    before: ["Свитшот хаки и бежевые карго: тёплые землистые цвета делают фарфоровую кожу сероватой и плоской.",
+             "Хаки свитшот пен бежевый карго: жылы жерлі түстер фарфор теріні сұрғылт әрі солғын етеді.",
+             "Khaki sweatshirt and beige cargo trousers: warm earthy colours make her porcelain skin look greyish and flat."],
+    looks: [
+      { id: "study", t: ["Учёба", "Оқу", "Study"], img: "img/irina-work.jpg", video: "",
+        items: [["Кардиган — кобальт", "Кардиган — кобальт", "Cardigan — cobalt"], ["Рубашка — белоснежная", "Жейде — аппақ", "Shirt — pure white"], ["Брюки — чёрные прямые", "Шалбар — қара, түзу", "Trousers — black straight"], ["Серьги-гвоздики — серебро", "Сырға — күміс", "Stud earrings — silver"]],
+        why: ["Кобальт и белый повторяют её природный контраст: лицо сразу становится ярким и свежим.", "Кобальт пен ақ оның табиғи контрастын қайталайды: бет бірден жарқын әрі сергек.", "Cobalt and white echo her natural contrast: her face instantly looks bright and fresh."] },
+      { id: "party", t: ["Праздник", "Мереке", "Celebration"], img: "img/irina-party.jpg", video: "",
+        items: [["Платье миди — фуксия, атлас", "Миди көйлек — фуксия, атлас", "Midi dress — fuchsia satin"], ["Серьги и браслет — серебро", "Сырға мен білезік — күміс", "Earrings and bracelet — silver"], ["Клатч — серебряный", "Клатч — күміс", "Clutch — silver"], ["Босоножки — чёрные", "Сандал — қара", "Sandals — black"]],
+        why: ["Фуксия — цвет «Яркой зимы»: рядом с чёрными волосами и фарфоровой кожей он звучит дорого и празднично.", "Фуксия — «Жарқын қыстың» түсі: қара шаш пен фарфор теріде сәнді әрі мерекелік көрінеді.", "Fuchsia is a Bright Winter colour: next to black hair and porcelain skin it looks rich and festive."] },
+      { id: "weekend", t: ["Выходной", "Демалыс", "Weekend"], img: "img/irina-weekend.jpg", video: "",
+        items: [["Худи — ледяной розовый", "Худи — мұзды қызғылт", "Hoodie — icy pink"], ["Жилет-пуховик — чёрный", "Жилет — қара", "Puffer vest — black"], ["Джинсы — чёрные", "Джинсы — қара", "Jeans — black"], ["Кеды и кепка — белые", "Кеды мен кепка — ақ", "Sneakers and cap — white"]],
+        why: ["Ледяной розовый у лица даёт свежий румянец, а чёрный низ держит контраст — удобно и в её цветах.", "Бетке жақын мұзды қызғылт сергек ұялық береді, ал қара төменгі бөлік контрастты сақтайды.", "Icy pink near the face adds a fresh flush, while the black base keeps her contrast — comfy and in her colours."] }
+    ]
+  },
+  {
     id: "alisa", age: 19,
     name: ["Алиса", "Алиса", "Alisa"],
     voice: ["Я жила в худи горчичного цвета — удобно же. А на фото была бледная, как будто не спала неделю. Aru сказал: мне идут лаванда, пудрово-голубой и пыльная роза. Теперь подруги спрашивают, что я с собой сделала.", "Мен қыша түсті худиден шықпайтынмын — ыңғайлы ғой. Бірақ суретте апта бойы ұйықтамағандай боп-боз едім. Aru маған лаванда, ақшыл көгілдір және бозғылт раушан жарасатынын айтты. Енді құрбыларым не істегенімді сұрайды.", "I lived in a mustard hoodie — it is comfy. But in photos I looked pale, as if I had not slept for a week. Aru said lavender, powder blue and dusty rose suit me. Now my friends ask what I did to myself."],
