@@ -81,5 +81,29 @@ window.SHOWROOM = [
         items: [["Свитер — терракота", "Жемпір — терракота", "Knit — terracotta"], ["Шарф — хвоя", "Шарф — қылқан", "Scarf — pine"], ["Джинсы — тёмный деним", "Джинсы — қою деним", "Jeans — dark denim"]],
         why: ["Терракота даёт лицу тёплый румянец, хвойный шарф делает образ глубже.", "Терракота бетке жылы ұялық береді.", "Terracotta adds a warm glow; the pine scarf adds depth."] }
     ]
+  },
+  {
+    id: "alisa", age: 19,
+    name: ["Алиса", "Алиса", "Alisa"],
+    voice: ["Я жила в худи горчичного цвета — удобно же. А на фото была бледная, как будто не спала неделю. Aru сказал: мне идут лаванда, пудрово-голубой и пыльная роза. Теперь подруги спрашивают, что я с собой сделала.", "Мен қыша түсті худиден шықпайтынмын — ыңғайлы ғой. Бірақ суретте апта бойы ұйықтамағандай боп-боз едім. Aru маған лаванда, ақшыл көгілдір және бозғылт раушан жарасатынын айтты. Енді құрбыларым не істегенімді сұрайды.", "I lived in a mustard hoodie — it is comfy. But in photos I looked pale, as if I had not slept for a week. Aru said lavender, powder blue and dusty rose suit me. Now my friends ask what I did to myself."],
+    type: ["Светлое лето", "Ашық жаз", "Light Summer"],
+    story: ["Светлые пепельные волосы, серо-голубые глаза, светлая холодная кожа, низкий контраст. Тёплая горчица делает её бледной и усталой, а нежные холодные пастели дают лицу свет.",
+            "Ашық күлгін шаш, сұр-көк көз, ақшыл салқын тері, контраст төмен. Жылы қыша түсі оны бозартады, ал нәзік салқын пастель бетке жарық береді.",
+            "Light ash hair, grey-blue eyes, fair cool skin, low contrast. Warm mustard makes her pale and tired, while soft cool pastels light up her face."],
+    face: "img/alisa-face.jpg", orig: "img/alisa-orig.jpg",
+    before: ["Горчичное худи оверсайз и чёрные легинсы: тёплый жёлтый спорит с холодной кожей, лицо выглядит серым и уставшим.",
+             "Қыша түсті оверсайз худи мен қара легинс: жылы сары салқын терімен таласады, бет сұрғылт әрі шаршаған.",
+             "Oversized mustard hoodie and black leggings: warm yellow clashes with her cool skin, her face looks grey and tired."],
+    looks: [
+      { id: "study", t: ["Учёба", "Оқу", "Study"], img: "img/alisa-work.jpg", video: "",
+        items: [["Рубашка — пудрово-голубая", "Жейде — ақшыл көгілдір", "Shirt — powder blue"], ["Жилет — светло-серый", "Жилет — ашық сұр", "Vest — light grey"], ["Брюки — белые широкие", "Шалбар — ақ, кең", "Trousers — white wide-leg"], ["Серьги — серебро", "Сырға — күміс", "Earrings — silver"]],
+        why: ["Голубой и светло-серый у лица освежают холодную кожу, серебро перекликается с пепельными волосами.", "Бетке жақын көгілдір мен ашық сұр салқын теріні сергітеді, күміс күлгін шашпен үндеседі.", "Blue and light grey near the face freshen her cool skin; silver echoes her ash hair."] },
+      { id: "party", t: ["Праздник", "Мереке", "Celebration"], img: "img/alisa-party.jpg", video: "",
+        items: [["Платье-комбинация — лаванда", "Комбинация көйлек — лаванда", "Slip dress — lavender"], ["Цепочка и серьги — серебро", "Шынжыр мен сырға — күміс", "Chain and earrings — silver"], ["Клатч — жемчужный", "Клатч — інжу", "Clutch — pearl"]],
+        why: ["Лаванда — её праздничный цвет: нежно, дорого и подчёркивает серо-голубые глаза.", "Лаванда — оның мерекелік түсі: нәзік, сәнді әрі сұр-көк көзді ерекшелейді.", "Lavender is her party colour: soft, elegant and it brings out her grey-blue eyes."] },
+      { id: "weekend", t: ["Выходной", "Демалыс", "Weekend"], img: "img/alisa-weekend.jpg", video: "",
+        items: [["Свитер — пыльная роза", "Свитер — бозғылт раушан", "Sweater — dusty rose"], ["Рубашка — мятная", "Жейде — жалбыз", "Overshirt — mint"], ["Джинсы — светлые", "Джинсы — ашық", "Jeans — light wash"]],
+        why: ["Пыльная роза даёт лицу румянец, мята и светлый деним сохраняют лёгкость.", "Бозғылт раушан бетке ұялық береді, жалбыз бен ашық деним жеңілдік сақтайды.", "Dusty rose adds a flush; mint and light denim keep it light."] }
+    ]
   }
 ];
