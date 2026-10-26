@@ -71,13 +71,13 @@ window.SHOWROOM = [
     face: "../app/img/aigerim-face.jpg", orig: "../app/img/aigerim-orig.jpg",
     before: ["Серый трикотаж и тёмные брюки: лицо выглядит уставшим.", "Сұр трикотаж бен қою шалбар: бет шаршаңқы көрінеді.", "Grey knit and dark trousers: her face looks tired."],
     looks: [
-      { id: "work", t: ["Работа", "Жұмыс", "Work"], img: "../app/img/aigerim-work.jpg", video: "",
+      { id: "work", t: ["Работа", "Жұмыс", "Work"], img: "../app/img/aigerim-work.jpg", video: "THhBkBmO23Y",
         items: [["Жакет — шоколад", "Жакет — шоколад", "Blazer — chocolate"], ["Блуза — горчица", "Блузка — қыша", "Blouse — mustard"], ["Брюки — олива", "Шалбар — зәйтүн", "Trousers — olive"], ["Лодочки — бежевая замша", "Туфли — беж күдері", "Pumps — beige suede"]],
         why: ["Шоколад вместо чёрного держит строгость, а горчица у лица подсвечивает карие глаза.", "Қараның орнына шоколад қатаңдықты сақтайды, қыша қоңыр көзді жарқыратады.", "Chocolate keeps it sharp instead of black; mustard lights up her brown eyes."] },
-      { id: "party", t: ["Праздник", "Мереке", "Celebration"], img: "../app/img/aigerim-party.jpg", video: "L1no5rM151I",
+      { id: "party", t: ["Праздник", "Мереке", "Celebration"], img: "../app/img/aigerim-party.jpg", video: "THhBkBmO23Y",
         items: [["Платье миди — марсала", "Миди көйлек — марсала", "Midi dress — marsala"], ["Украшения — золото", "Әшекей — алтын", "Jewellery — gold"]],
         why: ["Марсала — праздничный цвет тёмной осени: торжественно и без резкости чёрного.", "Марсала — қою күздің мерекелік түсі.", "Marsala is Deep Autumn's festive colour."] },
-      { id: "weekend", t: ["Выходной", "Демалыс", "Weekend"], img: "../app/img/aigerim-weekend.jpg", video: "",
+      { id: "weekend", t: ["Выходной", "Демалыс", "Weekend"], img: "../app/img/aigerim-weekend.jpg", video: "THhBkBmO23Y",
         items: [["Свитер — терракота", "Жемпір — терракота", "Knit — terracotta"], ["Шарф — хвоя", "Шарф — қылқан", "Scarf — pine"], ["Джинсы — тёмный деним", "Джинсы — қою деним", "Jeans — dark denim"]],
         why: ["Терракота даёт лицу тёплый румянец, хвойный шарф делает образ глубже.", "Терракота бетке жылы ұялық береді.", "Terracotta adds a warm glow; the pine scarf adds depth."] }
     ]
