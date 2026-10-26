@@ -130,7 +130,7 @@ nav .btn{height:42px;padding:0 16px;font-size:14px;border-radius:12px}
 .look.tryon{grid-template-columns:1fr;padding:16px}
 .tryon-frame{position:relative;border-radius:18px;overflow:hidden;background:#D8D8D5}
 .tryon-frame img{width:100%;display:block;transition:opacity .35s}
-.tryon-frame .play{position:absolute;right:14px;bottom:14px;display:flex;align-items:center;gap:8px;background:#C2456E;color:#fff;font-weight:800;font-size:14px;padding:11px 18px;border-radius:30px;box-shadow:0 10px 22px -10px rgba(0,0,0,.6);cursor:pointer;border:0}
+.tryon-frame .play,.cmp .play{position:absolute;right:14px;bottom:14px;display:flex;align-items:center;gap:8px;background:#C2456E;color:#fff;font-weight:800;font-size:14px;padding:11px 18px;border-radius:30px;box-shadow:0 10px 22px -10px rgba(0,0,0,.6);cursor:pointer;border:0}
 .vmodal{position:fixed;inset:0;background:rgba(20,8,14,.8);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
 .vmodal.on{display:flex}
 .vmodal .box{width:min(420px,100%);aspect-ratio:9/16;max-height:88vh;background:#000;border-radius:18px;overflow:hidden;position:relative}
@@ -198,7 +198,8 @@ nav .btn{height:42px;padding:0 16px;font-size:14px;border-radius:12px}
 .cmp .knob{position:absolute;top:50%;left:var(--x,50%);width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:#fff;color:var(--berry);display:grid;place-items:center;font-weight:800;font-size:18px;box-shadow:0 6px 16px rgba(0,0,0,.35)}
 .cmp .lb{position:absolute;top:12px;font-size:12.5px;font-weight:800;padding:6px 12px;border-radius:20px;background:rgba(255,255,255,.92);color:var(--muted)}
 .cmp .lb.l{left:12px}.cmp .lb.r{right:12px;background:var(--berry);color:#fff}
-.cmp .play{position:absolute;right:14px;bottom:14px;z-index:2}
+.cmp .play{z-index:3}
+.vmark{color:#C2456E;font-weight:800}
 .hint{font-size:13px;color:var(--muted);text-align:center;margin-top:8px}
 /* price */
 .price-wrap{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center}
@@ -513,7 +514,7 @@ function renderDemo(){
   document.getElementById('pal').innerHTML=`<h4>${t('yours')}</h4><div class="sw">${c.mine.map(([h,n])=>`<div><i style="background:${h}"></i>${tr(n)}</div>`).join('')}</div>
     <h4>${t('notyours')}</h4><div class="sw no">${c.not.map(([h,n])=>`<div><i style="background:${h}"></i>${tr(n)}</div>`).join('')}</div>
     <span class="metal"><i style="background:radial-gradient(circle at 35% 30%,#fff,${c.metal[0]} 60%)"></i>${t('metal')}: ${tr(c.metal[1])}</span>`;
-  document.getElementById('lookTabs').innerHTML=LOOK_ORDER.map(([k,n])=>`<button class="${lk===k?'on':''}" data-look="${k}">${tr(n)}${(VIDEO[who]||{})[k]?' ▶':''}</button>`).join('');
+  document.getElementById('lookTabs').innerHTML=LOOK_ORDER.map(([k,n])=>`<button class="${lk===k?'on':''}" data-look="${k}">${tr(n)}${(VIDEO[who]||{})[k]?' <span class="vmark">▶</span>':''}</button>`).join('');
   const l=c.looks[lk];
   if(TRY[who]){
     const src = ba==='before' ? TRY[who].orig : TRY[who][lk];
