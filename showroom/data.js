@@ -49,10 +49,10 @@ window.SHOWROOM = [
     face: "../app/img/elena-face.jpg", orig: "../app/img/elena-orig.jpg",
     before: ["Серый джемпер и тёмно-синие брюки: образ «гаснет», лицо выглядит бледным.", "Сұр жемпір мен қою көк шалбар: бейне солғын, бет бозғылт.", "Grey jumper and navy trousers: the look fades, her face looks pale."],
     looks: [
-      { id: "work", t: ["Работа", "Жұмыс", "Work"], img: "../app/img/elena-work.jpg", video: "",
+      { id: "work", t: ["Работа", "Жұмыс", "Work"], img: "../app/img/elena-work.jpg", video: "241hyX_LY6s",
         items: [["Жакет — графит", "Жакет — графит", "Blazer — graphite"], ["Блуза — пыльная роза", "Блузка — бозғылт раушан", "Blouse — dusty rose"], ["Брюки — серо-голубые", "Шалбар — сұр-көк", "Trousers — grey-blue"], ["Лоферы — тауп", "Лоферлер — тауп", "Loafers — taupe"]],
         why: ["Графит вместо чёрного не спорит с мягкой внешностью, пыльная роза освежает лицо.", "Қараның орнына графит жұмсақ келбетпен таласпайды, бозғылт раушан бетті сергітеді.", "Graphite instead of black suits her soft colouring; dusty rose freshens her face."] },
-      { id: "party", t: ["Праздник", "Мереке", "Celebration"], img: "../app/img/elena-party.jpg", video: "",
+      { id: "party", t: ["Праздник", "Мереке", "Celebration"], img: "../app/img/elena-party.jpg", video: "241hyX_LY6s",
         items: [["Платье с запахом — мальва", "Орама көйлек — мальва", "Wrap dress — mauve"], ["Серьги-капли — серебро", "Тамшы сырға — күміс", "Drop earrings — silver"], ["Клатч — серый жемчуг", "Клатч — сұр інжу", "Clutch — pearl grey"]],
         why: ["Приглушённая ягодная мальва даёт лицу румянец и подчёркивает глаза.", "Бәсең жидек-мальва бетке ұялық береді, көзді ерекшелейді.", "Muted berry mauve adds a flush and brings out her eyes."] },
       { id: "weekend", t: ["Выходной", "Демалыс", "Weekend"], img: "../app/img/elena-weekend.jpg", video: "",
