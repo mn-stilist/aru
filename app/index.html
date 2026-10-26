@@ -636,6 +636,7 @@ const S = {
   language:["Язык","Тіл","Language"],
   my_photos:["Мои фото","Менің суреттерім","My photos"],
   no_photos:["Фото не хранятся: они удалены сразу после анализа","Суреттер сақталмайды: талдаудан кейін бірден өшірілді","No photos are stored: they were deleted right after analysis"],
+  photos_private:["Фото хранятся закрыто — их видите только вы. Удалить можно кнопкой ниже.","Суреттер жабық сақталады — оларды тек сіз көресіз. Төмендегі батырмамен өшіруге болады.","Your photos are stored privately — only you can see them. Delete them with the button below."],
   photos_session:["Фото видны только в этой сессии и не отправляются на сервер","Суреттер тек осы сеансте көрінеді және серверге жіберілмейді","Photos stay in this session only and are never uploaded"],
   passport:["Скачать стиль-паспорт в PDF","Стиль-паспортты PDF түрінде жүктеу","Download style passport as PDF"],
   redo:["Пройти разбор заново","Талдауды қайта өту","Redo my analysis"],
@@ -1250,6 +1251,20 @@ function realTips(a){
   if(b[2]&&b[3]) T.push([0,1,2].map(i=>[`Удачная пара на завтра: ${n(b[2],0).toLowerCase()} + ${n(b[3],0).toLowerCase()}.`,`Ертеңге сәтті жұп: ${n(b[2],0).toLowerCase()} + ${n(b[3],0).toLowerCase()}.`,`A good pair for tomorrow: ${n(b[2],2).toLowerCase()} + ${n(b[3],2).toLowerCase()}.`][i]));
   return T.length?T:TIPS;
 }
+
+// Параметры настоящей клиентки — из её разбора и анкеты
+function realParams(){
+  const a=AN(), q=state.quiz||{}; if(!a) return '';
+  const row=(l,v)=>v?`<li><span>${tr(l)}</span><b>${esc(String(v))}</b></li>`:'';
+  return `<div class="card"><h3 class="h" style="font-size:20px;margin-bottom:4px">${t('my_params')}</h3><ul class="kv">
+    ${row(['Цветотип','Түс типі','Colour type'],seasonName(a))}
+    ${row(['Подтон','Реңк','Undertone'],a.undertone)}
+    ${row(['Контраст','Контраст','Contrast'],a.contrast)}
+    ${row(['Металл','Металл','Metal'],L===2?(a.metal_en||a.metal):a.metal)}
+    ${row(['Форма лица','Бет пішіні','Face shape'],a.face_shape)}
+    ${q.age?row(['Возраст','Жасы','Age'],q.age):''}
+    ${q.height?row(['Рост','Бойы','Height'],q.height+' '+t('cm')):''}</ul></div>`;
+}
 function curTips(){ return (typeof REAL==='function'&&REAL()&&AN())?realTips(AN()):TIPS; }
 
 const seasonName = a => a ? ([a.season, a.season_kk||a.season, a.season_en||a.season][L]) : '';
@@ -1555,14 +1570,14 @@ SCREENS.profile = () => {
     <li><span>${t('tryons_left')}</span><b>${state.sub.tryons_left} / ${state.sub.tryons_limit}</b></li></ul>
     <div class="row" style="gap:10px;margin-top:12px;flex-wrap:wrap"><button class="btn ghost sm" style="flex:1" data-act="buy">${t('manage_sub')}</button></div><button class="btn primary sm" style="width:100%;margin-top:10px" data-act="logout">${ic('logout',18)} ${t('logout')}</button></div>`
   :`<div class="card"><p class="small muted">${ic('sparkle',16)} ${t('demo_mode')}</p></div>`}
-  <div class="card"><h3 class="h" style="font-size:20px;margin-bottom:4px">${t('my_params')}</h3><ul class="kv">
+  ${REAL()?realParams():''}<div class="card" ${REAL()?'style="display:none"':''}><h3 class="h" style="font-size:20px;margin-bottom:4px">${t('my_params')}</h3><ul class="kv">
     <li><span>${t('your_type')}</span><b>${t('soft_autumn')}</b></li><li><span>${t('undertone')}</span><b>${t('warm')}</b></li>
     <li><span>${t('face_shape')}</span><b>${t('oval')}</b></li><li><span>${t('body_type')}</span><b>${t('hourglass')}</b></li>
     <li><span>${t('eyes_c')}</span><b>${t('hazel')}</b></li><li><span>${t('hair_nat')}</span><b>${t('hair_nat_v')}</b></li>
     <li><span>${t('age_v')}</span><b>28</b></li><li><span>${t('height_v')}</span><b>${state.quiz.height} ${t('cm')}</b></li></ul></div>
   <div class="card"><div class="row" style="justify-content:space-between"><h3 class="h" style="font-size:20px">${t('language')}</h3>${langPills()}</div></div>
   <div class="card"><h3 class="h" style="font-size:20px">${t('my_photos')}</h3>
-    ${any?`<div class="photos">${['face','body'].map(k=>`<div>${p[k]?`<img src="${p[k]}" alt="">`:ic('user')}</div>`).join('')}</div><p class="tiny muted" style="margin-top:8px">${t('photos_session')}</p>`:`<p class="small muted" style="margin-top:6px">${ic('lock',16)} ${t('no_photos')}</p>`}</div>
+    ${any?`<div class="photos">${['face','body'].map(k=>`<div>${p[k]?`<img src="${p[k]}" alt="">`:ic('user')}</div>`).join('')}</div><p class="tiny muted" style="margin-top:8px">${t(REAL()?'photos_private':'photos_session')}</p>`:`<p class="small muted" style="margin-top:6px">${ic('lock',16)} ${t('no_photos')}</p>`}</div>
 
   <div class="menu">
     <button data-act="cover">${ic('home')} ${t('to_cover')}</button>
