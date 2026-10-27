@@ -1684,6 +1684,7 @@ async function aiApi(action, body={}){
   try{ const r=await fetch(AI_API,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+tk},body:JSON.stringify({action,...body})}); return await r.json(); }catch(e){ return {ok:false,reason:'net'}; }
 }
 async function loadAI(){ const d=await aiApi('list'); if(d&&d.ok){ state.ai=d;
+  if(REAL() && d.answers && Object.keys(d.answers).length && !state.quizLoaded){ const A=d.answers, q=state.quiz; for(const k of ['age','height','life','budget','like','dislike','wish']) if(A[k]!==undefined && A[k]!==null && A[k]!=='') q[k]=A[k]; state.quizLoaded=true; }
   if(REAL()){ if(state.onboarded && !d.analysis && !d.face){ state.onboarded=false; delete ONB[accId()]; save(); state.screen='onboard'; state.step=0; }
     else if(!state.onboarded && d.analysis){ state.onboarded=true; save(); if(state.screen==='onboard') state.screen='home'; } }
   render(); } return d; }
