@@ -4,6 +4,7 @@
 //   analyze       {}                          — разбор цветотипа по её фото
 //   tryon         { kind: "look"|"hair", key, text? } — примерка (тратит 1 из лимита); key "custom" + text — свой вариант её словами
 //   list          {}                          — всё сохранённое: разбор, примерки, ссылки на фото
+//   save_style    { slot: 0..2, image?: dataURL } — пример стиля «хочу вот так» (без image — убрать)
 //   delete_photos {}                          — удалить два исходных фото (разбор и примерки остаются)
 //   delete_all    {}                          — удалить всё: фото, примерки, разбор, анкету (подписка остаётся)
 // Живые клиентки обрабатываются только на платном тарифе Google (секрет GEMINI_PAID = 1).
@@ -50,26 +51,30 @@ const wishLine = (answers: any) => { const w = clean(answers?.wish, 600); return
 const dislikeLine = (answers: any) => { const w = clean(answers?.dislike, 300); return w ? `She does NOT wear or like: "${w}" — strictly avoid this, even if the outfit description suggests it (for example, if she does not wear floor-length or long items, make the dress a graceful midi to mid-calf, never with trousers underneath). ` : ""; };
 const FACE_RULE =
   "MOST IMPORTANT: this must be exactly the same woman as in the attached photos — copy her face precisely: the same face shape, eyes, eyebrows, nose, lips, smile, skin tone and moles. Do not beautify, slim or change her face or body; keep her real age and proportions. ";
+const MAX_STYLES = 3;
+const styleLine = (her: number, n: number) => n
+  ? `IMAGES: the first ${her === 1 ? "image is" : her + " images are"} HER (the client). The next ${n === 1 ? "image is" : n + " images are"} style inspiration she saved (other people) — take from them only the style: cut, silhouette, type of garments, how things are combined, length, accessories and the overall mood. Never copy the face, hair colour, body or skin of the people in the inspiration images. Colours: if a colour from the inspiration is not in her personal palette, use the closest colour from her palette instead. `
+  : "";
 
 function palette(a: any) {
   const best = (a?.best_colors ?? []).map((c: any) => (typeof c === "string" ? c : c?.name_en || c?.name)).filter(Boolean).slice(0, 8);
   const avoid = (a?.avoid_colors ?? []).map((c: any) => (typeof c === "string" ? c : c?.name_en || c?.name)).filter(Boolean).slice(0, 4);
   return { best: best.join(", "), avoid: avoid.join(", "), metal: a?.metal_en || a?.metal || "" };
 }
-function hairPrompt(key: string, a: any, answers?: any, text?: string) {
+function hairPrompt(key: string, a: any, answers?: any, text?: string, sl = "") {
   const shade = (a?.hair_shades ?? []).map((c: any) => c?.name_en || c?.name).filter(Boolean)[0] || "her natural hair colour";
-  return FACE_RULE +
+  return FACE_RULE + sl +
     "Create one wide image made of three side-by-side head-and-shoulders photos of her against a plain soft light grey studio background. " +
     "Show the hairstyle from different angles: left — head turned to the left with a happy smile, middle — three-quarter view to the right glancing at the camera over her shoulder, right — looking slightly up and to the side, joyful expression. " +
     "Fresh natural makeup, glowing skin. Keep exactly the same top or clothes she wears in her photo — do not change the clothing, its colour or neckline; only the hairstyle changes. Fill the whole frame with the three photos, no empty margins. " +
     `Hairstyle: ${key === "custom" ? clean(text) : HAIR[key]}, hair colour: ${shade}, glossy and healthy. ` + (key === "custom" ? "" : wishLine(answers)) +
     "Modern hair-salon campaign photo, natural soft daylight, realistic, no text, no logos.";
 }
-function lookPrompt(key: string, a: any, answers: any, text?: string) {
+function lookPrompt(key: string, a: any, answers: any, text?: string, sl = "") {
   const p = palette(a);
   const h = Number(answers?.height) || 0;
   const petite = h && h < 160 ? "She is petite: use high-waisted bottoms, jackets cropped at the waist, a defined waist and heeled shoes to lengthen the legs. " : "";
-  return FACE_RULE +
+  return FACE_RULE + sl +
     "Create one wide image made of two side-by-side photos of her on a plain light grey studio wall and concrete floor: left — full-length front view showing the whole outfit and shoes, right — a closer waist-up shot where her face is large and clearly visible, natural smile. " +
     (key === "custom"
       ? `Outfit exactly as she describes it in her own words: "${clean(text)}". Where she does not name colours, use colours from her personal palette: ${p.best}. `
@@ -166,6 +171,26 @@ Deno.serve(async (req) => {
       return json({ ok: true });
     }
 
+    if (action === "save_style") {
+      const slot = Math.floor(Number(b.slot));
+      if (!(slot >= 0 && slot < MAX_STYLES)) return json({ ok: false, reason: "bad_input" });
+      const cur: string[] = Array.from({ length: MAX_STYLES }, (_, i) => (prof?.style_paths ?? [])[i] ?? "");
+      const path = `${uid}/style/${slot}.jpg`;
+      if (b.image) {
+        const bytes = toBytes(b.image);
+        if (!bytes) return json({ ok: false, reason: "bad_image" });
+        const { error } = await db.storage.from(BUCKET).upload(path, bytes, { contentType: "image/jpeg", upsert: true });
+        if (error) return json({ ok: false, reason: "upload_failed" });
+        cur[slot] = path;
+      } else {
+        if (cur[slot]) await db.storage.from(BUCKET).remove([cur[slot]]);
+        cur[slot] = "";
+      }
+      const { error: upErr } = await db.from("client_profile").upsert({ user_id: uid, style_paths: cur, updated_at: new Date().toISOString() });
+      if (upErr) { console.error(upErr); return json({ ok: false, reason: "upload_failed" }); }
+      return json({ ok: true, styles: await Promise.all(cur.map((x) => signed(x || null))) });
+    }
+
     if (action === "list") {
       const { data: an } = await db.from("analyses").select("result,created_at").eq("user_id", uid).order("created_at", { ascending: false }).limit(1).maybeSingle();
       const { data: tr } = await db.from("tryons").select("id,kind,key,image_path,created_at,custom_text").eq("user_id", uid).eq("status", "done").order("created_at", { ascending: false }).limit(60);
@@ -175,20 +200,21 @@ Deno.serve(async (req) => {
         analysis: an?.result ?? null, analysis_at: an?.created_at ?? null,
         answers: prof?.answers ?? {},
         face: await signed(prof?.face_path ?? null), body: await signed(prof?.body_path ?? null),
+        styles: await Promise.all(Array.from({ length: MAX_STYLES }, (_, i) => signed((prof?.style_paths ?? [])[i] || null))),
         tryons, tryons_used: client.tryons_used, tryons_limit: client.tryons_limit, plan: client.plan,
       });
     }
 
     if (action === "delete_photos") {
-      const paths = [prof?.face_path, prof?.body_path].filter(Boolean) as string[];
+      const paths = [prof?.face_path, prof?.body_path, ...(prof?.style_paths ?? [])].filter(Boolean) as string[];
       if (paths.length) await db.storage.from(BUCKET).remove(paths);
-      await db.from("client_profile").update({ face_path: null, body_path: null }).eq("user_id", uid);
+      await db.from("client_profile").update({ face_path: null, body_path: null, style_paths: [] }).eq("user_id", uid);
       return json({ ok: true, removed: paths.length });
     }
 
     if (action === "delete_all") {
       const { data: tr } = await db.from("tryons").select("image_path").eq("user_id", uid);
-      const paths = [prof?.face_path, prof?.body_path, ...(tr ?? []).map((x) => x.image_path)].filter(Boolean) as string[];
+      const paths = [prof?.face_path, prof?.body_path, ...(prof?.style_paths ?? []), ...(tr ?? []).map((x) => x.image_path)].filter(Boolean) as string[];
       if (paths.length) await db.storage.from(BUCKET).remove(paths);
       await db.from("tryons").delete().eq("user_id", uid);
       await db.from("analyses").delete().eq("user_id", uid);
@@ -250,12 +276,17 @@ Deno.serve(async (req) => {
       if (client.tryons_used >= client.tryons_limit) return json({ ok: false, reason: "quota" });
       const { data: an } = await db.from("analyses").select("result").eq("user_id", uid).order("created_at", { ascending: false }).limit(1).maybeSingle();
       if (!an) return json({ ok: false, reason: "need_analysis" });
-      const prompt = kind === "hair" ? hairPrompt(key, an.result, prof?.answers, text) : lookPrompt(key, an.result, prof?.answers, text);
+      // примеры стиля: для образов всегда, для причёски — только «свой вариант»
+      const useStyles = kind === "look" || key === "custom";
+      const styleImgs = useStyles ? (await Promise.all((prof?.style_paths ?? []).filter(Boolean).slice(0, MAX_STYLES).map((x: string) => readFile(x)))).filter(Boolean) as string[] : [];
+      const sl = styleLine(imgs.length, styleImgs.length);
+      const prompt = kind === "hair" ? hairPrompt(key, an.result, prof?.answers, text, sl) : lookPrompt(key, an.result, prof?.answers, text, sl);
+      const parts = [...imgs, ...styleImgs.map((d) => ({ inline_data: { mime_type: "image/jpeg", data: d } })), { text: prompt }];
       let last: any = null;
       for (const model of IMAGE_MODELS) {
         const base = { responseModalities: ["TEXT", "IMAGE"] };
-        let { status, d } = await gemini(model, [...imgs, { text: prompt }], (kind === "hair" ? { ...base, imageConfig: { aspectRatio: "16:9" } } : base), 120000);
-        if (status === 400 && kind === "hair") ({ status, d } = await gemini(model, [...imgs, { text: prompt }], base, 120000));
+        let { status, d } = await gemini(model, parts, (kind === "hair" ? { ...base, imageConfig: { aspectRatio: "16:9" } } : base), 120000);
+        if (status === 400 && kind === "hair") ({ status, d } = await gemini(model, parts, base, 120000));
         last = { status, d };
         if (isQuota(status, d)) continue;
         const part = d?.candidates?.[0]?.content?.parts?.find((p: any) => p.inlineData?.data || p.inline_data?.data);
