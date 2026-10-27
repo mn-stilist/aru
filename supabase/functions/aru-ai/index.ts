@@ -43,7 +43,7 @@ const LOOK: Record<string, string> = {
   party: "a celebration look: an elegant midi dress, heeled shoes, a small clutch and statement earrings",
   date: "a date look: a feminine silk or knit top with a skirt or a slip dress, a light cardigan, delicate jewellery and heeled sandals or boots",
   travel: "a travel look: a long coat or trench, a fine knit top, comfortable trousers, ankle boots and a roomy bag",
-  toi: "a festive Kazakh toi look: an elegant festive dress in silk, satin or chiffon (floor-length by default; if she does not wear long dresses, a graceful midi dress to mid-calf), with a modern fitted velvet kamzol with traditional ornament worn over it, traditional Kazakh jewellery and elegant heeled shoes",
+  toi: "a glamorous modern evening look for a big Kazakh celebration (toi) in a luxury banquet hall in Almaty: a stunning evening dress in a rich luxurious fabric (satin, silk, velvet, sequins or lace) with a refined fashionable cut, floor-length by default (or an elegant midi to mid-calf if she does not wear long dresses), elegant heeled shoes, a small evening clutch and statement earrings; at most one subtle contemporary ethnic accent (a delicate ornament embroidery or modern ethnic-inspired earrings) — this is a chic evening outfit, NOT a folk costume and NOT a village or everyday look",
 };
 const clean = (v: unknown, n = 400) => String(v ?? "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, n);
 const wishLine = (answers: any) => { const w = clean(answers?.wish, 600); return w ? `Her own wishes in her words (follow them where possible, but keep her face and colour palette): "${w}". ` : ""; };
