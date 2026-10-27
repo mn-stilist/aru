@@ -46,6 +46,7 @@ const LOOK: Record<string, string> = {
 };
 const clean = (v: unknown, n = 400) => String(v ?? "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, n);
 const wishLine = (answers: any) => { const w = clean(answers?.wish, 600); return w ? `Her own wishes in her words (follow them where possible, but keep her face and colour palette): "${w}". ` : ""; };
+const dislikeLine = (answers: any) => { const w = clean(answers?.dislike, 300); return w ? `She does NOT wear or like: "${w}" — strictly avoid this, even if the outfit description suggests it (for example, if she does not wear floor-length or long items, make the dress knee-length or midi). ` : ""; };
 const FACE_RULE =
   "MOST IMPORTANT: this must be exactly the same woman as in the attached photos — copy her face precisely: the same face shape, eyes, eyebrows, nose, lips, smile, skin tone and moles. Do not beautify, slim or change her face or body; keep her real age and proportions. ";
 
@@ -59,7 +60,7 @@ function hairPrompt(key: string, a: any, answers?: any, text?: string) {
   return FACE_RULE +
     "Create one wide image made of three side-by-side head-and-shoulders photos of her against a plain soft light grey studio background. " +
     "Show the hairstyle from different angles: left — head turned to the left with a happy smile, middle — three-quarter view to the right glancing at the camera over her shoulder, right — looking slightly up and to the side, joyful expression. " +
-    "Fresh natural makeup, glowing skin. She wears a simple cream crew-neck top so the hair is the focus. " +
+    "Fresh natural makeup, glowing skin. Keep exactly the same top or clothes she wears in her photo — do not change the clothing, its colour or neckline; only the hairstyle changes. Fill the whole frame with the three photos, no empty margins. " +
     `Hairstyle: ${key === "custom" ? clean(text) : HAIR[key]}, hair colour: ${shade}, glossy and healthy. ` + (key === "custom" ? "" : wishLine(answers)) +
     "Modern hair-salon campaign photo, natural soft daylight, realistic, no text, no logos.";
 }
@@ -72,7 +73,7 @@ function lookPrompt(key: string, a: any, answers: any, text?: string) {
     (key === "custom"
       ? `Outfit exactly as she describes it in her own words: "${clean(text)}". Where she does not name colours, use colours from her personal palette: ${p.best}. `
       : `Outfit: ${LOOK[key]}. Use only colours from her personal palette: ${p.best}. Avoid: ${p.avoid}. `) +
-    `Jewellery in ${p.metal || "a metal that suits her"}. ` + petite + wishLine(answers) +
+    `Jewellery in ${p.metal || "a metal that suits her"}. ` + petite + dislikeLine(answers) + wishLine(answers) +
     "Modern 2026 style, premium fabrics, perfect fit, no visible logos or brand names. Natural soft daylight, realistic photo, no text.";
 }
 const ANALYZE_PROMPT = (answers: any) => `You are an experienced personal stylist and colour analyst. Look at the woman in the photos (the first is a close-up of the face, the second, if present, is full length).
@@ -86,7 +87,7 @@ Reply with strict JSON only, no comments, in this exact shape:
 "metal":"золото|серебро","metal_en":"gold|silver",
 "hair_shades":[{"name":"Russian","name_en":"English","hex":"#RRGGBB"} x3],
 "hair_avoid":[{"name":"Russian","name_en":"English","hex":"#RRGGBB"} x2],
-"lips":[{"name":"Russian","hex":"#RRGGBB"} x3],
+"lips":[{"name":"Russian","name_en":"English","hex":"#RRGGBB"} x3],
 "face_shape":"овальное|круглое|квадратное|сердечко|вытянутое|ромб",
 "why":"2 sentences in Russian explaining the colour type in simple words",
 "confidence":0.0}`;
@@ -205,6 +206,10 @@ Deno.serve(async (req) => {
           try {
             const result = JSON.parse(txt);
             if (!result?.season) throw new Error("empty");
+            const HX = /^#[0-9a-f]{6}$/i;
+            for (const k of ["best_colors", "avoid_colors", "hair_shades", "lips"]) for (const c of (Array.isArray(result[k]) ? result[k] : [])) {
+              if (c && typeof c === "object" && !HX.test(String(c.hex ?? "").trim())) { const v = [c.name_en, c.name].find((x: any) => HX.test(String(x ?? "").trim())); if (v) { c.hex = String(v).trim(); if (c.name_en === v) delete c.name_en; } }
+            }
             await db.from("analyses").insert({ user_id: uid, result, model });
             await db.from("usage_log").insert({ user_id: uid, kind: "analysis" });
             return json({ ok: true, analysis: result });
@@ -225,7 +230,9 @@ Deno.serve(async (req) => {
       const prompt = kind === "hair" ? hairPrompt(key, an.result, prof?.answers, text) : lookPrompt(key, an.result, prof?.answers, text);
       let last: any = null;
       for (const model of IMAGE_MODELS) {
-        const { status, d } = await gemini(model, [...imgs, { text: prompt }], { responseModalities: ["TEXT", "IMAGE"] }, 120000);
+        const base = { responseModalities: ["TEXT", "IMAGE"] };
+        let { status, d } = await gemini(model, [...imgs, { text: prompt }], (kind === "hair" ? { ...base, imageConfig: { aspectRatio: "16:9" } } : base), 120000);
+        if (status === 400 && kind === "hair") ({ status, d } = await gemini(model, [...imgs, { text: prompt }], base, 120000));
         last = { status, d };
         if (isQuota(status, d)) continue;
         const part = d?.candidates?.[0]?.content?.parts?.find((p: any) => p.inlineData?.data || p.inline_data?.data);

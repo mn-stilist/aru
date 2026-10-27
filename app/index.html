@@ -247,7 +247,7 @@ h3.h{font-family:var(--serif);font-size:24px;line-height:1.1;font-weight:700;col
 .seg button{flex:1;padding:9px 6px;border-radius:11px;font-size:12.5px;font-weight:800;color:var(--muted);line-height:1.2}
 .seg button.on{background:var(--white);color:var(--berry);box-shadow:var(--lift-sm)}
 .hairc{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
-.hairc button{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;font-weight:700;width:58px;text-align:center;line-height:1.15}
+.hairc button{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;font-weight:700;width:calc(25% - 8px);min-width:58px;text-align:center;line-height:1.15;overflow-wrap:break-word}
 .hairc button i{width:40px;height:40px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.1)}
 .hairc button.on i{box-shadow:0 0 0 3px var(--white),0 0 0 5px var(--berry)}
 .hairc button.avoid i{position:relative}
@@ -385,15 +385,17 @@ h3.h{font-family:var(--serif);font-size:24px;line-height:1.1;font-weight:700;col
 
 /* ---------- print passport ---------- */
 #passport{display:none}
+@page{size:A4;margin:0}
 @media print{
-  body{background:#fff}
+  body{background:#fff;margin:0}
   .stage{display:none}
-  #passport{display:block;padding:24px;font-family:var(--sans);color:var(--ink)}
+  #passport{display:block;padding:14mm 14mm 12mm;font-family:var(--sans);color:var(--ink)}
   #passport h1{font-family:var(--serif);font-style:italic;font-size:54px;color:var(--berry)}
   #passport h2{font-family:var(--serif);font-size:26px;color:var(--berry);margin:18px 0 8px}
   #passport .pg{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}
   #passport .pg div{font-size:10px;text-align:center}
-  #passport .pg i{display:block;height:46px;border-radius:8px;margin-bottom:4px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #passport .pg i{display:block;height:46px;border-radius:8px;margin-bottom:4px;border:1px solid #d8cdd2;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #passport .hn{font-size:12px;color:#5a4650;margin:2px 0 6px}
   #passport p,#passport li{font-size:13px}
 }
 </style>
@@ -487,7 +489,7 @@ const S = {
   analyzing:["Aru изучает вашу внешность","Aru келбетіңізді зерттеп жатыр","Aru is studying your features"],
   a1:["Определяю подтон кожи","Тері реңкін анықтаймын","Reading skin undertone"],
   a2:["Измеряю контраст внешности","Келбет контрастын өлшеймін","Measuring contrast"],
-  a3:["Форма лица и тип фигуры","Бет пішіні мен дене бітімі","Face shape and body type"],
+  a3:["Форма лица и черты внешности","Бет пішіні мен келбет ерекшеліктері","Face shape and features"],
   a4:["Собираю ваши образы","Бейнелеріңізді жинаймын","Putting your looks together"],
   done_toast:["Разбор готов. Это ваша панель стиля","Талдау дайын. Бұл сіздің стиль панеліңіз","Your analysis is ready. This is your style panel"],
   hello:["Здравствуйте","Сәлеметсіз бе","Hello"],
@@ -641,6 +643,8 @@ const S = {
   passport:["Скачать стиль-паспорт в PDF","Стиль-паспортты PDF түрінде жүктеу","Download style passport as PDF"],
   redo:["Пройти разбор заново","Талдауды қайта өту","Redo my analysis"],
   delete_photos:["Удалить мои фото","Суреттерімді өшіру","Delete my photos"],
+  del_confirm:["Удалить ваши фото и все примерки? Разбор цветотипа останется.","Суреттеріңіз бен барлық киіп көрулерді өшіру керек пе? Түс типінің талдауы қалады.","Delete your photos and all try-ons? Your colour analysis stays."],
+  photos_removed:["Вы удалили свои фото и примерки. Разбор цветотипа сохранён. Для новых примерок загрузите фото заново: «Пройти разбор заново».","Суреттеріңіз бен киіп көрулерді өшірдіңіз. Түс типінің талдауы сақталды. Жаңа киіп көру үшін суреттерді қайта жүктеңіз: «Талдауды қайта өту».","You deleted your photos and try-ons. Your colour analysis is kept. For new try-ons, upload photos again: Redo the analysis."],
   photos_deleted:["Фото удалены","Суреттер өшірілді","Photos deleted"],
   access:["Доступ","Қолжетімділік","Access"], lifetime:["Бессрочный","Мерзімсіз","Lifetime"],
   key_v:["Ключ","Кілт","Key"],
@@ -1170,7 +1174,7 @@ SCREENS.onboard = () => {
     <div class="q"><h4>${t('q_wish')}</h4><p class="small muted" style="margin:-2px 0 8px">${t('q_wish_sub')}</p><textarea class="text-in" id="wish" rows="5" maxlength="600" placeholder="${t('wish_ph')}" style="resize:vertical;min-height:110px">${esc(q.wish||'')}</textarea></div>`;
   }
   return `<section class="pad"><div class="progress"><i style="width:${pct}%"></i></div>${body}
-    <div class="ob-foot"><button class="btn primary" data-act="obnext">${st<2?t('next'):ic('sparkle',20)+' '+t('analyze')}</button>${st<2?`<button class="btn gold" data-act="demo">${ic('user',20)} ${t('demo_client')}</button><button class="link" data-act="obskip">${t('skip')}</button>`:''}</div></section>`;
+    <div class="ob-foot"><button class="btn primary" data-act="obnext">${st<2?t('next'):ic('sparkle',20)+' '+t('analyze')}</button>${st<2&&!REAL()?`<button class="btn gold" data-act="demo">${ic('user',20)} ${t('demo_client')}</button><button class="link" data-act="obskip">${t('skip')}</button>`:''}</div></section>`;
 };
 
 SCREENS.analyzing = () => `<section class="scan">
@@ -1240,6 +1244,7 @@ SCREENS.colors = () => {
 
 /* ---------- настоящая клиентка: разбор, причёски, образы с сервера ---------- */
 const AN = () => state.ai && state.ai.analysis;
+const hexOf = c => { if(!c) return '#ccc'; if(typeof c==='string') return /^#[0-9a-f]{6}$/i.test(c)?c:'#ccc'; const v=[c.hex,c.name_en,c.name].find(x=>/^#[0-9a-f]{6}$/i.test(String(x||'').trim())); return v?String(v).trim():'#ccc'; };
 // Советы дня: у настоящей клиентки — из её разбора, в демо — общие
 function realTips(a){
   const b=(a.best_colors||[]), av=(a.avoid_colors||[]), hs=(a.hair_shades||[]), n=(c,i)=>c&&(i===2?(c.name_en||c.name):c.name)||'';
@@ -1268,7 +1273,7 @@ function realParams(){
 function curTips(){ return (typeof REAL==='function'&&REAL()&&AN())?realTips(AN()):TIPS; }
 
 const seasonName = a => a ? ([a.season, a.season_kk||a.season, a.season_en||a.season][L]) : '';
-const cname = c => typeof c==='string' ? c : (L===2 ? (c.name_en||c.name) : c.name);
+const cname = c => typeof c==='string' ? c : ((L===2 && c.name_en && c.name_en[0]!=='#') ? c.name_en : (c.name||''));
 function realHero(){
   const a=AN(), face=(state.ai&&state.ai.face)||state.photos.face;
   if(!state.ai) return `<div class="hero"><span class="k">${t('your_type')}</span><div class="t" style="font-size:26px">${t('ai_working')}</div></div>`;
@@ -1279,11 +1284,11 @@ function realHero(){
     <span class="k">${t('your_type')}</span><div class="t">${esc(seasonName(a))}</div>
     <p>${esc(a.why||'')}</p>
     <span class="match">${ic('leaf',14)} ${esc(a.undertone||'')} · ${esc(a.contrast||'')} · ${esc(a.metal||'')}</span>
-    <div class="strip">${(a.best_colors||[]).slice(0,10).map(c=>`<i style="background:${esc(c.hex||'#ccc')}"></i>`).join('')}</div></div>
+    <div class="strip">${(a.best_colors||[]).slice(0,10).map(c=>`<i style="background:${esc(hexOf(c))}"></i>`).join('')}</div></div>
     <h3 class="sec">${t('ai_palette')}</h3>
-    <div class="card"><div class="hairc">${(a.best_colors||[]).map(c=>`<button class="on-none"><i style="background:${esc(c.hex)}"></i>${esc(cname(c))}</button>`).join('')}</div>
+    <div class="card"><div class="hairc">${(a.best_colors||[]).map(c=>`<button class="on-none"><i style="background:${esc(hexOf(c))}"></i>${esc(cname(c))}</button>`).join('')}</div>
     <p class="small" style="font-weight:800;margin:14px 2px 8px">${t('ai_avoid')}</p>
-    <div class="hairc">${(a.avoid_colors||[]).map(c=>`<button class="avoid"><i style="background:${esc(c.hex)}"></i>${esc(cname(c))}</button>`).join('')}</div>
+    <div class="hairc">${(a.avoid_colors||[]).map(c=>`<button class="avoid"><i style="background:${esc(hexOf(c))}"></i>${esc(cname(c))}</button>`).join('')}</div>
     ${a.face_shape?`<p class="small muted" style="margin-top:12px"><b>${t('ai_face')}:</b> ${esc(a.face_shape)}</p>`:''}</div>`;
 }
 function tryBlock(kind,key,label){
@@ -1317,7 +1322,7 @@ function realHair(){
     ${tryBlock('hair',h.id,tr(h.n))}
     <div class="look-head" style="margin-top:12px"><div><h3 class="h">${tr(h.n)}</h3><p class="small muted" style="font-weight:700">${tr(h.len)} · ${tr(h.bang)}</p></div></div>
     <div class="whybox"><b>${t('why_hair')}</b>${tr(h.why)}</div>
-    ${ok.length?`<p class="small" style="font-weight:800;margin:14px 2px 8px">${t('shade_t')}</p><div class="hairc">${ok.map(c=>`<button class="on-none"><i style="background:${esc(c.hex)}"></i>${esc(cname(c))}</button>`).join('')}${no.map(c=>`<button class="avoid"><i style="background:${esc(c.hex)}"></i>${esc(cname(c))}</button>`).join('')}</div>`:''}
+    ${ok.length?`<p class="small" style="font-weight:800;margin:14px 2px 8px">${t('shade_t')}</p><div class="hairc">${ok.map(c=>`<button class="on-none"><i style="background:${esc(hexOf(c))}"></i>${esc(cname(c))}</button>`).join('')}${no.map(c=>`<button class="avoid"><i style="background:${esc(hexOf(c))}"></i>${esc(cname(c))}</button>`).join('')}</div>`:''}
     <button class="btn ghost" style="width:100%;margin-top:16px" data-act="go" data-arg="master">${ic('scissors',18)} ${t('show_master')}</button>
   </div>`}
 </section>`;
@@ -1330,7 +1335,7 @@ function realLooks(){
   <div class="occ">${REAL_OCC.map(([k,n])=>`<button class="chip ${state.rocc!=='custom'&&o[0]===k?'on':''}" data-act="rocc" data-arg="${k}">${tr(n)}</button>`).join('')}<button class="chip ${state.rocc==='custom'?'on':''}" data-act="rocc" data-arg="custom">${t('own_look')}</button></div>
   ${state.rocc==='custom'?customBlock('look'):`<div class="card" style="margin-top:12px;padding:12px">
     ${tryBlock('look',o[0],tr(o[1]))}
-    ${a?`<p class="small" style="font-weight:800;margin:14px 2px 8px">${t('ai_palette')}</p><div class="strip-mini" style="display:flex;border-radius:10px;overflow:hidden;height:22px">${(a.best_colors||[]).slice(0,10).map(c=>`<i style="flex:1;background:${esc(c.hex)}"></i>`).join('')}</div>`:''}
+    ${a?`<p class="small" style="font-weight:800;margin:14px 2px 8px">${t('ai_palette')}</p><div class="strip-mini" style="display:flex;border-radius:10px;overflow:hidden;height:22px">${(a.best_colors||[]).slice(0,10).map(c=>`<i style="flex:1;background:${esc(hexOf(c))}"></i>`).join('')}</div>`:''}
   </div>`}
 </section>`;
 }
@@ -1360,7 +1365,7 @@ SCREENS.hair = () => {
 
 SCREENS.master = () => {
   const real=REAL(), c=state.client in HSHADE?state.client:'aigerim', h=HAIRSTYLES.find(x=>x.id===state.hcut)||HAIRSTYLES[0], mine=real&&lastTry('hair',h.id), img=real?(mine?mine.url:null):hairImg(c,h.id), a=AN();
-  const sh=real?{ok:((a&&a.hair_shades)||[]).map(x=>[x.hex,[cname(x),cname(x),cname(x)]])}:HSHADE[c];
+  const sh=real?{ok:((a&&a.hair_shades)||[]).map(x=>[hexOf(x),[cname(x),cname(x),cname(x)]])}:HSHADE[c];
   const row=(k,v)=>`<li><span>${t(k)}</span><b>${v}</b></li>`;
   return `<section class="pad">
   <p class="small muted" style="margin:0 2px 10px">${t('master_sub')}</p>
@@ -1577,7 +1582,7 @@ SCREENS.profile = () => {
     <li><span>${t('age_v')}</span><b>28</b></li><li><span>${t('height_v')}</span><b>${state.quiz.height} ${t('cm')}</b></li></ul></div>
   <div class="card"><div class="row" style="justify-content:space-between"><h3 class="h" style="font-size:20px">${t('language')}</h3>${langPills()}</div></div>
   <div class="card"><h3 class="h" style="font-size:20px">${t('my_photos')}</h3>
-    ${any?`<div class="photos">${['face','body'].map(k=>`<div>${p[k]?`<img src="${p[k]}" alt="">`:ic('user')}</div>`).join('')}</div><p class="tiny muted" style="margin-top:8px">${t(REAL()?'photos_private':'photos_session')}</p>`:`<p class="small muted" style="margin-top:6px">${ic('lock',16)} ${t('no_photos')}</p>`}</div>
+    ${any?`<div class="photos">${['face','body'].map(k=>`<div>${p[k]?`<img src="${p[k]}" alt="">`:ic('user')}</div>`).join('')}</div><p class="tiny muted" style="margin-top:8px">${t(REAL()?'photos_private':'photos_session')}</p>`:`<p class="small muted" style="margin-top:6px">${ic('lock',16)} ${t(REAL()?'photos_removed':'no_photos')}</p>`}</div>
 
   <div class="menu">
     <button data-act="cover">${ic('home')} ${t('to_cover')}</button>
@@ -1595,8 +1600,8 @@ function renderSide(){
   <p style="font-weight:800;margin-top:20px">${t('side_try')}</p><ul>${['side_0','side_1','side_2','side_3','side_4'].map((k,i)=>`<li>${ic(['scissors','hanger','palette','camera','chat'][i])}<span>${t(k)}</span></li>`).join('')}</ul>`;
 }
 function renderPassport(){
-  if(REAL()&&AN()){ const a=AN(), ht=(state.ai.tryons||[]), HN=k=>{const h=HAIRSTYLES.find(x=>x.id===k);return h?tr(h.n):k;}, ON=k=>{const o=REAL_OCC.find(x=>x[0]===k);return o?tr(o[1]):k;};
-    const sw=list=>`<div class="pg">${(list||[]).map(c=>`<div><i style="background:${esc(c.hex)}"></i>${esc(cname(c))}</div>`).join('')}</div>`;
+  if(REAL()&&AN()){ const a=AN(), ht=(state.ai.tryons||[]), HN=k=>{const h=HAIRSTYLES.find(x=>x.id===k);return h?tr(h.n):k;}, ON=k=>{const o=REAL_OCC.find(x=>x[0]===k);return o?tr(o[1]):k;}, HD=k=>{const h=HAIRSTYLES.find(x=>x.id===k); return h?`<p class="hn">${[h.len,h.shape,h.bang,h.part,h.style].filter(Boolean).map(tr).join(' · ')}</p>`:'';};
+    const sw=list=>`<div class="pg">${(list||[]).map(c=>`<div><i style="background:${esc(hexOf(c))}"></i>${esc(cname(c))}</div>`).join('')}</div>`;
     const seen=new Set(), pics=ht.filter(x=>{const id=x.kind+x.key; if(seen.has(id)) return false; seen.add(id); return true;});
     document.getElementById('passport').innerHTML = `<h1>Aru</h1><p><b>${t('passport_t')}</b>: ${esc((state.sub&&state.sub.email)||'')} · ${fmtDate(new Date())}</p>
     <h2>${t('your_type')}: ${esc(seasonName(a))}</h2><p>${esc(a.why||'')}</p>
@@ -1605,7 +1610,7 @@ function renderPassport(){
     <h2>${t('not_mine')}</h2>${sw(a.avoid_colors)}
     <h2>${t('shade_t')}</h2>${sw(a.hair_shades)}
     ${a.lips?`<h2>${t('makeup_n')}</h2>${sw(a.lips)}`:''}
-    ${pics.length?`<h2>${t('s_hair')} · ${t('s_looks')}</h2>${pics.map(x=>`<div style="break-inside:avoid;margin:10px 0"><p><b>${x.kind==='hair'?HN(x.key):ON(x.key)}</b></p><img src="${x.url}" style="width:100%;border-radius:8px"></div>`).join('')}`:''}`;
+    ${pics.length?`<h2>${t('s_hair')} · ${t('s_looks')}</h2>${pics.map(x=>`<div style="break-inside:avoid;margin:10px 0"><p><b>${x.key==='custom'?t('own_look').replace(/^✍\s*/,'')+(x.text?': «'+esc(x.text)+'»':''):(x.kind==='hair'?HN(x.key):ON(x.key))}</b></p>${x.kind==='hair'&&x.key!=='custom'?HD(x.key):''}<img src="${x.url}" style="width:100%;border-radius:8px"></div>`).join('')}`:''}`;
     return; }
   document.getElementById('passport').innerHTML = `<h1>Aru</h1><p><b>${t('passport_t')}</b>: ${t('user_name')}</p>
   <h2>${t('your_type')}: ${t('soft_autumn')}</h2><p>${t('sa_desc')}</p>
@@ -1674,7 +1679,10 @@ async function aiApi(action, body={}){
   const tk=await token(); if(!tk) return {ok:false,reason:'not_signed_in'};
   try{ const r=await fetch(AI_API,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+tk},body:JSON.stringify({action,...body})}); return await r.json(); }catch(e){ return {ok:false,reason:'net'}; }
 }
-async function loadAI(){ const d=await aiApi('list'); if(d&&d.ok){ state.ai=d; render(); } return d; }
+async function loadAI(){ const d=await aiApi('list'); if(d&&d.ok){ state.ai=d;
+  if(REAL()){ if(state.onboarded && !d.analysis && !d.face){ state.onboarded=false; delete ONB[accId()]; save(); state.screen='onboard'; state.step=0; }
+    else if(!state.onboarded && d.analysis){ state.onboarded=true; save(); if(state.screen==='onboard') state.screen='home'; } }
+  render(); } return d; }
 function quizAnswers(){ const q=state.quiz||{}; return {age:q.age, height:q.height, life:q.life, budget:q.budget, like:q.like, dislike:q.dislike, wish:q.wish||''}; }
 async function realAnalysis(){
   const sv=await aiApi('save_photos',{face:PHOTO_HI.face, body:PHOTO_HI.body, answers:quizAnswers()});
@@ -1760,7 +1768,7 @@ const ACT = {
   send:()=>{ const el=document.getElementById('chatIn'); const v=el.value; el.value=''; ask(v); },
   passport:async()=>{ renderPassport(); const imgs=[...document.querySelectorAll('#passport img')]; await Promise.all(imgs.map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r; setTimeout(r,8000);}))); window.print(); },
   redo:()=>{ state.step=0; state.prev=[]; state.screen='onboard'; render(); },
-  delphotos:async()=>{ state.photos={face:null,body:null}; PHOTO_HI={face:null,body:null}; if(REAL()){ const d=await aiApi('delete_photos'); if(!d.ok){ toast(why(d.reason)); return; } await loadAI(); } render(); toast(t('photos_deleted')); },
+  delphotos:async()=>{ if(REAL() && !confirm(t('del_confirm'))) return; state.photos={face:null,body:null}; PHOTO_HI={face:null,body:null}; if(REAL()){ const d=await aiApi('delete_photos'); if(!d.ok){ toast(why(d.reason)); return; } await loadAI(); } render(); toast(t('photos_deleted')); },
   aitry:a=>{ const [k,key]=a.split('|'); doTryon(k,key); },
   aicustom:a=>{ const txt=((state.customTxt&&state.customTxt[a])||'').trim(); if(txt.length<3){ toast(t('own_need')); return; } doTryon(a,'custom',txt); },
   airun:async()=>{ if(!PHOTO_HI.face && !(state.ai&&state.ai.face)){ toast(t('ai_need_photo')); state.onboarded=false; state.step=0; state.screen='onboard'; render(); return; } state.aiBusy='analyze'; render(); const d=PHOTO_HI.face?await realAnalysis():await aiApi('analyze'); if(!PHOTO_HI.face) await loadAI(); state.aiBusy=null; render(); if(!d.ok) toast(why(d.reason)); },
