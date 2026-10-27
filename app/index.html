@@ -1567,7 +1567,7 @@ function ask(q){
 }
 
 SCREENS.profile = () => {
-  const p=(REAL()&&state.ai&&state.ai.face&&!state.photos.face)?{...state.photos,face:state.ai.face}:state.photos, any=p.face||p.body;
+  const sv=(REAL()&&state.ai)||{}, p={face:state.photos.face||sv.face||null, body:state.photos.body||sv.body||null}, any=p.face||p.body;
   return `<section class="pad">
   <div class="prof-head"><div class="av">${p.face?`<img src="${p.face}" alt="">`:avatar({drape:C[state.drape].hex,cut:state.cut,hair:HAIRC[state.hairc].hex})}</div>
     <div><h2 class="h" style="font-size:28px">${REAL()?esc((state.sub&&state.sub.email||'').split('@')[0]):t('user_name')}</h2><p class="small muted" style="font-weight:700">${REAL()?esc(seasonName(AN())||''):`${t('soft_autumn')}, ${t('hourglass').toLowerCase()}`}</p></div></div>
