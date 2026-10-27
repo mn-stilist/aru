@@ -43,11 +43,11 @@ const LOOK: Record<string, string> = {
   party: "a celebration look: an elegant midi dress, heeled shoes, a small clutch and statement earrings",
   date: "a date look: a feminine silk or knit top with a skirt or a slip dress, a light cardigan, delicate jewellery and heeled sandals or boots",
   travel: "a travel look: a long coat or trench, a fine knit top, comfortable trousers, ankle boots and a roomy bag",
-  toi: "a festive Kazakh toi look: a modern long velvet kamzol with traditional ornament over a floor-length dress, traditional Kazakh jewellery and elegant shoes",
+  toi: "a festive Kazakh toi look: an elegant festive dress in silk, satin or chiffon (floor-length by default; if she does not wear long dresses, a graceful midi dress to mid-calf), with a modern fitted velvet kamzol with traditional ornament worn over it, traditional Kazakh jewellery and elegant heeled shoes",
 };
 const clean = (v: unknown, n = 400) => String(v ?? "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, n);
 const wishLine = (answers: any) => { const w = clean(answers?.wish, 600); return w ? `Her own wishes in her words (follow them where possible, but keep her face and colour palette): "${w}". ` : ""; };
-const dislikeLine = (answers: any) => { const w = clean(answers?.dislike, 300); return w ? `She does NOT wear or like: "${w}" — strictly avoid this, even if the outfit description suggests it (for example, if she does not wear floor-length or long items, make the dress knee-length or midi). ` : ""; };
+const dislikeLine = (answers: any) => { const w = clean(answers?.dislike, 300); return w ? `She does NOT wear or like: "${w}" — strictly avoid this, even if the outfit description suggests it (for example, if she does not wear floor-length or long items, make the dress a graceful midi to mid-calf, never with trousers underneath). ` : ""; };
 const FACE_RULE =
   "MOST IMPORTANT: this must be exactly the same woman as in the attached photos — copy her face precisely: the same face shape, eyes, eyebrows, nose, lips, smile, skin tone and moles. Do not beautify, slim or change her face or body; keep her real age and proportions. ";
 
@@ -75,6 +75,8 @@ function lookPrompt(key: string, a: any, answers: any, text?: string) {
       ? `Outfit exactly as she describes it in her own words: "${clean(text)}". Where she does not name colours, use colours from her personal palette: ${p.best}. `
       : `Outfit: ${LOOK[key]}. Use only colours from her personal palette: ${p.best}. Avoid: ${p.avoid}. `) +
     `Jewellery in ${p.metal || "a metal that suits her"}. ` + petite + dislikeLine(answers) + wishLine(answers) +
+    "Dress her in a completely new outfit — do not reuse or copy the clothes from her photo. " +
+    "The outfit must look like something a well-dressed woman would really wear today: one coherent look, no trousers, leggings or jeans under a dress or skirt, no odd layering, no costume or caricature. " +
     "Modern 2026 style, premium fabrics, perfect fit, no visible logos or brand names. Natural soft daylight, realistic photo, no text.";
 }
 const ANALYZE_PROMPT = (answers: any) => `You are an experienced personal stylist and colour analyst. Look at the woman in the photos (the first is a close-up of the face, the second, if present, is full length).
@@ -90,7 +92,7 @@ Reply with strict JSON only, no comments, in this exact shape:
 "hair_avoid":[{"name":"Russian","name_en":"English","hex":"#RRGGBB"} x2],
 "lips":[{"name":"Russian","name_en":"English","hex":"#RRGGBB"} x3],
 "face_shape":"овальное|круглое|квадратное|сердечко|вытянутое|ромб",
-"why":"2 sentences in Russian explaining the colour type in simple words",
+"why":"2 sentences in Russian explaining the colour type in simple words, addressing her directly as вы (У вас…)",
 "confidence":0.0}`;
 
 /* ---------- Gemini ---------- */
