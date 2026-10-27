@@ -4,7 +4,8 @@
 //   analyze       {}                          — разбор цветотипа по её фото
 //   tryon         { kind: "look"|"hair", key, text? } — примерка (тратит 1 из лимита); key "custom" + text — свой вариант её словами
 //   list          {}                          — всё сохранённое: разбор, примерки, ссылки на фото
-//   delete_photos {}                          — удалить все её фото и примерки
+//   delete_photos {}                          — удалить два исходных фото (разбор и примерки остаются)
+//   delete_all    {}                          — удалить всё: фото, примерки, разбор, анкету (подписка остаётся)
 // Живые клиентки обрабатываются только на платном тарифе Google (секрет GEMINI_PAID = 1).
 // Тестовые аккаунты (тариф "test", только ИИ-героини) работают и на бесплатном.
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
@@ -177,11 +178,19 @@ Deno.serve(async (req) => {
     }
 
     if (action === "delete_photos") {
+      const paths = [prof?.face_path, prof?.body_path].filter(Boolean) as string[];
+      if (paths.length) await db.storage.from(BUCKET).remove(paths);
+      await db.from("client_profile").update({ face_path: null, body_path: null }).eq("user_id", uid);
+      return json({ ok: true, removed: paths.length });
+    }
+
+    if (action === "delete_all") {
       const { data: tr } = await db.from("tryons").select("image_path").eq("user_id", uid);
       const paths = [prof?.face_path, prof?.body_path, ...(tr ?? []).map((x) => x.image_path)].filter(Boolean) as string[];
       if (paths.length) await db.storage.from(BUCKET).remove(paths);
       await db.from("tryons").delete().eq("user_id", uid);
-      await db.from("client_profile").update({ face_path: null, body_path: null }).eq("user_id", uid);
+      await db.from("analyses").delete().eq("user_id", uid);
+      await db.from("client_profile").delete().eq("user_id", uid);
       return json({ ok: true, removed: paths.length });
     }
 
