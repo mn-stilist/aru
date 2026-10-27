@@ -519,6 +519,7 @@ const S = {
   ai_pending_t:["Ваш разбор скоро будет готов","Сіздің талдауыңыз жақында дайын болады","Your analysis is almost ready"],
   ai_pending_d:["Фото и анкета сохранены. Как только ИИ-стилист включится, здесь появятся ваш цветотип, палитра и примерки.","Суреттер мен сауалнама сақталды. ИИ-стилист қосылғанда мұнда түс типіңіз, палитраңыз және киіп көрулер шығады.","Your photos and answers are saved. As soon as the AI stylist is switched on, your colour type, palette and try-ons will appear here."],
   ai_retry:["Сделать разбор","Талдау жасау","Run my analysis"],
+  near_type:["Вы на границе, близко к цветотипу:","Сіз шекарадасыз, мына түс типіне жақын:","You are on the border, close to:"],
   ai_working:["Aru смотрит на ваше фото…","Aru суретіңізге қарап жатыр…","Aru is looking at your photo…"],
   ai_tryon:["Примерить на мне","Маған киіп көру","Try it on me"],
   ai_tryon_n:["тратит 1 примерку · осталось {n}","1 киіп көру жұмсалады · қалды {n}","uses 1 try-on · {n} left"],
@@ -1284,7 +1285,7 @@ function realHero(){
     <div class="t" style="font-size:28px">${t('ai_pending_t')}</div><p>${t('ai_pending_d')}</p>
     ${state.ai.enabled?`<button class="btn gold sm" style="margin-top:14px" data-act="airun">${state.aiBusy==='analyze'?t('ai_working'):ic('sparkle',18)+' '+t('ai_retry')}</button>`:''}</div>`;
   return `<div class="hero">${face?`<div class="hero-av"><img src="${face}" alt=""></div>`:''}
-    <span class="k">${t('your_type')}</span><div class="t">${esc(seasonName(a))}</div>
+    <span class="k">${t('your_type')}</span><div class="t">${esc(seasonName(a))}</div>${a.near?`<p class="small" style="opacity:.85;margin:-4px 0 6px">${t('near_type')} ${esc([a.near,a.near_kk||a.near,a.near_en||a.near][L])}</p>`:''}
     <p>${esc(a.why||'')}</p>
     <span class="match">${ic('leaf',14)} ${esc(a.undertone||'')} · ${esc(a.contrast||'')} · ${esc(a.metal||'')}</span>
     <div class="strip">${(a.best_colors||[]).slice(0,10).map(c=>`<i style="background:${esc(hexOf(c))}"></i>`).join('')}</div></div>

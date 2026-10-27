@@ -79,7 +79,7 @@ function lookPrompt(key: string, a: any, answers: any, text?: string) {
 }
 const ANALYZE_PROMPT = (answers: any) => `You are an experienced personal stylist and colour analyst. Look at the woman in the photos (the first is a close-up of the face, the second, if present, is full length).
 Determine her colour type using the 12-season system. Consider skin undertone, hair colour (including grey hair), eye colour and contrast. Ignore the clothes and the background lighting.
-Her answers to a short questionnaire (may be empty): ${JSON.stringify(answers ?? {})}.
+Her age group: ${JSON.stringify(answers?.age ?? "")}. Decide the colour type ONLY from her natural colouring in the photos; her style preferences must not influence it.
 Reply with strict JSON only, no comments, in this exact shape:
 {"season":"name in Russian, e.g. Тёмная осень","season_kk":"name in Kazakh","season_en":"name in English",
 "undertone":"тёплый|холодный|нейтральный","contrast":"низкий|средний|высокий","chroma":"мягкий|чистый",
@@ -227,6 +227,8 @@ Deno.serve(async (req) => {
           const best = Object.values(votes).sort((a, b) => b.length - a.length || (Number(b[0].confidence) || 0) - (Number(a[0].confidence) || 0))[0];
           const result = best.sort((a, b) => (Number(b.confidence) || 0) - (Number(a.confidence) || 0))[0];
           result.votes = `${best.length}/${ok.length}`;
+          const other = ok.find((r: any) => key(r) !== key(result));
+          if (other) { result.near = other.season; result.near_kk = other.season_kk || other.season; result.near_en = other.season_en || other.season; }
           for (const k of ["best_colors", "avoid_colors", "hair_shades", "lips"]) for (const c of (Array.isArray(result[k]) ? result[k] : [])) {
             if (c && typeof c === "object" && !HX.test(String(c.hex ?? "").trim())) { const v = [c.name_en, c.name].find((x: any) => HX.test(String(x ?? "").trim())); if (v) { c.hex = String(v).trim(); if (c.name_en === v) delete c.name_en; } }
           }
