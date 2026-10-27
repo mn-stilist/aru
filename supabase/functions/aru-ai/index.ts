@@ -206,25 +206,35 @@ Deno.serve(async (req) => {
       const imgs = [{ inline_data: { mime_type: "image/jpeg", data: face } }, ...(body ? [{ inline_data: { mime_type: "image/jpeg", data: body } }] : [])];
 
       if (action === "analyze") {
+        // Три независимых разбора параллельно и голосование: один и тот же цветотип на одних и тех же фото.
+        const HX = /^#[0-9a-f]{6}$/i;
+        const one = async (model: string) => {
+          const { status, d } = await gemini(model, [...imgs, { text: ANALYZE_PROMPT(prof?.answers) }], { responseMimeType: "application/json", temperature: 0 }, 50000);
+          if (isQuota(status, d)) return { quota: true };
+          const txt = d?.candidates?.[0]?.content?.parts?.map((p: any) => p.text ?? "").join("") ?? "";
+          try { const r = JSON.parse(txt); return r?.season ? { r } : { d }; } catch { return { d }; }
+        };
         let last: any = null;
         for (const model of TEXT_MODELS) {
-          const { status, d } = await gemini(model, [...imgs, { text: ANALYZE_PROMPT(prof?.answers) }], { responseMimeType: "application/json", temperature: 0.2 }, 50000);
-          last = { status, d };
-          if (isQuota(status, d)) return json({ ok: false, reason: "billing" });
-          const txt = d?.candidates?.[0]?.content?.parts?.map((p: any) => p.text ?? "").join("") ?? "";
-          try {
-            const result = JSON.parse(txt);
-            if (!result?.season) throw new Error("empty");
-            const HX = /^#[0-9a-f]{6}$/i;
-            for (const k of ["best_colors", "avoid_colors", "hair_shades", "lips"]) for (const c of (Array.isArray(result[k]) ? result[k] : [])) {
-              if (c && typeof c === "object" && !HX.test(String(c.hex ?? "").trim())) { const v = [c.name_en, c.name].find((x: any) => HX.test(String(x ?? "").trim())); if (v) { c.hex = String(v).trim(); if (c.name_en === v) delete c.name_en; } }
-            }
-            await db.from("analyses").insert({ user_id: uid, result, model });
-            await db.from("usage_log").insert({ user_id: uid, kind: "analysis" });
-            return json({ ok: true, analysis: result });
-          } catch { /* пробуем следующую модель */ }
+          const runs = await Promise.all([one(model), one(model), one(model)]);
+          if (runs.some((x: any) => x.quota)) return json({ ok: false, reason: "billing" });
+          const ok = runs.map((x: any) => x.r).filter(Boolean);
+          last = runs.find((x: any) => x.d)?.d ?? last;
+          if (!ok.length) continue;
+          const key = (r: any) => String(r.season_en || r.season).toLowerCase().trim();
+          const votes: Record<string, any[]> = {};
+          for (const r of ok) (votes[key(r)] ??= []).push(r);
+          const best = Object.values(votes).sort((a, b) => b.length - a.length || (Number(b[0].confidence) || 0) - (Number(a[0].confidence) || 0))[0];
+          const result = best.sort((a, b) => (Number(b.confidence) || 0) - (Number(a.confidence) || 0))[0];
+          result.votes = `${best.length}/${ok.length}`;
+          for (const k of ["best_colors", "avoid_colors", "hair_shades", "lips"]) for (const c of (Array.isArray(result[k]) ? result[k] : [])) {
+            if (c && typeof c === "object" && !HX.test(String(c.hex ?? "").trim())) { const v = [c.name_en, c.name].find((x: any) => HX.test(String(x ?? "").trim())); if (v) { c.hex = String(v).trim(); if (c.name_en === v) delete c.name_en; } }
+          }
+          await db.from("analyses").insert({ user_id: uid, result, model });
+          await db.from("usage_log").insert({ user_id: uid, kind: "analysis" });
+          return json({ ok: true, analysis: result });
         }
-        console.error("analyze failed", JSON.stringify(last?.d)?.slice(0, 500));
+        console.error("analyze failed", JSON.stringify(last)?.slice(0, 500));
         return json({ ok: false, reason: "ai_failed" });
       }
 
