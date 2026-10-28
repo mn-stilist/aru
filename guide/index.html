@@ -50,6 +50,11 @@ ol.steps li::before{content:counter(s);position:absolute;left:0;top:8px;width:26
 .shots figure{flex:1;max-width:250px;text-align:center}
 .shots img{width:100%;border-radius:18px;box-shadow:0 10px 26px -16px rgba(74,29,48,.8);border:5px solid #2B1A22;background:#fff}
 .shots.doc img{border:1px solid #E5D6DC;border-radius:6px}
+.shots.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+.shots.grid figure{max-width:none}
+.shots.grid figure.w{grid-column:1/-1}
+.shots.grid img{border:1px solid #E5D6DC;border-radius:8px}
+.shots.grid figure:first-child img{border:5px solid #2B1A22;border-radius:18px}
 .shots figcaption{font-size:12.5px;color:var(--muted);margin-top:6px}
 .video{position:relative;padding-top:56.25%;border-radius:16px;overflow:hidden;margin-top:12px;background:#000}
 .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
@@ -68,7 +73,7 @@ footer a{color:#F3B8CC}
     <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn ghost" href="../showroom/">Шоу-рум</a><a class="btn gold" href="../app/">Открыть приложение</a></div></div>
   <h1>Уроки: как пользоваться Aru</h1>
   <p class="lead">Короткие пошаговые уроки — от входа до стиль-паспорта. Все снимки сделаны на настоящей клиентке: Дана, 19 лет, студентка. С вами будет то же самое — только на ваших фото.</p>
-  <div class="pills"><span>15 уроков</span><span>2–3 минуты на урок</span><span>Можно читать по порядку или выборочно</span></div>
+  <div class="pills"><span>16 уроков</span><span>2–3 минуты на урок</span><span>Можно читать по порядку или выборочно</span></div>
 </div></header>
 
 <main class="wrap">
@@ -155,7 +160,12 @@ const L = [
   why:'Здесь видно, сколько примерок осталось, до какого числа оплачено, и здесь же можно удалить свои фото.',
   steps:[`Буква в кружке справа вверху → «Профиль»`,`«Примерок осталось» — например 19 / 30`,`${B('Докупить примерки')} — если закончились`,`${B('Пройти разбор заново')} — новые фото, новый разбор`,`${B('Удалить мои фото')} — удаляет только фото, примерки остаются; ${B('Удалить всё')} — всё целиком`],
   tip:'Из «Профиля» назад — стрелка «<» слева вверху. Только на главном экране видна нижняя строка вкладок.',
-  img:[['15_profil','Профиль'],['15_udalenie','Удаление']]}
+  img:[['15_profil','Профиль'],['15_udalenie','Удаление']]},
+ {g:'Подписка', id:'dokupit', t:'Докупить примерки', d:'+20 примерок за $5, не сгорают',
+  why:'30 примерок в месяц закончились раньше срока? Докупите пакет: 20 примерок за $5. Они не сгорают в конце месяца — сначала тратятся месячные, потом докупленные.',
+  steps:[`Буква в кружке справа вверху → «Профиль» → ${B('Докупить примерки')}`,`Откроется оплата «Aru — пакет +20 примерок», $5. Ваша почта уже вписана — не меняйте её: это почта, с которой вы входите в Aru`,`Введите данные карты и нажмите ${B('Pay')}`,`На странице «Спасибо за покупку» будет ключ пакета — он же придёт письмом`,`Через 1–2 минуты вернитесь в Aru и обновите страницу: в «Профиле» появится строка «Докуплено (не сгорают): 20»`],
+  tip:'Оплатили с другой почты или примерки не появились через 5 минут? Напишите нам в WhatsApp +7 701 770 80 61 и пришлите ключ из письма — добавим вручную.',
+  img:[['16_dokupit_profil','Шаг 1 и 5: Профиль'],['16_dokupit_oplata','Шаг 2–3: почта уже вписана'],['16_dokupit_tovar','Пакет +20 примерок — $5','w'],['16_dokupit_spasibo','Шаг 4: после оплаты','w']], grid:true}
 ];
 document.getElementById('toc').innerHTML = [...new Set(L.map(x=>x.g))].map(g=>`<p class="group">${g}</p><div class="toc">${L.map((x,i)=>x.g===g?`<a href="#${x.id}"><span class="n">${i+1}</span><span><b>${x.t}</b><small>${x.d}</small></span></a>`:'').join('')}</div>`).join('');
 document.getElementById('lessons').innerHTML = `<h2 class="sec">Уроки</h2>` + L.map((x,i)=>`<section class="lesson" id="${x.id}">
@@ -165,12 +175,12 @@ document.getElementById('lessons').innerHTML = `<h2 class="sec">Уроки</h2>`
     ${x.tip?`<p class="tip">${x.tip}</p>`:''}
     ${VIDEO[x.id]?`<div class="video"><iframe src="https://www.youtube.com/embed/${VIDEO[x.id]}" title="${x.t}" allowfullscreen loading="lazy"></iframe></div>`:''}
   </div>
-  <div class="shots ${x.doc?'doc':''}">${x.img.map(([f,c])=>`<figure><img src="img/${f}.jpg" alt="${c}" loading="lazy"><figcaption>${c}</figcaption></figure>`).join('')}</div>
+  <div class="shots ${x.doc?'doc':''} ${x.grid?'grid':''}">${x.img.map(([f,c,w])=>`<figure class="${w||''}"><img src="img/${f}.jpg" alt="${c}" loading="lazy"><figcaption>${c}</figcaption></figure>`).join('')}</div>
 </section>`).join('') + `<section class="lesson wide" id="primerki"><div><div class="head"><span class="num">?</span><h3>Что тратит примерки, а что — нет</h3></div>
   <div class="cost"><div><b>Бесплатно, без ограничений</b>Разбор цветотипа, вопросы стилисту, тест драпировки, проверка вещи, гардероб, стиль-паспорт</div>
   <div><b>Один раз, бесплатно</b>Фото ваших вещей, обуви, сумок, украшений и косметики</div>
   <div><b>1 примерка из 30</b>Каждая примерка причёски, цвета волос или образа, «Показать на мне», «Ещё вариант»</div></div>
-  <p class="tip ok">Примерки закончились раньше месяца? «Профиль» → «Докупить примерки».</p></div></section>`;
+  <p class="tip ok">Примерки закончились раньше месяца? «Профиль» → «Докупить примерки»: +20 примерок за $5, не сгорают. <a href="#dokupit">Как это сделать →</a></p></div></section>`;
 </script>
 </body>
 </html>
