@@ -144,6 +144,17 @@ h3.h{font-family:var(--serif);font-size:24px;line-height:1.1;font-weight:700;col
 .range-row b{font-family:var(--serif);font-size:26px;color:var(--berry);min-width:84px;text-align:right}
 .text-in{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--white);outline:0}
 .text-in:focus{border-color:var(--rose)}
+.byphoto{margin:0 0 14px;padding:14px;border:2px solid var(--gold);background:linear-gradient(180deg,#FFF8EC,#fff)}
+.bp-head{display:flex;gap:12px;align-items:flex-start}
+.bp-banner{display:block;width:100%;text-align:left;margin:4px 0 6px;cursor:pointer}
+.bp-head h3{font-size:21px}.bp-head h3 em{font-style:normal;font-family:inherit;font-size:11px;font-weight:800;background:var(--gold);color:#2B1A22;border-radius:20px;padding:2px 8px;vertical-align:middle;margin-left:4px}
+.bp-ic{flex:0 0 40px;height:40px;border-radius:50%;background:var(--berry);color:#fff;display:grid;place-items:center}
+.bp-pick{width:100%;margin-top:12px;position:relative;cursor:pointer}
+.bp-pick input,.bp-other input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.bp-ref{display:flex;gap:12px;margin-top:12px;align-items:flex-start}
+.bp-ref>img{width:96px;max-height:150px;object-fit:cover;border-radius:12px;border:1px solid var(--line)}
+.bp-ref>div{flex:1;min-width:0}.bp-ref textarea{min-height:82px;resize:vertical;font-size:14px}
+.bp-other{display:inline-flex;gap:6px;align-items:center;margin-top:6px;font-size:13px;font-weight:700;color:var(--rose);cursor:pointer;position:relative}
 .ob-foot{display:grid;gap:10px;margin-top:22px}
 .ob-foot .link{justify-self:center;font-size:14px}
 
@@ -537,6 +548,16 @@ const S = {
   near_type:["Вы на границе, близко к цветотипу:","Сіз шекарадасыз, мына түс типіне жақын:","You are on the border, close to:"],
   ai_working:["Aru смотрит на ваше фото…","Aru суретіңізге қарап жатыр…","Aru is looking at your photo…"],
   ai_tryon:["Примерить на мне","Маған киіп көру","Try it on me"],
+  byphoto_h:["Примерить по фото","Фото бойынша киіп көру","Try on from a photo"],
+  byphoto_look_sub:["Фото от подруги, из Instagram, Pinterest или с витрины — Aru покажет вас в таком же стиле. Лицо и цвета — ваши.","Құрбыңыз жіберген, Instagram, Pinterest не витринадағы фото — Aru сізді дәл осындай стильде көрсетеді. Бет пен түстер — сіздікі.","A photo from a friend, Instagram, Pinterest or a shop window — Aru shows you in the same style. Your face, your colours."],
+  byphoto_hair_sub:["Понравилась причёска на фото? Aru покажет её на вас с трёх сторон.","Фотодағы шаш үлгісі ұнады ма? Aru оны сізге үш жақтан көрсетеді.","Like a hairstyle in a photo? Aru shows it on you from three angles."],
+  byphoto_pick:["Выбрать фото","Фото таңдау","Choose a photo"],
+  byphoto_other:["Другое фото","Басқа фото","Another photo"],
+  byphoto_look_ph:["Можно уточнить, например: такое же, но длиннее и без каблука","Нақтылауға болады, мысалы: дәл осындай, бірақ ұзынырақ әрі өкшесіз","Add a note if you like, e.g.: the same but longer, no heels"],
+  byphoto_hair_ph:["Можно уточнить, например: такая же стрижка, но без чёлки","Нақтылауға болады, мысалы: дәл осындай, бірақ кекілсіз","Add a note if you like, e.g.: the same cut, but no fringe"],
+  byphoto_hint:["Фото нигде не сохраняется — оно нужно только для этой примерки.","Фото еш жерде сақталмайды — тек осы киіп көру үшін керек.","The photo is not stored — it is used only for this try-on."],
+  by_photo_lbl:["По фото","Фото бойынша","From a photo"],
+  new_badge:["Новое","Жаңа","New"],
   ai_tryon_n:["тратит 1 примерку · осталось {n}","1 киіп көру жұмсалады · қалды {n}","uses 1 try-on · {n} left"],
   ai_tryon_wait:["Примеряю… 15–40 секунд","Киіп көрудемін… 15–40 секунд","Trying it on… 15–40 seconds"],
   ai_again:["Ещё вариант","Тағы бір нұсқа","Another version"],
@@ -1330,9 +1351,9 @@ SCREENS.home = () => {
   ${(REAL()&&!AN())?'':`<h3 class="sec">${t('indicators')}</h3>
   <div class="ind">
     ${(()=>{ const a=REAL()?AN():null, pc=(v,m)=>{ v=String(v||'').toLowerCase(); for(const [re,n] of m) if(re.test(v)) return n; return 50; };
-      return a ? `<div class="card">${ring(pc(a.undertone,[[/тёпл|тепл|warm/,78],[/холод|cool/,22]]),'#C2456E')}<div><span>${t('undertone')}</span><b>${esc(a.undertone||'—')}</b></div></div>
-    <div class="card">${ring(pc(a.contrast,[[/низк|low/,25],[/высок|high/,85]]),'#D9A441')}<div><span>${t('contrast')}</span><b>${esc(a.contrast||'—')}</b></div></div>
-    <div class="card">${ring(pc(a.chroma,[[/мягк|soft|muted/,35],[/чист|clear|bright/,80]]),'#8E6C88')}<div><span>${t('chroma')}</span><b>${esc(a.chroma||'—')}</b></div></div>`
+      return a ? `<div class="card">${ring(pc(a.undertone,[[/тёпл|тепл|warm/,78],[/холод|cool/,22]]),'#C2456E')}<div><span>${t('undertone')}</span><b>${esc(a.undertone?VW(a.undertone):'—')}</b></div></div>
+    <div class="card">${ring(pc(a.contrast,[[/низк|low/,25],[/высок|high/,85]]),'#D9A441')}<div><span>${t('contrast')}</span><b>${esc(a.contrast?VW(a.contrast):'—')}</b></div></div>
+    <div class="card">${ring(pc(a.chroma,[[/мягк|soft|muted/,35],[/чист|clear|bright/,80]]),'#8E6C88')}<div><span>${t('chroma')}</span><b>${esc(a.chroma?VW(a.chroma):'—')}</b></div></div>`
       : `<div class="card">${ring(78,'#C2456E')}<div><span>${t('undertone')}</span><b>${t('warm')}</b></div></div>
     <div class="card">${ring(45,'#D9A441')}<div><span>${t('contrast')}</span><b>${t('medium')}</b></div></div>
     <div class="card">${ring(35,'#8E6C88')}<div><span>${t('chroma')}</span><b>${t('muted_v')}</b></div></div>`; })()}
@@ -1346,7 +1367,7 @@ SCREENS.home = () => {
   </div>
   <div class="tipcard">${ic('sparkle',24)}<div><p style="font-size:12px;font-weight:800;color:#8A5A12">${t('tip_day')}</p><p>${tr(curTips()[state.tip%curTips().length])}</p><button data-act="tip">${t('another_tip')}</button></div></div>
   ${REAL()?(()=>{ const tr0=((state.ai&&state.ai.tryons)||[]).find(x=>x.kind==='look')||((state.ai&&state.ai.tryons)||[])[0];
-    return AN()?`<h3 class="sec">${t('transform_r')}</h3>${tr0?`<button class="card" data-act="go" data-arg="${tr0.kind==='hair'?'hair':'looks'}" style="display:block;width:100%;text-align:left;padding:12px"><div class="tryon-frame"><img src="${esc(tr0.url)}" alt=""></div><div class="row" style="justify-content:space-between;margin-top:10px"><b>${esc(tr0.text||'')}</b><span class="link" style="font-size:13.5px">${t('open_look')}</span></div></button>`:`<p class="small muted" style="margin:0 2px">${t('no_tryons_yet')}</p>`}`:''; })():''}
+    return AN()?`<button class="card byphoto bp-banner" data-act="go" data-arg="looks"><div class="bp-head"><span class="bp-ic">${ic('camera',22)}</span><div><h3 class="h">${t('byphoto_h')} <em>${t('new_badge')}</em></h3><p class="tiny muted">${t('byphoto_look_sub')}</p></div></div></button><h3 class="sec">${t('transform_r')}</h3>${tr0?`<button class="card" data-act="go" data-arg="${tr0.kind==='hair'?'hair':'looks'}" style="display:block;width:100%;text-align:left;padding:12px"><div class="tryon-frame"><img src="${esc(tr0.url)}" alt=""></div><div class="row" style="justify-content:space-between;margin-top:10px"><b>${esc(tr0.key==='photo'?t('by_photo_lbl')+(tr0.text?': '+tr0.text:''):(tr0.text||''))}</b><span class="link" style="font-size:13.5px">${t('open_look')}</span></div></button>`:`<p class="small muted" style="margin:0 2px">${t('no_tryons_yet')}</p>`}`:''; })():''}
   ${REAL()?'':`<h3 class="sec">${t('your_transform')} <span class="count">${tr(TRYCL.aigerim.looks.work.t)}</span></h3>
   <button class="card" data-act="openlook" data-arg="work" style="display:block;width:100%;text-align:left;padding:12px">
     <div class="tryon-frame"><img src="img/aigerim-work.jpg" alt=""></div>
@@ -1387,13 +1408,13 @@ function styleSlots(){ const st=STYLES(); return `<div class="styles">${[0,1,2].
 const hexOf = c => { if(!c) return '#ccc'; if(typeof c==='string') return /^#[0-9a-f]{6}$/i.test(c)?c:'#ccc'; const v=[c.hex,c.name_en,c.name].find(x=>/^#[0-9a-f]{6}$/i.test(String(x||'').trim())); return v?String(v).trim():'#ccc'; };
 // Советы дня: у настоящей клиентки — из её разбора, в демо — общие
 function realTips(a){
-  const b=(a.best_colors||[]), av=(a.avoid_colors||[]), hs=(a.hair_shades||[]), n=(c,i)=>c&&(i===2?(c.name_en||c.name):c.name)||'';
+  const b=(a.best_colors||[]), av=(a.avoid_colors||[]), hs=(a.hair_shades||[]), n=(c,i)=>c&&[c.name,c.name_kk||c.name,c.name_en||c.name][i]||'', mt=/серебр|silver/i.test((a.metal||'')+(a.metal_en||''))?['серебро','күміс','silver']:['золото','алтын','gold'];
   const T=[];
   if(b[0]) T.push([0,1,2].map(i=>[`Ваш главный цвет — ${n(b[0],i)}. Носите его у лица: в блузе, шарфе или серьгах.`,`Басты түсіңіз — ${n(b[0],i)}. Оны бетке жақын киіңіз: блузка, орамал немесе сырға.`,`Your key colour is ${n(b[0],i)}. Wear it near your face: a blouse, scarf or earrings.`][i]));
-  if(av[0]&&b[1]) T.push([0,1,2].map(i=>[`Вместо цвета «${n(av[0],0)}» выбирайте ${n(b[1],0).toLowerCase()} — лицо будет свежее.`,`«${n(av[0],0)}» түсінің орнына ${n(b[1],0).toLowerCase()} таңдаңыз — бет сергек көрінеді.`,`Instead of ${n(av[0],2)}, choose ${n(b[1],2).toLowerCase()} — your face will look fresher.`][i]));
-  if(a.metal) T.push([`Ваш металл — ${a.metal}. Украшения и фурнитура в этом цвете собирают образ.`,`Сіздің металыңыз — ${a.metal}. Осы түстегі әшекейлер бейнені біріктіреді.`,`Your metal is ${a.metal_en||a.metal}. Jewellery and hardware in it pull the look together.`]);
-  if(hs[0]) T.push([`Оттенок волос, который вам идёт: ${hs[0].name}. Покажите его мастеру в карточке причёски.`,`Сізге жарасатын шаш реңкі: ${hs[0].name}. Оны шеберіңізге шаш карточкасында көрсетіңіз.`,`A hair shade that suits you: ${hs[0].name}. Show it to your stylist on the hair card.`]);
-  if(b[2]&&b[3]) T.push([0,1,2].map(i=>[`Удачная пара на завтра: ${n(b[2],0).toLowerCase()} + ${n(b[3],0).toLowerCase()}.`,`Ертеңге сәтті жұп: ${n(b[2],0).toLowerCase()} + ${n(b[3],0).toLowerCase()}.`,`A good pair for tomorrow: ${n(b[2],2).toLowerCase()} + ${n(b[3],2).toLowerCase()}.`][i]));
+  if(av[0]&&b[1]) T.push([0,1,2].map(i=>[`Вместо цвета «${n(av[0],0)}» выбирайте ${n(b[1],0).toLowerCase()} — лицо будет свежее.`,`«${n(av[0],1)}» түсінің орнына ${n(b[1],1).toLowerCase()} таңдаңыз — бет сергек көрінеді.`,`Instead of ${n(av[0],2)}, choose ${n(b[1],2).toLowerCase()} — your face will look fresher.`][i]));
+  if(a.metal) T.push([`Ваш металл — ${mt[0]}. Украшения и фурнитура в этом цвете собирают образ.`,`Сіздің металыңыз — ${mt[1]}. Осы түстегі әшекейлер бейнені біріктіреді.`,`Your metal is ${mt[2]}. Jewellery and hardware in it pull the look together.`]);
+  if(hs[0]) T.push([`Оттенок волос, который вам идёт: ${n(hs[0],0)}. Покажите его мастеру в карточке причёски.`,`Сізге жарасатын шаш реңкі: ${n(hs[0],1)}. Оны шеберіңізге шаш карточкасында көрсетіңіз.`,`A hair shade that suits you: ${n(hs[0],2)}. Show it to your stylist on the hair card.`]);
+  if(b[2]&&b[3]) T.push([0,1,2].map(i=>[`Удачная пара на завтра: ${n(b[2],0).toLowerCase()} + ${n(b[3],0).toLowerCase()}.`,`Ертеңге сәтті жұп: ${n(b[2],1).toLowerCase()} + ${n(b[3],1).toLowerCase()}.`,`A good pair for tomorrow: ${n(b[2],2).toLowerCase()} + ${n(b[3],2).toLowerCase()}.`][i]));
   return T.length?T:TIPS;
 }
 
@@ -1403,17 +1424,23 @@ function realParams(){
   const row=(l,v)=>v?`<li><span>${tr(l)}</span><b>${esc(String(v))}</b></li>`:'';
   return `<div class="card"><h3 class="h" style="font-size:20px;margin-bottom:4px">${t('my_params')}</h3><ul class="kv">
     ${row(['Цветотип','Түс типі','Colour type'],seasonName(a))}
-    ${row(['Подтон','Реңк','Undertone'],a.undertone)}
-    ${row(['Контраст','Контраст','Contrast'],a.contrast)}
-    ${row(['Металл','Металл','Metal'],L===2?(a.metal_en||a.metal):a.metal)}
-    ${row(['Форма лица','Бет пішіні','Face shape'],a.face_shape)}
+    ${row(['Подтон','Реңк','Undertone'],VW(a.undertone))}
+    ${row(['Контраст','Контраст','Contrast'],VW(a.contrast))}
+    ${row(['Металл','Металл','Metal'],VW(a.metal))}
+    ${row(['Форма лица','Бет пішіні','Face shape'],VW(a.face_shape))}
     ${q.age?row(['Возраст','Жасы','Age'],q.age):''}
     ${q.height?row(['Рост','Бойы','Height'],q.height+' '+t('cm')):''}</ul></div>`;
 }
 function curTips(){ return (typeof REAL==='function'&&REAL()&&AN())?realTips(AN()):TIPS; }
 
 const seasonName = a => a ? ([a.season, a.season_kk||a.season, a.season_en||a.season][L]) : '';
-const cname = c => typeof c==='string' ? c : ((L===2 && c.name_en && c.name_en[0]!=='#') ? c.name_en : (c.name||''));
+const cname = c => typeof c==='string' ? c : ((L===2 && c.name_en && c.name_en[0]!=='#') ? c.name_en : (L===1 && c.name_kk) ? c.name_kk : (c.name||''));
+const VMAP={теплый:['тёплый','жылы','warm'],холодный:['холодный','салқын','cool'],нейтральный:['нейтральный','бейтарап','neutral'],низкий:['низкий','төмен','low'],средний:['средний','орташа','medium'],высокий:['высокий','жоғары','high'],мягкий:['мягкий','жұмсақ','soft'],чистый:['чистый','таза','clear'],золото:['золото','алтын','gold'],серебро:['серебро','күміс','silver'],овальное:['овальное','сопақ','oval'],круглое:['круглое','дөңгелек','round'],квадратное:['квадратное','шаршы','square'],сердечко:['сердечко','жүрек пішінді','heart'],вытянутое:['вытянутое','ұзынша','long'],ромб:['ромб','ромб','diamond']};
+const VW = x => { const m=VMAP[String(x||'').toLowerCase().replace(/ё/g,'е').trim()]; return m?m[L]:String(x||''); };
+const whyOf = a => (L===1 && a.why_kk) ? a.why_kk : (L===2 && a.why_en) ? a.why_en : (a.why||'');
+// разбор на казахском/английском: если в нём ещё нет перевода — один раз просим сервер дописать
+function ensureI18n(){ const a=AN(); if(!REAL()||!a||L===0||state.i18nBusy||(a.why_kk&&a.why_en)) return; state.i18nBusy=true;
+  aiApi('i18n').then(d=>{ if(d&&d.ok&&d.analysis&&state.ai){ state.ai.analysis=Object.assign({},state.ai.analysis,d.analysis); render(); } }).finally(()=>{ setTimeout(()=>{state.i18nBusy=false;},60000); }); }
 function realHero(){
   const a=AN(), face=(state.ai&&state.ai.face)||state.photos.face;
   if(!state.ai) return `<div class="hero"><span class="k">${t('your_type')}</span><div class="t" style="font-size:26px">${t('ai_working')}</div></div>`;
@@ -1422,14 +1449,14 @@ function realHero(){
     ${state.ai.enabled?`<button class="btn gold sm" style="margin-top:14px" data-act="airun">${state.aiBusy==='analyze'?t('ai_working'):ic('sparkle',18)+' '+t('ai_retry')}</button>`:''}</div>`;
   return `<div class="hero">${face?`<div class="hero-av"><img src="${face}" alt=""></div>`:''}
     <span class="k">${t('your_type')}</span><div class="t">${esc(seasonName(a))}</div>${a.near?`<p class="small" style="opacity:.85;margin:-4px 0 6px">${t('near_type')} ${esc([a.near,a.near_kk||a.near,a.near_en||a.near][L])}</p>`:''}
-    <p>${esc(a.why||'')}</p>
-    <span class="match">${ic('leaf',14)} ${esc(a.undertone||'')} · ${esc(a.contrast||'')} · ${esc(a.metal||'')}</span>
+    <p>${esc(whyOf(a))}</p>
+    <span class="match">${ic('leaf',14)} ${esc(VW(a.undertone))} · ${esc(VW(a.contrast))} · ${esc(VW(a.metal))}</span>
     <div class="strip">${(a.best_colors||[]).slice(0,10).map(c=>`<i style="background:${esc(hexOf(c))}"></i>`).join('')}</div></div>
     <h3 class="sec">${t('ai_palette')}</h3>
     <div class="card"><div class="hairc">${(a.best_colors||[]).map(c=>`<button class="on-none"><i style="background:${esc(hexOf(c))}"></i>${esc(cname(c))}</button>`).join('')}</div>
     <p class="small" style="font-weight:800;margin:14px 2px 8px">${t('ai_avoid')}</p>
     <div class="hairc">${(a.avoid_colors||[]).map(c=>`<button class="avoid"><i style="background:${esc(hexOf(c))}"></i>${esc(cname(c))}</button>`).join('')}</div>
-    ${a.face_shape?`<p class="small muted" style="margin-top:12px"><b>${t('ai_face')}:</b> ${esc(a.face_shape)}</p>`:''}</div>`;
+    ${a.face_shape?`<p class="small muted" style="margin-top:12px"><b>${t('ai_face')}:</b> ${esc(VW(a.face_shape))}</p>`:''}</div>`;
 }
 // под готовой примеркой: было/стало, сохранить, поделиться
 function tryTools(kind,key,got){
@@ -1452,6 +1479,21 @@ function tryBlock(kind,key,label){
     <p class="small muted" style="text-align:center;margin-top:6px">${t('ai_tryon_n',{n:left})}${left!==''&&left<=5?` · <button class="link" data-act="moretry">${t('more_tries')}</button>`:''}</p>`;
 }
 
+// «Примерить по фото»: картинка-пример (от подруги, из Instagram, Pinterest) → образ или причёска в этом духе
+function photoBlock(kind){
+  const r=state.ref&&state.ref[kind], busy=state.aiBusy===kind+':photo', left=state.sub?state.sub.tryons_left:'';
+  const got=((state.ai&&state.ai.tryons)||[]).filter(x=>x.kind===kind&&x.key==='photo');
+  const note=(state.refNote&&state.refNote[kind])||'';
+  return `<div class="card byphoto">
+    <div class="bp-head"><span class="bp-ic">${ic('camera',22)}</span><div><h3 class="h">${t('byphoto_h')} <em>${t('new_badge')}</em></h3><p class="tiny muted">${t(kind==='hair'?'byphoto_hair_sub':'byphoto_look_sub')}</p></div></div>
+    ${r?`<div class="bp-ref"><img src="${r.small}" alt=""><div><textarea class="text-in" id="refNote" data-kind="${kind}" rows="3" maxlength="300" placeholder="${t(kind==='hair'?'byphoto_hair_ph':'byphoto_look_ph')}">${esc(note)}</textarea>
+        <label class="bp-other"><input type="file" accept="image/*" data-file="ref_${kind}">${ic('refresh',14)} ${t('byphoto_other')}</label></div></div>
+      <button class="btn primary" style="width:100%;margin-top:12px" data-act="aiphoto" data-arg="${kind}" ${busy?'disabled':''}>${ic('sparkle',18)} ${busy?t('ai_tryon_wait'):t('ai_tryon')}</button>
+      <p class="small muted" style="text-align:center;margin-top:6px">${t('ai_tryon_n',{n:left})}</p><p class="tiny muted" style="text-align:center">${t('byphoto_hint')}</p>`
+    :`<label class="btn gold bp-pick"><input type="file" accept="image/*" data-file="ref_${kind}">${ic('upload',18)} ${t('byphoto_pick')}</label>`}
+    ${got.map(x=>`<div style="margin-top:14px"><div class="tryon-frame"><img src="${x.url}" alt=""></div>${tryTools(kind,'photo',x)}</div>`).join('')}
+  </div>`;
+}
 function customBlock(kind){
   const txt=(state.customTxt&&state.customTxt[kind])||'', got=((state.ai&&state.ai.tryons)||[]).filter(x=>x.kind===kind&&x.key==='custom');
   const busy=state.aiBusy===kind+':custom', left=state.sub?state.sub.tryons_left:'';
@@ -1482,6 +1524,7 @@ function realHair(){
   return `<section class="pad">
   <h2 class="h" style="margin:2px 2px 4px">${t('hair_title')}</h2>
   <p class="small muted" style="margin:0 2px 12px">${t('hair_sub')}</p>
+  ${photoBlock('hair')}
   <div class="occ">${HAIRSTYLES.map(x=>`<button class="chip ${state.hcut===x.id?'on':''}" data-act="hcut" data-arg="${x.id}">${tr(x.n)}</button>`).join('')}<button class="chip ${state.hcut==='custom'?'on':''}" data-act="hcut" data-arg="custom">${t('own_look')}</button></div>
   ${state.hcut==='custom'?customBlock('hair'):`<div class="card" style="margin-top:12px;padding:12px">
     ${tryBlock('hair',h.id,tr(h.n))}
@@ -1500,6 +1543,7 @@ function realLooks(){
   const o=REAL_OCC.find(x=>x[0]===state.rocc)||REAL_OCC[0], a=AN();
   return `<section class="pad">
   <h2 class="h" style="margin:2px 2px 12px">${t('s_looks')}</h2>
+  ${photoBlock('look')}
   <div class="occ">${REAL_OCC.map(([k,n])=>`<button class="chip ${state.rocc!=='custom'&&o[0]===k?'on':''}" data-act="rocc" data-arg="${k}">${tr(n)}</button>`).join('')}<button class="chip ${state.rocc==='custom'?'on':''}" data-act="rocc" data-arg="custom">${t('own_look')}</button></div>
   ${state.rocc==='custom'?customBlock('look'):`<div class="card" style="margin-top:12px;padding:12px">
     ${tryBlock('look',o[0],tr(o[1]))}
@@ -1783,8 +1827,8 @@ function renderPassport(){
     const sw=list=>`<div class="pg">${(list||[]).map(c=>`<div><i style="background:${esc(hexOf(c))}"></i>${esc(cname(c))}</div>`).join('')}</div>`;
     const seen=new Set(), pics=ht.filter(x=>{const id=x.kind+x.key; if(seen.has(id)) return false; seen.add(id); return true;});
     document.getElementById('passport').innerHTML = `<h1>Aru</h1><p><b>${t('passport_t')}</b>: ${esc((state.sub&&state.sub.email)||'')} · ${fmtDate(new Date())}</p>
-    <h2>${t('your_type')}: ${esc(seasonName(a))}</h2><p>${esc(a.why||'')}</p>
-    <p>${esc(a.undertone||'')} · ${esc(a.contrast||'')} · ${esc(a.chroma||'')} · ${esc(a.metal||'')}${a.face_shape?' · '+t('ai_face').toLowerCase()+': '+esc(a.face_shape):''}</p>
+    <h2>${t('your_type')}: ${esc(seasonName(a))}</h2><p>${esc(whyOf(a))}</p>
+    <p>${esc(VW(a.undertone))} · ${esc(VW(a.contrast))} · ${esc(VW(a.chroma))} · ${esc(VW(a.metal))}${a.face_shape?' · '+t('ai_face').toLowerCase()+': '+esc(VW(a.face_shape)):''}</p>
     <h2>${t('my_colors')}</h2>${sw(a.best_colors)}
     <h2>${t('not_mine')}</h2>${sw(a.avoid_colors)}
     <h2>${t('shade_t')}</h2>${sw(a.hair_shades)}
@@ -1793,11 +1837,11 @@ function renderPassport(){
       return `<h2>${t('s_clothes')}</h2><p>${esc(LT(g.silhouettes))}</p>${sw3(g.clothes_yes)}
       <p><b>${t('avoid_sil')}:</b> ${(g.clothes_no||[]).map(c=>esc(tr(N3(c)))).join(' · ')}</p>
       <p><b>${t('necklines')}:</b> ${(g.necklines||[]).map(x=>esc(tr(T3(x)))).join(' · ')} &nbsp; <b>${t('fabrics')}:</b> ${(g.fabrics||[]).map(x=>esc(tr(T3(x)))).join(' · ')}</p>
-      <h2>${t('s_acc')}</h2><p><b>${t('metal')}:</b> ${esc(a.metal||'')}</p>${sw3((g.shoe_colors||[]).concat(g.bag_colors||[]))}
+      <h2>${t('s_acc')}</h2><p><b>${t('metal')}:</b> ${esc(VW(a.metal))}</p>${sw3((g.shoe_colors||[]).concat(g.bag_colors||[]))}
       <p>${(g.shoe_shapes||[]).concat(g.bag_shapes||[]).map(x=>esc(tr(T3(x)))).join(' · ')}</p>
       <h2>${t('s_makeup')}</h2>${sw3((g.lips_ok||[]).concat(g.blush||[]).concat(g.eyes||[]))}${g.makeup_note?`<p>${esc(LT(g.makeup_note))}</p>`:''}
       <h2>${t('tips_t')}</h2><ul>${(g.tips||[]).map(li).join('')}</ul>`; })():''}
-    ${pics.length?`<h2>${t('s_hair')} · ${t('s_looks')}</h2>${pics.map(x=>`<div style="break-inside:avoid;margin:10px 0"><p><b>${x.key==='custom'?t('own_look').replace(/^✍\s*/,'')+(x.text?': «'+esc(x.text)+'»':''):(x.kind==='hair'?HN(x.key):ON(x.key))}</b></p>${x.kind==='hair'&&x.key!=='custom'?HD(x.key):''}<img src="${x.url}" style="width:100%;border-radius:8px"></div>`).join('')}`:''}`;
+    ${pics.length?`<h2>${t('s_hair')} · ${t('s_looks')}</h2>${pics.map(x=>`<div style="break-inside:avoid;margin:10px 0"><p><b>${x.key==='custom'?t('own_look').replace(/^✍\s*/,'')+(x.text?': «'+esc(x.text)+'»':''):x.key==='photo'?t('by_photo_lbl')+(x.text?': «'+esc(x.text)+'»':''):(x.kind==='hair'?HN(x.key):ON(x.key))}</b></p>${x.kind==='hair'&&x.key!=='custom'&&x.key!=='photo'?HD(x.key):''}<img src="${x.url}" style="width:100%;border-radius:8px"></div>`).join('')}`:''}`;
     return; }
   document.getElementById('passport').innerHTML = `<h1>Aru</h1><p><b>${t('passport_t')}</b>: ${t('user_name')}</p>
   <h2>${t('your_type')}: ${t('soft_autumn')}</h2><p>${t('sa_desc')}</p>
@@ -1870,7 +1914,7 @@ async function loadAI(){ const d=await aiApi('list'); if(d&&d.ok){ state.ai=d;
   if(REAL() && d.answers && Object.keys(d.answers).length && !state.quizLoaded){ const A=d.answers, q=state.quiz; for(const k of ['age','height','life','budget','like','dislike','wish']) if(A[k]!==undefined && A[k]!==null && A[k]!=='') q[k]=A[k]; state.quizLoaded=true; }
   if(REAL()){ if(state.onboarded && !d.analysis && !d.face){ state.onboarded=false; delete ONB[accId()]; save(); state.screen='onboard'; state.step=0; }
     else if(!state.onboarded && d.analysis){ state.onboarded=true; save(); if(state.screen==='onboard') state.screen='home'; } }
-  render(); } return d; }
+  render(); ensureI18n(); } return d; }
 function quizAnswers(){ const q=state.quiz||{}; return {age:q.age, height:q.height, life:q.life, budget:q.budget, like:q.like, dislike:q.dislike, wish:q.wish||''}; }
 async function realAnalysis(){
   const sv=await aiApi('save_photos',{face:PHOTO_HI.face, body:PHOTO_HI.body, answers:quizAnswers()});
@@ -1889,7 +1933,7 @@ async function doTryon(kind,key,text,color,label){
 async function refreshSub(){ const d=await api('status',{},true); if(d&&d.ok){ state.sub=d; } return d; }
 
 const ACT = {
-  lang:a=>{ L=+a; save(); render(); },
+  lang:a=>{ L=+a; save(); render(); ensureI18n(); },
   login:async()=>{ if(state.busy) return; const v=(document.getElementById('keyIn').value||'').trim();
     if(/^ARU-[A-Z0-9]{4}-[A-Z0-9]{4}$/i.test(v)){ state.demo=true; state.sub=null; enterApp(); return; }
     if(!v){ toast(t('key_ph')); return; }
@@ -1979,6 +2023,10 @@ const ACT = {
   redo:()=>{ state.step=0; state.prev=[]; state.screen='onboard'; render(); },
   delphotos:async()=>{ if(REAL() && !confirm(t('del_confirm'))) return; state.photos={face:null,body:null}; PHOTO_HI={face:null,body:null}; if(REAL()){ const d=await aiApi('delete_photos'); if(!d.ok){ toast(why(d.reason)); return; } await loadAI(); } render(); toast(t('photos_deleted')); },
   aitry:a=>{ const [k,key]=a.split('|'); doTryon(k,key); },
+  aiphoto:async a=>{ const r=state.ref&&state.ref[a]; if(!r){ toast(t('byphoto_pick')); return; } if(state.aiBusy) return; const note=((state.refNote&&state.refNote[a])||'').trim();
+    state.aiBusy=a+':photo'; render(); const d=await aiApi('tryon',{kind:a,key:'photo',text:note,ref:r.hi}); state.aiBusy=null;
+    if(d.ok){ state.ai=state.ai||{tryons:[]}; state.ai.tryons=[{id:d.id,kind:a,key:'photo',text:d.text,url:d.url}, ...(state.ai.tryons||[])]; if(state.sub){ state.sub.tryons_used=d.tryons_used; state.sub.tryons_left=(d.tryons_left!=null?d.tryons_left:Math.max(0,d.tryons_limit-d.tryons_used)); } }
+    render(); if(!d.ok) toast(why(d.reason)); },
   aicustom:a=>{ const txt=((state.customTxt&&state.customTxt[a])||'').trim(); if(txt.length<3){ toast(t('own_need')); return; } doTryon(a,'custom',txt); },
   airun:async()=>{ if(!PHOTO_HI.face && !(state.ai&&state.ai.face)){ toast(t('ai_need_photo')); state.onboarded=false; state.step=0; state.screen='onboard'; render(); return; } state.aiBusy='analyze'; render(); const d=PHOTO_HI.face?await realAnalysis():await aiApi('analyze'); if(!PHOTO_HI.face) await loadAI(); state.aiBusy=null; render(); if(!d.ok) toast(why(d.reason)); },
   logout:()=>{ AUTH=null; saveAuth(); state.sub=null; state.demo=false; state.wm='key'; state.prev=[]; state.screen='welcome'; render(); }
@@ -1995,6 +2043,7 @@ document.addEventListener('input', e=>{
   if(e.target.id==='dislike'){ state.quiz.dislike=e.target.value; }
   if(e.target.id==='wish'){ state.quiz.wish=e.target.value; }
   if(e.target.id==='customTxt'){ state.customTxt=state.customTxt||{}; state.customTxt[e.target.dataset.kind]=e.target.value; }
+  if(e.target.id==='refNote'){ state.refNote=state.refNote||{}; state.refNote[e.target.dataset.kind]=e.target.value; }
 });
 
 let CMP=null;
@@ -2017,6 +2066,8 @@ document.addEventListener('change', e=>{
       else if(/^style\d$/.test(kind)){ const i=+kind.slice(5), cv3=document.createElement('canvas'), k3=Math.min(1,1024/Math.max(img.width,img.height)); cv3.width=Math.round(img.width*k3); cv3.height=Math.round(img.height*k3); cv3.getContext('2d').drawImage(img,0,0,cv3.width,cv3.height); const hi=cv3.toDataURL('image/jpeg',0.85);
         if(REAL()){ state.styleBusy=i; render(); aiApi('save_style',{slot:i,image:hi}).then(d=>{ state.styleBusy=null; if(d&&d.ok){ state.ai=state.ai||{}; state.ai.styles=d.styles; toast(t('style_saved')); } else toast(why(d&&d.reason)); render(); }); }
         else { state.styleLocal=state.styleLocal||[]; state.styleLocal[i]=small; render(); toast(t('style_saved')); } }
+      else if(/^ref_(look|hair)$/.test(kind)){ const k=kind.slice(4), cv4=document.createElement('canvas'), k4=Math.min(1,1024/Math.max(img.width,img.height)); cv4.width=Math.round(img.width*k4); cv4.height=Math.round(img.height*k4); const g4=cv4.getContext('2d'); g4.fillStyle='#fff'; g4.fillRect(0,0,cv4.width,cv4.height); g4.drawImage(img,0,0,cv4.width,cv4.height);
+        state.ref=state.ref||{}; state.ref[k]={small, hi:cv4.toDataURL('image/jpeg',0.86)}; render(); }
       else if(kind==='check'){ runCheck(dominantColor(img), state.checkType, small); }
       else if(kind==='wardrobe'){ const it=mkItem(state.addType,null,dominantColor(img),small); state.wardrobe.unshift(it); state.addOpen=false; save(); render(); toast(t('added')); }
     };

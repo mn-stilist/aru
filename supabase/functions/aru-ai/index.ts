@@ -9,6 +9,8 @@
 //   chat          { q, history? }             — вопрос стилисту, ответ с учётом её разбора
 //   items         { cat }                     — фото вещей из её гида (clothes|shoes|bags|jewelry|makeup), один раз, без расхода примерок
 //   tryon: color? — тот же образ в другом цвете из палитры / причёска в другом оттенке волос
+//   tryon: key "photo" + ref (dataURL) + text? — «Примерить по фото»: образ или причёска в духе присланной картинки (картинка не сохраняется)
+//   i18n          {}                          — дописать в разбор казахский и английский (объяснение и названия цветов), один раз
 //   delete_photos {}                          — удалить два исходных фото (разбор и примерки остаются)
 //   delete_all    {}                          — удалить всё: фото, примерки, разбор, анкету (подписка остаётся)
 // Живые клиентки обрабатываются только на платном тарифе Google (секрет GEMINI_PAID = 1).
@@ -92,6 +94,24 @@ function lookPrompt(key: string, a: any, answers: any, text?: string, sl = "") {
     "The outfit must look like something a well-dressed woman would really wear today: one coherent look, no trousers, leggings or jeans under a dress or skirt, no odd layering, no costume or caricature. " +
     "Modern 2026 style, premium fabrics, perfect fit, no visible logos or brand names. Natural soft daylight, realistic photo, no text.";
 }
+const REF_RULE = (her: number) => `IMAGES: the first ${her === 1 ? "image is" : her + " images are"} HER (the client). The LAST image is a reference picture she likes (it may show another person, a shop photo or a flat lay). Never copy the face, skin, body or identity of anyone in the reference — the result must show only HER. `;
+function photoLookPrompt(a: any, answers: any, note: string, her: number) {
+  const p = palette(a);
+  return FACE_RULE + REF_RULE(her) +
+    "Create one wide image made of two side-by-side photos of her on a plain light grey studio wall and concrete floor: left — full-length front view showing the whole outfit and shoes, right — a closer waist-up shot where her face is large and clearly visible, natural smile. " +
+    "Dress her in an outfit in the same direction as the reference: the same types of garments, cut, silhouette, length, how the pieces are combined, the kind of shoes and accessories and the overall mood. A similar look on her, not a pixel copy. " +
+    `Colours: keep a colour from the reference only if it suits her personal palette (${p.best}); otherwise use the closest colour from her palette. Avoid: ${p.avoid}. Jewellery in ${p.metal || "a metal that suits her"}. ` +
+    (note ? `Her note about the reference (follow it): "${note}". ` : "") + dislikeLine(answers) +
+    "Make it look like something a well-dressed woman would really wear today: no trousers or leggings under a dress or skirt, no costume or caricature, perfect fit, premium fabrics, no logos or brand names. Natural soft daylight, realistic photo, no text.";
+}
+function photoHairPrompt(note: string, her: number) {
+  return FACE_RULE + REF_RULE(her) +
+    "Create one wide image made of three side-by-side head-and-shoulders photos of her against a plain soft light grey studio background: left — head turned to the left with a happy smile, middle — three-quarter view to the right glancing at the camera over her shoulder, right — looking slightly up and to the side, joyful expression. " +
+    "Give her the hairstyle from the reference: the same length, layers, fringe, parting, texture, volume and styling, adapted naturally to her face and hair. " +
+    "Hair colour: keep her current hair colour exactly as in her photo, unless her note asks for the colour from the reference. " +
+    (note ? `Her note about the reference (follow it): "${note}". ` : "") +
+    "Keep exactly the same top or clothes she wears in her photo. Fresh natural makeup. Fill the whole frame with the three photos, no empty margins. Modern hair-salon campaign photo, natural soft daylight, realistic, no text, no logos.";
+}
 const ANALYZE_PROMPT = (answers: any) => `You are an experienced personal stylist and colour analyst. Look at the woman in the photos (the first is a close-up of the face, the second, if present, is full length).
 Determine her colour type using the 12-season system. Consider skin undertone, hair colour (including grey hair), eye colour and contrast. Ignore the clothes and the background lighting.
 Her age group: ${JSON.stringify(answers?.age ?? "")}. Decide the colour type ONLY from her natural colouring in the photos; her style preferences must not influence it.
@@ -146,6 +166,37 @@ function itemsPrompt(cat: string, a: any) {
   if (cat === "bags") { const sh = g.bag_shapes ?? []; return base + `Exactly ${(g.bag_colors ?? []).length || 3} women's bags, one in each colour: ` + (g.bag_colors ?? []).map((c: any, i: number) => `${nm(sh[i % Math.max(1, sh.length)] ?? "bag")} in ${col(c)}`).join("; ") + `; plus small details: ${(g.details ?? []).map(nm).join(", ")}.`; }
   if (cat === "jewelry") return base + `Elegant women's jewellery all in ${metal}: hoop earrings, delicate stud earrings, a fine chain necklace with a small pendant, two thin rings, a slim bracelet and a watch with a ${metal} case.`;
   return base + "Make-up products: lipsticks in " + (g.lips_ok ?? []).map(col).join(", ") + "; a blush compact in " + (g.blush ?? []).map(col).join(", ") + "; an eyeshadow palette with " + (g.eyes ?? []).map(col).join(", ") + "; a soft brush.";
+}
+const COLOR_LISTS = ["best_colors", "avoid_colors", "hair_shades", "hair_avoid", "lips"];
+const needsI18n = (a: any) => !a?.why_kk || !a?.why_en || COLOR_LISTS.some((k) => (a?.[k] ?? []).some((c: any) => c && typeof c === "object" && !c.name_kk));
+// Перевод разбора на казахский и английский: объяснение цветотипа и названия всех цветов
+async function addI18n(a: any) {
+  const names = [...new Set(COLOR_LISTS.flatMap((k) => (a?.[k] ?? []).map((c: any) => String(c?.name ?? "")).filter(Boolean)))];
+  const prompt = `Translate a personal colour analysis from Russian into Kazakh and English.
+Kazakh: natural, modern, literate Kazakh (Cyrillic), fashion vocabulary a stylist in Almaty would use; address the woman politely as "сіз". English: natural fashion English.
+Explanation (Russian): ${JSON.stringify(a?.why ?? "")}
+Colour names (Russian): ${JSON.stringify(names)}
+Reply with strict JSON only: {"why_kk":"...","why_en":"...","names":[["<Russian exactly as given>","<Kazakh>","<English>"], ...one entry per colour name]}`;
+  for (const model of TEXT_MODELS) {
+    const { status, d } = await gemini(model, [{ text: prompt }], { responseMimeType: "application/json", temperature: 0.2 }, 60000);
+    if (isQuota(status, d)) return false;
+    const txt = d?.candidates?.[0]?.content?.parts?.map((p: any) => p.text ?? "").join("") ?? "";
+    try {
+      const r = JSON.parse(txt);
+      if (!r?.why_kk || !Array.isArray(r.names)) continue;
+      const map: Record<string, [string, string]> = {};
+      for (const n of r.names) if (Array.isArray(n) && n[0]) map[String(n[0]).trim().toLowerCase()] = [String(n[1] ?? ""), String(n[2] ?? "")];
+      for (const k of COLOR_LISTS) for (const c of (a?.[k] ?? [])) {
+        if (!c || typeof c !== "object") continue;
+        const m = map[String(c.name ?? "").trim().toLowerCase()];
+        if (m?.[0]) c.name_kk = m[0];
+        if (!c.name_en && m?.[1]) c.name_en = m[1];
+      }
+      a.why_kk = String(r.why_kk); if (r.why_en) a.why_en = String(r.why_en);
+      return true;
+    } catch { /* следующая модель */ }
+  }
+  return false;
 }
 async function makeGuide(a: any, answers: any) {
   for (const model of TEXT_MODELS) {
@@ -312,11 +363,20 @@ Deno.serve(async (req) => {
       return json({ ok: false, reason: "ai_failed" });
     }
 
-    if (action === "guide" || action === "chat") {
+    if (action === "guide" || action === "chat" || action === "i18n") {
       if (!enabled) return json({ ok: false, reason: "not_enabled" });
       if (!KEY()) return json({ ok: false, reason: "no_key" });
       const { data: an } = await db.from("analyses").select("id,result").eq("user_id", uid).order("created_at", { ascending: false }).limit(1).maybeSingle();
       if (!an) return json({ ok: false, reason: "need_analysis" });
+      if (action === "i18n") {
+        if (!needsI18n(an.result)) return json({ ok: true, analysis: an.result });
+        const res = an.result;
+        if (!(await addI18n(res))) return json({ ok: false, reason: "ai_failed" });
+        const { data: fresh } = await db.from("analyses").select("result").eq("id", an.id).maybeSingle();
+        const merged = { ...(fresh?.result ?? {}), ...res, items: fresh?.result?.items ?? res.items, guide: fresh?.result?.guide ?? res.guide };
+        await db.from("analyses").update({ result: merged }).eq("id", an.id);
+        return json({ ok: true, analysis: merged });
+      }
       if (action === "guide") {
         if (an.result?.guide) return json({ ok: true, guide: an.result.guide });
         const guide = await makeGuide(an.result, prof?.answers);
@@ -384,7 +444,7 @@ Deno.serve(async (req) => {
           for (const k of ["best_colors", "avoid_colors", "hair_shades", "lips"]) for (const c of (Array.isArray(result[k]) ? result[k] : [])) {
             if (c && typeof c === "object" && !HX.test(String(c.hex ?? "").trim())) { const v = [c.name_en, c.name].find((x: any) => HX.test(String(x ?? "").trim())); if (v) { c.hex = String(v).trim(); if (c.name_en === v) delete c.name_en; } }
           }
-          const guide = await makeGuide(result, prof?.answers);
+          const [guide] = await Promise.all([makeGuide(result, prof?.answers), addI18n(result)]);
           if (guide) result.guide = guide;
           await db.from("analyses").insert({ user_id: uid, result, model });
           await db.from("usage_log").insert({ user_id: uid, kind: "analysis" });
@@ -399,17 +459,21 @@ Deno.serve(async (req) => {
       const key = String(b.key ?? "");
       const text = clean(b.text);
       const color = clean(b.color, 60);
-      if (key === "custom" ? text.length < 3 : !(kind === "hair" ? HAIR : LOOK)[key]) return json({ ok: false, reason: "bad_input" });
+      const refBytes = key === "photo" ? toBytes(b.ref) : null;
+      if (key === "photo" ? !refBytes : key === "custom" ? text.length < 3 : !(kind === "hair" ? HAIR : LOOK)[key]) return json({ ok: false, reason: key === "photo" ? "bad_image" : "bad_input" });
       if (client.tryons_used >= client.tryons_limit && (client.extra_tryons ?? 0) <= 0) return json({ ok: false, reason: "quota" });
       const { data: an } = await db.from("analyses").select("result").eq("user_id", uid).order("created_at", { ascending: false }).limit(1).maybeSingle();
       if (!an) return json({ ok: false, reason: "need_analysis" });
       // примеры стиля: для образов всегда, для причёски — только «свой вариант»
-      const useStyles = kind === "look" || key === "custom";
+      const useStyles = key !== "photo" && (kind === "look" || key === "custom");
       const styleImgs = useStyles ? (await Promise.all((prof?.style_paths ?? []).filter(Boolean).slice(0, MAX_STYLES).map((x: string) => readFile(x)))).filter(Boolean) as string[] : [];
       const sl = styleLine(imgs.length, styleImgs.length);
-      let prompt = kind === "hair" ? hairPrompt(key, an.result, prof?.answers, text, sl, color) : lookPrompt(key, an.result, prof?.answers, text, sl);
+      let prompt = key === "photo"
+        ? (kind === "hair" ? photoHairPrompt(text, imgs.length) : photoLookPrompt(an.result, prof?.answers, text, imgs.length))
+        : kind === "hair" ? hairPrompt(key, an.result, prof?.answers, text, sl, color) : lookPrompt(key, an.result, prof?.answers, text, sl);
       if (color && kind === "look") prompt += ` IMPORTANT: make the main garment (dress, or jacket/top) in the colour "${color}", keep the rest of the outfit harmonious with it.`;
-      const parts = [...imgs, ...styleImgs.map((d) => ({ inline_data: { mime_type: "image/jpeg", data: d } })), { text: prompt }];
+      const refImg = refBytes ? [{ inline_data: { mime_type: "image/jpeg", data: encodeBase64(refBytes) } }] : [];
+      const parts = [...imgs, ...styleImgs.map((d) => ({ inline_data: { mime_type: "image/jpeg", data: d } })), ...refImg, { text: prompt }];
       let last: any = null;
       for (const model of IMAGE_MODELS) {
         const base = { responseModalities: ["TEXT", "IMAGE"] };
@@ -422,7 +486,7 @@ Deno.serve(async (req) => {
         if (!data) continue;
         const mime = part?.inlineData?.mimeType ?? part?.inline_data?.mime_type ?? "image/png";
         const ext = mime.includes("jpeg") ? "jpg" : "png";
-        const ctext = key === "custom" ? text : (color ? "🎨 " + (clean(b.color_label, 60) || color) : null);
+        const ctext = key === "custom" || key === "photo" ? (text || null) : (color ? "🎨 " + (clean(b.color_label, 60) || color) : null);
         const { data: row } = await db.from("tryons").insert({ user_id: uid, kind, key, status: "done", model, custom_text: ctext }).select("id").single();
         const path = `${uid}/tryons/${row!.id}.${ext}`;
         await db.storage.from(BUCKET).upload(path, decodeBase64(data), { contentType: mime, upsert: true });
