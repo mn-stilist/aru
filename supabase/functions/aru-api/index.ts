@@ -9,12 +9,15 @@
 //   admin_add   { code, email, tryons }        — (Мурат) докинуть примерки (оплата Kaspi)
 //   redeem      { license_key } (+ токен)      — активировать пакет примерок Gumroad вручную
 //   Gumroad Ping (форма, ?ping=1)              — пакет примерок начисляется сам после оплаты
+//   admin_hook  { code }                       — (Мурат) подписать Aru на уведомления Gumroad о продажах
+//                                                (через API, секрет GUMROAD_TOKEN; общее поле Ping не трогаем)
 // Пакетные примерки (extra_tryons) не сгорают в конце месяца и тратятся после месячных.
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 
 const PRODUCT_ID = "RH0ftOQ4Z1Rnqq17qkMTMw=="; // Aru — Your Personal AI Stylist (Gumroad)
 const PACK_PRODUCT_ID = () => Deno.env.get("PACK_PRODUCT_ID") ?? ""; // товар «+N примерок» в Gumroad
 const PACK_TRYONS = () => Math.max(1, Number(Deno.env.get("PACK_TRYONS") ?? 20) || 20);
+const HOOK_URL = "https://cgefoqmwqwcxtozcurqo.supabase.co/functions/v1/aru-api"; // сюда Gumroad шлёт продажи
 const RATE_PER_HOUR = 10;          // не чаще 10 примерок в час
 const RECHECK_HOURS = 12;          // как часто сверяться с Gumroad
 
@@ -219,6 +222,30 @@ Deno.serve(async (req) => {
       if (!c) return json({ ok: false, reason: "no_client" });
       const { data: u } = await db.from("clients").update({ extra_tryons: (c.extra_tryons ?? 0) + n }).eq("user_id", c.user_id).select("*").single();
       return json({ ok: true, added: n, client: publicView(u) });
+    }
+
+    if (action === "admin_hook") {
+      const ADMIN = Deno.env.get("ADMIN_CODE") ?? "";
+      if (!ADMIN || String(b.code ?? "") !== ADMIN) return json({ ok: false, reason: "bad_code" }, 403);
+      const tok = Deno.env.get("GUMROAD_TOKEN") ?? "";
+      if (!tok) return json({ ok: false, reason: "no_token" });
+      const API = "https://api.gumroad.com/v2/resource_subscriptions";
+      const list = async () => {
+        const r = await fetch(`${API}?${new URLSearchParams({ access_token: tok, resource_name: "sale" })}`);
+        const d = await r.json().catch(() => ({}));
+        return d?.success ? (d.resource_subscriptions ?? []).map((x: any) => String(x.post_url ?? "")) : null;
+      };
+      let urls = await list();
+      if (!urls) return json({ ok: false, reason: "bad_token" });
+      let added = false;
+      if (!urls.includes(HOOK_URL)) {
+        const r = await fetch(API, { method: "PUT", body: new URLSearchParams({ access_token: tok, resource_name: "sale", post_url: HOOK_URL }) });
+        const d = await r.json().catch(() => ({}));
+        if (!d?.success) return json({ ok: false, reason: "hook_failed" });
+        added = true;
+        urls = (await list()) ?? [...urls, HOOK_URL];
+      }
+      return json({ ok: true, added, urls, pack: !!PACK_PRODUCT_ID() });
     }
 
     if (action === "admin_list" || action === "admin_grant") {
