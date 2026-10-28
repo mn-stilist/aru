@@ -682,6 +682,7 @@ const S = {
   chat_look_done:["Вот этот образ на вас. Он сохранён во вкладке «Образы» → «Свой вариант». Осталось примерок: {n}","Міне, бұл бейне сізде. Ол «Бейнелер» → «Өз нұсқам» бөлімінде сақталды. Қалған киіп көру: {n}","Here is this look on you. It is saved in Looks → My own. Try-ons left: {n}"],
   in_color:["Цвет","Түсі","Colour"],
   more_tries:["Докупить примерки","Киіп көруді сатып алу","Get more try-ons"],
+  pack_hint:["Оплатите пакет с почты {e} — тогда 20 примерок начислятся сами за 1–2 минуты","Пакетті {e} поштасынан төлеңіз — 20 киіп көру 1–2 минутта өзі қосылады","Pay with {e} — then 20 try-ons are added automatically in 1–2 minutes"],
   more_tries_wa:["Здравствуйте! Хочу докупить примерки в Aru. Моя почта: {e}","Сәлеметсіз бе! Aru-да киіп көруді көбейткім келеді. Поштам: {e}","Hello! I would like more try-ons in Aru. My email: {e}"],
   hair_fun_t:["Эксперимент: любой цвет волос","Эксперимент: кез келген шаш түсі","Experiment: any hair colour"],
   hair_fun_sub:["Хотите попробовать смелый цвет? Нажмите — Aru покрасит вам волосы на фото (1 примерка). Эти цвета не обязательно под ваш цветотип — просто посмотреть.","Батыл түсті көргіңіз келе ме? Басыңыз — Aru суретте шашыңызды бояйды (1 киіп көру). Бұл түстер міндетті түрде түс типіңізге сай емес — жай көру үшін.","Want to try a bold colour? Tap it and Aru will colour your hair on the photo (1 try-on). These are not necessarily for your colour type — just to see."],
@@ -1961,7 +1962,7 @@ const ACT = {
     if(d&&d.ok){ state.ai.tryons=[{id:d.id,kind:'look',key:'custom',text:d.text,url:d.url}, ...(state.ai.tryons||[])]; if(state.sub){ state.sub.tryons_used=d.tryons_used; state.sub.tryons_left=(d.tryons_left!=null?d.tryons_left:Math.max(0,d.tryons_limit-d.tryons_used)); } state.chat.push({me:false,img:d.url,text:t('chat_look_done',{n:state.sub?state.sub.tryons_left:''})}); }
     else state.chat.push({me:false,text:why(d&&d.reason)});
     render(); },
-  moretry:()=>{ const msg=t('more_tries_wa',{e:(state.sub&&state.sub.email)||(AUTH&&AUTH.email)||''}); window.open('https://wa.me/77017708061?text='+encodeURIComponent(msg),'_blank'); },
+  moretry:()=>{ const e=(state.sub&&state.sub.email)||(AUTH&&AUTH.email)||''; if(e) toast(t('pack_hint',{e})); window.open('https://kvantor.gumroad.com/l/iwxwvp?wanted=true'+(e?'&email='+encodeURIComponent(e):''),'_blank'); },
   hairfun:a=>{ const f=HAIR_FUN.find(x=>x[0]===a); if(f) doTryon('hair',state.hcut==='custom'?'lob':state.hcut,null,f[1],tr(f[2])); },
   haircustomcol:()=>{ const v=(document.getElementById('hairPick')||{}).value||'#8E44AD'; doTryon('hair',state.hcut==='custom'?'lob':state.hcut,null,'exactly this hair colour: '+v,t('own_shade')+' '+v); },
   cmp:a=>{ state.cmpOn = state.cmpOn===a?null:a; render(); },
