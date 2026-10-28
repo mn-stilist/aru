@@ -7,6 +7,7 @@
 //   save_style    { slot: 0..2, image?: dataURL } — пример стиля «хочу вот так» (без image — убрать)
 //   guide         {}                          — личный гид стиля по разбору (одежда, аксессуары, макияж, советы)
 //   chat          { q, history? }             — вопрос стилисту, ответ с учётом её разбора
+//   items         { cat }                     — фото вещей из её гида (clothes|shoes|bags|jewelry|makeup), один раз, без расхода примерок
 //   tryon: color? — тот же образ в другом цвете из палитры / причёска в другом оттенке волос
 //   delete_photos {}                          — удалить два исходных фото (разбор и примерки остаются)
 //   delete_all    {}                          — удалить всё: фото, примерки, разбор, анкету (подписка остаётся)
@@ -127,6 +128,20 @@ Her questionnaire: ${JSON.stringify(answers ?? {})}.
 Conversation so far: ${JSON.stringify((history ?? []).slice(-6))}.
 Her question: ${JSON.stringify(q)}.
 Reply with strict JSON only: {"text":"answer","colors":["exact names of 1-3 of her best colours you recommend"]}`;
+const ITEM_CATS = ["clothes", "shoes", "bags", "jewelry", "makeup"];
+function itemsPrompt(cat: string, a: any) {
+  const g = a?.guide ?? {};
+  const en = (x: any) => (Array.isArray(x?.name) ? x.name[2] || x.name[0] : x?.name_en || x?.name || "");
+  const nm = (x: any) => (Array.isArray(x) ? x[2] || x[0] : String(x ?? ""));
+  const col = (x: any) => `${en(x)} (${x?.hex ?? ""})`;
+  const metal = a?.metal_en || a?.metal || "gold";
+  const base = "Professional e-commerce flat lay product photo, top view, items neatly arranged on a soft warm light-beige background, natural soft daylight, realistic fabrics and materials, premium modern 2026 style, no people, no hands, no text, no logos, no brand names. ";
+  if (cat === "clothes") return base + "Exactly these garments, each in its exact colour: " + (g.clothes_yes ?? []).map((c: any) => `${en(c)} in ${col(c)}`).join("; ") + ".";
+  if (cat === "shoes") return base + "Three pairs of women's shoes: " + (g.shoe_shapes ?? []).map((s: any, i: number) => `${nm(s)} in ${col((g.shoe_colors ?? [])[i] ?? (g.shoe_colors ?? [])[0])}`).join("; ") + ".";
+  if (cat === "bags") return base + "Women's bags and small accessories: " + (g.bag_shapes ?? []).map((s: any, i: number) => `${nm(s)} bag in ${col((g.bag_colors ?? [])[i] ?? (g.bag_colors ?? [])[0])}`).join("; ") + `; plus ${(g.details ?? []).map(nm).join(", ")}.`;
+  if (cat === "jewelry") return base + `Elegant women's jewellery all in ${metal}: hoop earrings, delicate stud earrings, a fine chain necklace with a small pendant, two thin rings, a slim bracelet and a watch with a ${metal} case.`;
+  return base + "Make-up products: lipsticks in " + (g.lips_ok ?? []).map(col).join(", ") + "; a blush compact in " + (g.blush ?? []).map(col).join(", ") + "; an eyeshadow palette with " + (g.eyes ?? []).map(col).join(", ") + "; a soft brush.";
+}
 async function makeGuide(a: any, answers: any) {
   for (const model of TEXT_MODELS) {
     const { status, d } = await gemini(model, [{ text: GUIDE_PROMPT(a, answers) }], { responseMimeType: "application/json", temperature: 0.3 }, 60000);
@@ -238,6 +253,7 @@ Deno.serve(async (req) => {
         answers: prof?.answers ?? {},
         face: await signed(prof?.face_path ?? null), body: await signed(prof?.body_path ?? null),
         styles: await Promise.all(Array.from({ length: MAX_STYLES }, (_, i) => signed((prof?.style_paths ?? [])[i] || null))),
+        items: Object.fromEntries(await Promise.all(Object.entries(an?.result?.items ?? {}).map(async ([k, v]) => [k, await signed(String(v))]))),
         tryons, tryons_used: client.tryons_used, tryons_limit: client.tryons_limit, plan: client.plan,
       });
     }
@@ -252,11 +268,43 @@ Deno.serve(async (req) => {
     if (action === "delete_all") {
       const { data: tr } = await db.from("tryons").select("image_path").eq("user_id", uid);
       const paths = [prof?.face_path, prof?.body_path, ...(prof?.style_paths ?? []), ...(tr ?? []).map((x) => x.image_path)].filter(Boolean) as string[];
+      const { data: an2 } = await db.from("analyses").select("result").eq("user_id", uid);
+      for (const r of an2 ?? []) for (const v of Object.values(r?.result?.items ?? {})) paths.push(String(v));
       if (paths.length) await db.storage.from(BUCKET).remove(paths);
       await db.from("tryons").delete().eq("user_id", uid);
       await db.from("analyses").delete().eq("user_id", uid);
       await db.from("client_profile").delete().eq("user_id", uid);
       return json({ ok: true, removed: paths.length });
+    }
+
+    if (action === "items") {
+      if (!enabled) return json({ ok: false, reason: "not_enabled" });
+      if (!KEY()) return json({ ok: false, reason: "no_key" });
+      const cat = String(b.cat ?? "");
+      if (!ITEM_CATS.includes(cat)) return json({ ok: false, reason: "bad_input" });
+      const { data: an } = await db.from("analyses").select("id,result").eq("user_id", uid).order("created_at", { ascending: false }).limit(1).maybeSingle();
+      if (!an?.result?.guide) return json({ ok: false, reason: "need_analysis" });
+      const have = an.result.items?.[cat];
+      if (have) return json({ ok: true, cat, url: await signed(have) });
+      const since = new Date(Date.now() - 3600e3).toISOString();
+      const { count } = await db.from("usage_log").select("id", { count: "exact", head: true }).eq("user_id", uid).eq("kind", "items").gte("created_at", since);
+      if ((count ?? 0) >= 12) return json({ ok: false, reason: "rate" });
+      for (const model of IMAGE_MODELS) {
+        const { status, d } = await gemini(model, [{ text: itemsPrompt(cat, an.result) }], { responseModalities: ["TEXT", "IMAGE"], imageConfig: { aspectRatio: "4:3" } }, 120000);
+        if (isQuota(status, d)) continue;
+        const part = d?.candidates?.[0]?.content?.parts?.find((p: any) => p.inlineData?.data || p.inline_data?.data);
+        const data = part?.inlineData?.data ?? part?.inline_data?.data;
+        if (!data) continue;
+        const mime = part?.inlineData?.mimeType ?? part?.inline_data?.mime_type ?? "image/png";
+        const path = `${uid}/items/${an.id}-${cat}.${mime.includes("jpeg") ? "jpg" : "png"}`;
+        await db.storage.from(BUCKET).upload(path, decodeBase64(data), { contentType: mime, upsert: true });
+        const { data: fresh } = await db.from("analyses").select("result").eq("id", an.id).maybeSingle();
+        const res = fresh?.result ?? an.result;
+        await db.from("analyses").update({ result: { ...res, items: { ...(res.items ?? {}), [cat]: path } } }).eq("id", an.id);
+        await db.from("usage_log").insert({ user_id: uid, kind: "items" });
+        return json({ ok: true, cat, url: await signed(path) });
+      }
+      return json({ ok: false, reason: "ai_failed" });
     }
 
     if (action === "guide" || action === "chat") {
@@ -297,7 +345,7 @@ Deno.serve(async (req) => {
       if (!enabled) return json({ ok: false, reason: "not_enabled" });
       if (!KEY()) return json({ ok: false, reason: "no_key" });
       const since = new Date(Date.now() - 3600e3).toISOString();
-      const { count } = await db.from("usage_log").select("id", { count: "exact", head: true }).eq("user_id", uid).neq("kind", "chat").gte("created_at", since);
+      const { count } = await db.from("usage_log").select("id", { count: "exact", head: true }).eq("user_id", uid).in("kind", ["analysis", "tryon"]).gte("created_at", since);
       if ((count ?? 0) >= RATE_PER_HOUR) return json({ ok: false, reason: "rate" });
       const face = await readFile(prof?.face_path ?? null);
       if (!face) return json({ ok: false, reason: "need_photo" });
