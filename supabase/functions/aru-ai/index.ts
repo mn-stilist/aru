@@ -19,6 +19,8 @@ import { decodeBase64, encodeBase64 } from "jsr:@std/encoding@1/base64";
 const BUCKET = "client-files";
 const RATE_PER_HOUR = 10;
 const TEXT_MODELS = ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite"];
+// разбор цветотипа — более сильная модель (дороже, но всё равно меньше цента), запасные — лёгкие
+const ANALYZE_MODELS = ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite"];
 const IMAGE_MODELS = [Deno.env.get("IMAGE_MODEL") || "gemini-3.1-flash-image", "gemini-2.5-flash-image"];
 
 const CORS = {
@@ -91,6 +93,7 @@ function lookPrompt(key: string, a: any, answers: any, text?: string, sl = "") {
 const ANALYZE_PROMPT = (answers: any) => `You are an experienced personal stylist and colour analyst. Look at the woman in the photos (the first is a close-up of the face, the second, if present, is full length).
 Determine her colour type using the 12-season system. Consider skin undertone, hair colour (including grey hair), eye colour and contrast. Ignore the clothes and the background lighting.
 Her age group: ${JSON.stringify(answers?.age ?? "")}. Decide the colour type ONLY from her natural colouring in the photos; her style preferences must not influence it.
+Colour names: correct, common literary Russian fashion colour names with correct spelling and ё (e.g. «Кэмел», «Терракотовый», «Тёплый бежевый»), no brand names, no invented words; all 12 best colours must be clearly different from each other.
 Reply with strict JSON only, no comments, in this exact shape:
 {"season":"name in Russian, e.g. Тёмная осень","season_kk":"name in Kazakh","season_en":"name in English",
 "undertone":"тёплый|холодный|нейтральный","contrast":"низкий|средний|высокий","chroma":"мягкий|чистый",
@@ -353,7 +356,7 @@ Deno.serve(async (req) => {
       const imgs = [{ inline_data: { mime_type: "image/jpeg", data: face } }, ...(body ? [{ inline_data: { mime_type: "image/jpeg", data: body } }] : [])];
 
       if (action === "analyze") {
-        // Три независимых разбора параллельно и голосование: один и тот же цветотип на одних и тех же фото.
+        // Пять независимых разборов параллельно и голосование: один и тот же цветотип на одних и тех же фото.
         const HX = /^#[0-9a-f]{6}$/i;
         const one = async (model: string) => {
           const { status, d } = await gemini(model, [...imgs, { text: ANALYZE_PROMPT(prof?.answers) }], { responseMimeType: "application/json", temperature: 0 }, 50000);
@@ -362,8 +365,8 @@ Deno.serve(async (req) => {
           try { const r = JSON.parse(txt); return r?.season ? { r } : { d }; } catch { return { d }; }
         };
         let last: any = null;
-        for (const model of TEXT_MODELS) {
-          const runs = await Promise.all([one(model), one(model), one(model)]);
+        for (const model of ANALYZE_MODELS) {
+          const runs = await Promise.all([one(model), one(model), one(model), one(model), one(model)]);
           if (runs.some((x: any) => x.quota)) return json({ ok: false, reason: "billing" });
           const ok = runs.map((x: any) => x.r).filter(Boolean);
           last = runs.find((x: any) => x.d)?.d ?? last;
