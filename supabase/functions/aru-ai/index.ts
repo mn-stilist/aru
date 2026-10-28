@@ -371,7 +371,7 @@ Deno.serve(async (req) => {
           const ok = runs.map((x: any) => x.r).filter(Boolean);
           last = runs.find((x: any) => x.d)?.d ?? last;
           if (!ok.length) continue;
-          const key = (r: any) => String(r.season_en || r.season).toLowerCase().trim();
+          const key = (r: any) => String(r.season || r.season_en).toLowerCase().replace(/ё/g, "е").trim();
           const votes: Record<string, any[]> = {};
           for (const r of ok) (votes[key(r)] ??= []).push(r);
           const best = Object.values(votes).sort((a, b) => b.length - a.length || (Number(b[0].confidence) || 0) - (Number(a[0].confidence) || 0))[0];
