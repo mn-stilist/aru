@@ -81,12 +81,6 @@ th{color:var(--muted);font-size:12.5px}
       <div class="msg" id="addMsg"></div>
     </div>
 
-    <div class="card">
-      <h2>Автоначисление пакетов Gumroad</h2>
-      <p class="sub" style="margin:0">Подписывает Aru на уведомления Gumroad о продажах. Тогда оплаченный пакет «+20 примерок» начисляется клиентке сам. Общее поле Ping в Gumroad (логистика) не меняется. Нажать один раз; повторное нажатие просто покажет, что всё подключено.</p>
-      <button class="primary" id="hookBtn">Подключить уведомления Gumroad</button>
-      <div class="msg" id="hookMsg"></div>
-    </div>
 
     <div class="card">
       <h2 style="display:flex;justify-content:space-between;align-items:center">Все клиентки <button class="ghost" id="reload" style="padding:8px 12px;font-size:14px">Обновить</button></h2>
@@ -141,13 +135,6 @@ $('addBtn').onclick=async()=>{
   b.disabled=false;
   if(!r.ok){show($('addMsg'),false,r.reason==='no_client'?'Такой клиентки нет. Проверьте почту.':(WHY[r.reason]||'Не получилось.'));return;}
   show($('addMsg'),true,`Добавлено ${r.added} примерок. Теперь у ${r.client.email} осталось ${r.client.tryons_left}.`); load();
-};
-$('hookBtn').onclick=async()=>{
-  const b=$('hookBtn'); b.disabled=true;
-  const r=await call({action:'admin_hook'});
-  b.disabled=false;
-  if(!r.ok){show($('hookMsg'),false,{no_token:'На сервере нет ключа GUMROAD_TOKEN.',bad_token:'Gumroad не принял ключ GUMROAD_TOKEN. Проверьте, что он скопирован полностью.',hook_failed:'Gumroad не создал подписку. Попробуйте ещё раз через минуту.'}[r.reason]||WHY[r.reason]||'Не получилось.');return;}
-  show($('hookMsg'),true,(r.added?'Готово, подключено. ':'Уже было подключено. ')+(r.pack?'Пакет +20 примерок начисляется автоматически.':'Но на сервере нет PACK_PRODUCT_ID.')+' Подписок у Gumroad: '+r.urls.length+'.');
 };
 if(CODE) load();
 </script>
