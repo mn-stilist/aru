@@ -138,6 +138,7 @@ async function redeemPack(key: string, userId: string | null, emailHint?: string
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
+  if (req.method === "GET" || req.method === "HEAD") return new Response("ok", { headers: CORS }); // проверка адреса (Gumroad)
   if (req.method !== "POST") return json({ error: "method" }, 405);
   // Gumroad Ping: приходит формой после каждой оплаты
   if ((req.headers.get("content-type") ?? "").includes("application/x-www-form-urlencoded")) {
