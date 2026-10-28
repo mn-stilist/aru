@@ -681,6 +681,12 @@ const S = {
   show_on_me:["Показать на мне (1 примерка)","Маған көрсету (1 киіп көру)","Show it on me (1 try-on)"],
   chat_look_done:["Вот этот образ на вас. Он сохранён во вкладке «Образы» → «Свой вариант». Осталось примерок: {n}","Міне, бұл бейне сізде. Ол «Бейнелер» → «Өз нұсқам» бөлімінде сақталды. Қалған киіп көру: {n}","Here is this look on you. It is saved in Looks → My own. Try-ons left: {n}"],
   in_color:["Цвет","Түсі","Colour"],
+  more_tries:["Докупить примерки","Киіп көруді сатып алу","Get more try-ons"],
+  more_tries_wa:["Здравствуйте! Хочу докупить примерки в Aru. Моя почта: {e}","Сәлеметсіз бе! Aru-да киіп көруді көбейткім келеді. Поштам: {e}","Hello! I would like more try-ons in Aru. My email: {e}"],
+  hair_fun_t:["Эксперимент: любой цвет волос","Эксперимент: кез келген шаш түсі","Experiment: any hair colour"],
+  hair_fun_sub:["Хотите попробовать смелый цвет? Нажмите — Aru покрасит вам волосы на фото (1 примерка). Эти цвета не обязательно под ваш цветотип — просто посмотреть.","Батыл түсті көргіңіз келе ме? Басыңыз — Aru суретте шашыңызды бояйды (1 киіп көру). Бұл түстер міндетті түрде түс типіңізге сай емес — жай көру үшін.","Want to try a bold colour? Tap it and Aru will colour your hair on the photo (1 try-on). These are not necessarily for your colour type — just to see."],
+  own_shade:["Свой цвет","Өз түсім","My own colour"],
+  try_own_shade:["Выбрать свой цвет и примерить","Өз түсіңізді таңдап, киіп көру","Pick my own colour and try it"],
   guide_wait:["Aru готовит ваш личный гид: одежда, аксессуары, макияж… Это 10–20 секунд.","Aru сіздің жеке нұсқаулығыңызды дайындап жатыр: киім, аксессуарлар, макияж… 10–20 секунд.","Aru is preparing your personal guide: clothes, accessories, make-up… 10–20 seconds."],
   sil_t:["Какие силуэты вам идут","Сізге қандай силуэттер жарасады","Silhouettes that suit you"],
   chat_hello_r:["Здравствуйте! Я Aru, ваш стилист. Я знаю ваш цветотип, палитру и анкету — спрашивайте: что надеть, с чем сочетать, что купить.","Сәлеметсіз бе! Мен Aru — сіздің стилистіңізбін. Түс типіңізді, палитраңызды және сауалнамаңызды білемін — сұраңыз: не кию, немен үйлестіру, не сатып алу.","Hello! I am Aru, your stylist. I know your colour type, palette and answers — ask me what to wear, what goes with what, what to buy."],
@@ -1427,7 +1433,7 @@ function realHero(){
 function tryTools(kind,key,got){
   if(!got) return '';
   const id=kind+':'+key+':'+got.id, on=state.cmpOn===id, before=kind==='hair'?FACE():((state.ai&&state.ai.body)||state.photos.body||FACE());
-  return `${got.text?`<p class="small muted" style="margin:6px 2px 0">${got.text.startsWith('🎨')?(()=>{ const nm=got.text.replace(/^🎨\s*/,''); const k=Object.keys(C).find(x=>C[x].n&&C[x].n.includes(nm)); const hx=k?C[k].hex:((AN()&&(AN().hair_shades||[]).concat(AN().best_colors||[]).find(c=>cname(c)===nm||c.name===nm))?hexOf((AN().hair_shades||[]).concat(AN().best_colors||[]).find(c=>cname(c)===nm||c.name===nm)):'#B08A7A'); return `<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${hx};vertical-align:-1px;margin-right:6px;border:1px solid rgba(0,0,0,.15)"></span>${t('in_color')}: ${esc(nm)}`; })():esc('«'+got.text+'»')}</p>`:''}
+  return `${got.text?`<p class="small muted" style="margin:6px 2px 0">${got.text.startsWith('🎨')?(()=>{ const nm=got.text.replace(/^🎨\s*/,''); const k=Object.keys(C).find(x=>C[x].n&&C[x].n.includes(nm)); const hf=HAIR_FUN.find(f=>f[2].includes(nm)); const hm=nm.match(/#[0-9a-f]{6}/i); const hx=hm?hm[0]:hf?hf[3]:k?C[k].hex:((AN()&&(AN().hair_shades||[]).concat(AN().best_colors||[]).find(c=>cname(c)===nm||c.name===nm))?hexOf((AN().hair_shades||[]).concat(AN().best_colors||[]).find(c=>cname(c)===nm||c.name===nm)):'#B08A7A'); return `<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${hx};vertical-align:-1px;margin-right:6px;border:1px solid rgba(0,0,0,.15)"></span>${t('in_color')}: ${esc(nm)}`; })():esc('«'+got.text+'»')}</p>`:''}
   ${on&&before?`<div class="ba2"><div><span>${t('before')}</span><img src="${esc(before)}" alt=""></div><div><span>${t('after')}</span><img src="${esc(got.url)}" alt="" style="object-position:${kind==='hair'?'50%':'0%'} 30%"></div></div>`:''}
   <div class="trytools">${before?`<button data-act="cmp" data-arg="${id}">${ic('refresh',16)} ${on?t('hide_cmp'):t('before')+' / '+t('after')}</button>`:''}<button data-act="savetry" data-arg="${got.id}">${ic('download',16)} ${t('save_img')}</button><button data-act="sharetry" data-arg="${got.id}">${ic('send',16)} ${t('share_img')}</button></div>`;
 }
@@ -1441,7 +1447,7 @@ function tryBlock(kind,key,label){
   const frame = got ? `<div class="tryon-frame"><img src="${got.url}" alt="${esc(label)}"></div>${tryTools(kind,key,got)}`
     : `<div class="tryon-frame hair-ph" style="min-height:220px">${face?`<img src="${face}" alt="" style="max-height:340px;object-fit:cover">`:''}<div class="ph-over"><span>${ic(kind==='hair'?'scissors':'hanger',24)}</span><b>${busy?t('ai_tryon_wait'):esc(label)}</b></div></div>`;
   return `${frame}<button class="btn ${got?'ghost':'primary'}" style="width:100%;margin-top:12px" data-act="aitry" data-arg="${kind}|${key}" ${busy?'disabled':''}>${ic('sparkle',18)} ${busy?t('ai_tryon_wait'):(got?t('ai_again'):t('ai_tryon'))}</button>
-    <p class="small muted" style="text-align:center;margin-top:6px">${t('ai_tryon_n',{n:left})}</p>`;
+    <p class="small muted" style="text-align:center;margin-top:6px">${t('ai_tryon_n',{n:left})}${left!==''&&left<=5?` · <button class="link" data-act="moretry">${t('more_tries')}</button>`:''}</p>`;
 }
 
 function customBlock(kind){
@@ -1455,6 +1461,19 @@ function customBlock(kind){
     ${got.map(x=>`<div style="margin-top:14px"><div class="tryon-frame"><img src="${x.url}" alt=""></div>${tryTools(kind,'custom',x)}</div>`).join('')}
   </div>`;
 }
+const HAIR_FUN=[
+ ['plat','platinum ice blonde',['Платиновый блонд','Платина аққұба','Platinum blonde'],'#E8E4D8'],
+ ['ash','cool ash blonde',['Пепельный блонд','Күлгін аққұба','Ash blonde'],'#BDB6A8'],
+ ['honey','warm honey blonde',['Медовый блонд','Бал түсті аққұба','Honey blonde'],'#C99A5B'],
+ ['copper','bright copper red',['Медно-рыжий','Мыс-жирен','Copper red'],'#B5562A'],
+ ['cherry','deep cherry red',['Вишнёвый','Шие түсті','Cherry red'],'#7A1F2B'],
+ ['pink','pastel pink',['Пастельный розовый','Пастель қызғылт','Pastel pink'],'#F2B5C8'],
+ ['lav','pastel lavender',['Лавандовый','Лаванда','Lavender'],'#B9A3D9'],
+ ['purple','vivid purple',['Пурпурный','Күлгін','Purple'],'#6B2D8C'],
+ ['blue','deep electric blue',['Синий','Көк','Blue'],'#1F3F9E'],
+ ['black','glossy blue-black',['Иссиня-чёрный','Көкшіл қара','Blue-black'],'#17171E'],
+ ['silver','silver grey',['Серебристый','Күміс','Silver'],'#C7C9CC'],
+ ['ombre','brown to caramel ombre',['Омбре карамель','Карамель омбре','Caramel ombré'],'#8B5A2B']];
 function realHair(){
   const h=HAIRSTYLES.find(x=>x.id===state.hcut)||HAIRSTYLES[0], a=AN();
   const ok=(a&&a.hair_shades)||[], no=(a&&a.hair_avoid)||[];
@@ -1467,6 +1486,9 @@ function realHair(){
     <div class="look-head" style="margin-top:12px"><div><h3 class="h">${tr(h.n)}</h3><p class="small muted" style="font-weight:700">${tr(h.len)} · ${tr(h.bang)}</p></div></div>
     <div class="whybox"><b>${t('why_hair')}</b>${tr(h.why)}</div>
     ${ok.length?`<p class="small" style="font-weight:800;margin:14px 2px 4px">${t('shade_t')}</p><p class="tiny muted" style="margin:0 2px 8px">${t('shade_tap')}</p><div class="hairc">${ok.map(c=>`<button class="on-none" data-act="aishade" data-arg="${h.id}|${esc(c.name_en||c.name||'')}|${esc(cname(c))}"><i style="background:${esc(hexOf(c))}"></i>${esc(cname(c))}</button>`).join('')}${no.map(c=>`<button class="avoid"><i style="background:${esc(hexOf(c))}"></i>${esc(cname(c))}</button>`).join('')}</div>`:''}
+    <div class="card" style="margin:16px 0 0;background:var(--blush-2);box-shadow:none;padding:12px"><p class="small" style="font-weight:800">${t('hair_fun_t')}</p><p class="tiny muted" style="margin:2px 0 8px">${t('hair_fun_sub')}</p>
+      <div class="hairc">${HAIR_FUN.map(f=>`<button class="on-none" data-act="hairfun" data-arg="${f[0]}" ${state.aiBusy?'disabled':''}><i style="background:${f[3]}"></i>${esc(tr(f[2]))}</button>`).join('')}</div>
+      <div class="row" style="gap:10px;margin-top:10px;align-items:center"><input type="color" id="hairPick" value="#8E44AD" style="width:46px;height:40px;border:none;background:none;padding:0" aria-label="${t('own_shade')}"><button class="btn ghost sm" style="flex:1" data-act="haircustomcol" ${state.aiBusy?'disabled':''}>${ic('sparkle',16)} ${t('try_own_shade')}</button></div></div>
     <button class="btn ghost" style="width:100%;margin-top:16px" data-act="go" data-arg="master">${ic('scissors',18)} ${t('show_master')}</button>
   </div>`}
 </section>`;
@@ -1724,7 +1746,7 @@ SCREENS.profile = () => {
     <li><span>${t('sub_status')}</span><b>${t('st_'+(state.sub.status||'expired'))||state.sub.status}</b></li>
     <li><span>${t('paid_until')}</span><b>${state.sub.paid_until?fmtDate(new Date(state.sub.paid_until)):'—'}</b></li>
     <li><span>${t('tryons_left')}</span><b>${state.sub.tryons_left} / ${state.sub.tryons_limit}</b></li></ul>
-    <div class="row" style="gap:10px;margin-top:12px;flex-wrap:wrap"><button class="btn ghost sm" style="flex:1" data-act="buy">${t('manage_sub')}</button></div><button class="btn primary sm" style="width:100%;margin-top:10px" data-act="logout">${ic('logout',18)} ${t('logout')}</button></div>`
+    <div class="row" style="gap:10px;margin-top:12px;flex-wrap:wrap"><button class="btn ghost sm" style="flex:1" data-act="buy">${t('manage_sub')}</button><button class="btn gold sm" style="flex:1" data-act="moretry">${ic('plus',16)} ${t('more_tries')}</button></div><button class="btn primary sm" style="width:100%;margin-top:10px" data-act="logout">${ic('logout',18)} ${t('logout')}</button></div>`
   :`<div class="card"><p class="small muted">${ic('sparkle',16)} ${t('demo_mode')}</p></div>`}
   ${REAL()?realParams():''}<div class="card" ${REAL()?'style="display:none"':''}><h3 class="h" style="font-size:20px;margin-bottom:4px">${t('my_params')}</h3><ul class="kv">
     <li><span>${t('your_type')}</span><b>${t('soft_autumn')}</b></li><li><span>${t('undertone')}</span><b>${t('warm')}</b></li>
@@ -1937,6 +1959,9 @@ const ACT = {
     if(d&&d.ok){ state.ai.tryons=[{id:d.id,kind:'look',key:'custom',text:d.text,url:d.url}, ...(state.ai.tryons||[])]; if(state.sub){ state.sub.tryons_used=d.tryons_used; state.sub.tryons_left=Math.max(0,d.tryons_limit-d.tryons_used); } state.chat.push({me:false,img:d.url,text:t('chat_look_done',{n:state.sub?state.sub.tryons_left:''})}); }
     else state.chat.push({me:false,text:why(d&&d.reason)});
     render(); },
+  moretry:()=>{ const msg=t('more_tries_wa',{e:(state.sub&&state.sub.email)||(AUTH&&AUTH.email)||''}); window.open('https://wa.me/77017708061?text='+encodeURIComponent(msg),'_blank'); },
+  hairfun:a=>{ const f=HAIR_FUN.find(x=>x[0]===a); if(f) doTryon('hair',state.hcut==='custom'?'lob':state.hcut,null,f[1],tr(f[2])); },
+  haircustomcol:()=>{ const v=(document.getElementById('hairPick')||{}).value||'#8E44AD'; doTryon('hair',state.hcut==='custom'?'lob':state.hcut,null,'exactly this hair colour: '+v,t('own_shade')+' '+v); },
   cmp:a=>{ state.cmpOn = state.cmpOn===a?null:a; render(); },
   aicolor:a=>{ const [kind,key,ck]=a.split('|'); const c=C[ck]; if(!c) return; doTryon(kind,key,null,c.n[2]||c.n[0],tr(c.n)); },
   aishade:a=>{ const [key,en,lb]=a.split('|'); doTryon('hair',key,null,en,lb); },
