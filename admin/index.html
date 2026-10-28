@@ -71,6 +71,17 @@ th{color:var(--muted);font-size:12.5px}
     </div>
 
     <div class="card">
+      <h2>Докинуть примерки</h2>
+      <p class="sub" style="margin:0">Клиентка оплатила дополнительные примерки через Kaspi. Они добавятся к её месячным и не сгорят в конце месяца.</p>
+      <div class="row">
+        <div style="flex:2"><label>Почта клиентки</label><input id="addEmail" type="email" placeholder="name@gmail.com" autocomplete="off" name="add_email_x"></div>
+        <div><label>Сколько примерок</label><input id="addN" type="number" min="1" max="1000" value="20"></div>
+      </div>
+      <button class="primary" id="addBtn">Добавить примерки</button>
+      <div class="msg" id="addMsg"></div>
+    </div>
+
+    <div class="card">
       <h2 style="display:flex;justify-content:space-between;align-items:center">Все клиентки <button class="ghost" id="reload" style="padding:8px 12px;font-size:14px">Обновить</button></h2>
       <div class="tbl"><table><thead><tr><th>Почта</th><th>Тариф</th><th>Статус</th><th>До</th><th>Примерки</th><th>Заметка</th></tr></thead><tbody id="list"></tbody></table></div>
     </div>
@@ -96,7 +107,7 @@ async function load(){
   const r=await call({action:'admin_list'});
   if(!r.ok){ $('panel').classList.add('hide'); $('lock').classList.remove('hide'); show($('lockMsg'),false,WHY[r.reason]||'Не получилось войти.'); return false; }
   $('lock').classList.add('hide'); $('panel').classList.remove('hide'); $('logout').classList.remove('hide');
-  $('list').innerHTML=r.clients.map(c=>`<tr><td>${esc(c.email)}<div class="tag">${c.source==='manual'?'Kaspi / вручную':'Gumroad'}</div></td><td>${esc(PLAN[c.plan]||c.plan)}</td><td><span class="pill ${esc(c.status)}">${c.status==='active'?'активна':c.status==='expired'?'истекла':esc(c.status)}</span></td><td>${fmt(c.paid_until)}</td><td>${c.tryons_used} / ${c.tryons_limit}</td><td>${esc(c.note||'')}</td></tr>`).join('')||'<tr><td colspan="6">Пока никого</td></tr>';
+  $('list').innerHTML=r.clients.map(c=>`<tr><td>${esc(c.email)}<div class="tag">${c.source==='manual'?'Kaspi / вручную':'Gumroad'}</div></td><td>${esc(PLAN[c.plan]||c.plan)}</td><td><span class="pill ${esc(c.status)}">${c.status==='active'?'активна':c.status==='expired'?'истекла':esc(c.status)}</span></td><td>${fmt(c.paid_until)}</td><td>${c.tryons_used} / ${c.tryons_limit}${c.extra_tryons?` <span class="tag">+${c.extra_tryons} пакет</span>`:''}</td><td>${esc(c.note||'')}</td></tr>`).join('')||'<tr><td colspan="6">Пока никого</td></tr>';
   return true;
 }
 $('enter').onclick=async()=>{CODE=$('code').value.trim(); if(await load()){try{sessionStorage.setItem('aru_admin',CODE)}catch(_){}}};
@@ -116,6 +127,13 @@ $('grant').onclick=async()=>{
   $('copyBox').textContent=text; $('copyBox').classList.remove('hide'); $('copyBtn').classList.remove('hide');
   $('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(text);$('copyBtn').textContent='Скопировано ✓'}catch(_){$('copyBtn').textContent='Выделите текст выше и нажмите Ctrl + C'}};
   load();
+};
+$('addBtn').onclick=async()=>{
+  const b=$('addBtn'); b.disabled=true;
+  const r=await call({action:'admin_add',email:$('addEmail').value.trim(),tryons:+$('addN').value});
+  b.disabled=false;
+  if(!r.ok){show($('addMsg'),false,r.reason==='no_client'?'Такой клиентки нет. Проверьте почту.':(WHY[r.reason]||'Не получилось.'));return;}
+  show($('addMsg'),true,`Добавлено ${r.added} примерок. Теперь у ${r.client.email} осталось ${r.client.tryons_left}.`); load();
 };
 if(CODE) load();
 </script>

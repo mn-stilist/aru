@@ -1746,7 +1746,7 @@ SCREENS.profile = () => {
     <li><span>${t('plan_l')}</span><b>${S['plan_'+state.sub.plan]?t('plan_'+state.sub.plan):esc(state.sub.plan||'')}</b></li>
     <li><span>${t('sub_status')}</span><b>${t('st_'+(state.sub.status||'expired'))||state.sub.status}</b></li>
     <li><span>${t('paid_until')}</span><b>${state.sub.paid_until?fmtDate(new Date(state.sub.paid_until)):'—'}</b></li>
-    <li><span>${t('tryons_left')}</span><b>${state.sub.tryons_left} / ${state.sub.tryons_limit}</b></li></ul>
+    <li><span>${t('tryons_left')}</span><b>${state.sub.extra_tryons?`${Math.max(0,state.sub.tryons_left-state.sub.extra_tryons)} / ${state.sub.tryons_limit} + ${state.sub.extra_tryons}`:`${state.sub.tryons_left} / ${state.sub.tryons_limit}`}</b></li></ul>
     <div class="row" style="gap:10px;margin-top:12px;flex-wrap:wrap"><button class="btn ghost sm" style="flex:1" data-act="buy">${t('manage_sub')}</button><button class="btn gold sm" style="flex:1" data-act="moretry">${ic('plus',16)} ${t('more_tries')}</button></div><button class="btn primary sm" style="width:100%;margin-top:10px" data-act="logout">${ic('logout',18)} ${t('logout')}</button></div>`
   :`<div class="card"><p class="small muted">${ic('sparkle',16)} ${t('demo_mode')}</p></div>`}
   ${REAL()?realParams():''}<div class="card" ${REAL()?'style="display:none"':''}><h3 class="h" style="font-size:20px;margin-bottom:4px">${t('my_params')}</h3><ul class="kv">
@@ -1882,7 +1882,7 @@ const lastTry = (kind,key) => ((state.ai&&state.ai.tryons)||[]).find(x=>x.kind==
 async function doTryon(kind,key,text,color,label){
   if(state.aiBusy) return; state.aiBusy=kind+':'+key; render();
   const d=await aiApi('tryon',{kind,key,text,color,color_label:label}); state.aiBusy=null;
-  if(d.ok){ state.ai=state.ai||{tryons:[]}; state.ai.tryons=[{id:d.id,kind,key,text:d.text,url:d.url}, ...(state.ai.tryons||[])]; state.ai.tryons_used=d.tryons_used; if(state.sub){ state.sub.tryons_used=d.tryons_used; state.sub.tryons_left=Math.max(0,d.tryons_limit-d.tryons_used); } }
+  if(d.ok){ state.ai=state.ai||{tryons:[]}; state.ai.tryons=[{id:d.id,kind,key,text:d.text,url:d.url}, ...(state.ai.tryons||[])]; state.ai.tryons_used=d.tryons_used; if(state.sub){ state.sub.tryons_used=d.tryons_used; state.sub.tryons_left=(d.tryons_left!=null?d.tryons_left:Math.max(0,d.tryons_limit-d.tryons_used)); } }
   render(); if(!d.ok) toast(why(d.reason));
 }
 async function refreshSub(){ const d=await api('status',{},true); if(d&&d.ok){ state.sub=d; } return d; }
@@ -1958,7 +1958,7 @@ const ACT = {
   chatlook:async a=>{ const m=state.chat[+a-1]; if(!m||state.aiBusy) return; if(!FACE()){ toast(t('ai_need_photo')); return; }
     const txt=String(m.text||'').slice(0,390); state.aiBusy='look:custom'; state.typing=true; render();
     const d=await aiApi('tryon',{kind:'look',key:'custom',text:txt}); state.aiBusy=null; state.typing=false;
-    if(d&&d.ok){ state.ai.tryons=[{id:d.id,kind:'look',key:'custom',text:d.text,url:d.url}, ...(state.ai.tryons||[])]; if(state.sub){ state.sub.tryons_used=d.tryons_used; state.sub.tryons_left=Math.max(0,d.tryons_limit-d.tryons_used); } state.chat.push({me:false,img:d.url,text:t('chat_look_done',{n:state.sub?state.sub.tryons_left:''})}); }
+    if(d&&d.ok){ state.ai.tryons=[{id:d.id,kind:'look',key:'custom',text:d.text,url:d.url}, ...(state.ai.tryons||[])]; if(state.sub){ state.sub.tryons_used=d.tryons_used; state.sub.tryons_left=(d.tryons_left!=null?d.tryons_left:Math.max(0,d.tryons_limit-d.tryons_used)); } state.chat.push({me:false,img:d.url,text:t('chat_look_done',{n:state.sub?state.sub.tryons_left:''})}); }
     else state.chat.push({me:false,text:why(d&&d.reason)});
     render(); },
   moretry:()=>{ const msg=t('more_tries_wa',{e:(state.sub&&state.sub.email)||(AUTH&&AUTH.email)||''}); window.open('https://wa.me/77017708061?text='+encodeURIComponent(msg),'_blank'); },

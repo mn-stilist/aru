@@ -14,7 +14,9 @@
 // Живые клиентки обрабатываются только на платном тарифе Google (секрет GEMINI_PAID = 1).
 // Тестовые аккаунты (тариф "test", только ИИ-героини) работают и на бесплатном.
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
-import { decodeBase64, encodeBase64 } from "jsr:@std/encoding@1/base64";
+// base64 без внешних пакетов (jsr.io бывает недоступен при сборке)
+const decodeBase64 = (s: string) => Uint8Array.from(atob(s.replace(/\s/g, "")), (c) => c.charCodeAt(0));
+const encodeBase64 = (u: Uint8Array) => { let r = ""; for (let i = 0; i < u.length; i += 0x8000) r += String.fromCharCode(...u.subarray(i, i + 0x8000)); return btoa(r); };
 
 const BUCKET = "client-files";
 const RATE_PER_HOUR = 10;
@@ -141,7 +143,7 @@ function itemsPrompt(cat: string, a: any) {
   const base = "Professional e-commerce flat lay product photo, top view, items neatly arranged on a soft warm light-beige background, natural soft daylight, realistic fabrics and materials, premium modern 2026 style, no people, no hands, no text, no logos, no brand names. ";
   if (cat === "clothes") return base + "Exactly these garments, each in its exact colour: " + (g.clothes_yes ?? []).map((c: any) => `${en(c)} in ${col(c)}`).join("; ") + ".";
   if (cat === "shoes") return base + "Three pairs of women's shoes: " + (g.shoe_shapes ?? []).map((s: any, i: number) => `${nm(s)} in ${col((g.shoe_colors ?? [])[i] ?? (g.shoe_colors ?? [])[0])}`).join("; ") + ".";
-  if (cat === "bags") return base + "Women's bags and small accessories: " + (g.bag_shapes ?? []).map((s: any, i: number) => `${nm(s)} bag in ${col((g.bag_colors ?? [])[i] ?? (g.bag_colors ?? [])[0])}`).join("; ") + `; plus ${(g.details ?? []).map(nm).join(", ")}.`;
+  if (cat === "bags") { const sh = g.bag_shapes ?? []; return base + `Exactly ${(g.bag_colors ?? []).length || 3} women's bags, one in each colour: ` + (g.bag_colors ?? []).map((c: any, i: number) => `${nm(sh[i % Math.max(1, sh.length)] ?? "bag")} in ${col(c)}`).join("; ") + `; plus small details: ${(g.details ?? []).map(nm).join(", ")}.`; }
   if (cat === "jewelry") return base + `Elegant women's jewellery all in ${metal}: hoop earrings, delicate stud earrings, a fine chain necklace with a small pendant, two thin rings, a slim bracelet and a watch with a ${metal} case.`;
   return base + "Make-up products: lipsticks in " + (g.lips_ok ?? []).map(col).join(", ") + "; a blush compact in " + (g.blush ?? []).map(col).join(", ") + "; an eyeshadow palette with " + (g.eyes ?? []).map(col).join(", ") + "; a soft brush.";
 }
@@ -257,7 +259,7 @@ Deno.serve(async (req) => {
         face: await signed(prof?.face_path ?? null), body: await signed(prof?.body_path ?? null),
         styles: await Promise.all(Array.from({ length: MAX_STYLES }, (_, i) => signed((prof?.style_paths ?? [])[i] || null))),
         items: Object.fromEntries(await Promise.all(Object.entries(an?.result?.items ?? {}).map(async ([k, v]) => [k, await signed(String(v))]))),
-        tryons, tryons_used: client.tryons_used, tryons_limit: client.tryons_limit, plan: client.plan,
+        tryons, tryons_used: client.tryons_used, tryons_limit: client.tryons_limit, extra_tryons: client.extra_tryons ?? 0, plan: client.plan,
       });
     }
 
@@ -398,7 +400,7 @@ Deno.serve(async (req) => {
       const text = clean(b.text);
       const color = clean(b.color, 60);
       if (key === "custom" ? text.length < 3 : !(kind === "hair" ? HAIR : LOOK)[key]) return json({ ok: false, reason: "bad_input" });
-      if (client.tryons_used >= client.tryons_limit) return json({ ok: false, reason: "quota" });
+      if (client.tryons_used >= client.tryons_limit && (client.extra_tryons ?? 0) <= 0) return json({ ok: false, reason: "quota" });
       const { data: an } = await db.from("analyses").select("result").eq("user_id", uid).order("created_at", { ascending: false }).limit(1).maybeSingle();
       if (!an) return json({ ok: false, reason: "need_analysis" });
       // примеры стиля: для образов всегда, для причёски — только «свой вариант»
@@ -426,9 +428,11 @@ Deno.serve(async (req) => {
         await db.storage.from(BUCKET).upload(path, decodeBase64(data), { contentType: mime, upsert: true });
         await db.from("tryons").update({ image_path: path }).eq("id", row!.id);
         await db.from("usage_log").insert({ user_id: uid, kind: "tryon" });
-        const used = client.tryons_used + 1;
-        await db.from("clients").update({ tryons_used: used }).eq("user_id", uid);
-        return json({ ok: true, id: row!.id, kind, key, text: ctext, url: await signed(path), tryons_used: used, tryons_limit: client.tryons_limit });
+        const fromExtra = client.tryons_used >= client.tryons_limit;
+        const used = fromExtra ? client.tryons_used : client.tryons_used + 1;
+        const extra = fromExtra ? (client.extra_tryons ?? 0) - 1 : (client.extra_tryons ?? 0);
+        await db.from("clients").update(fromExtra ? { extra_tryons: extra } : { tryons_used: used }).eq("user_id", uid);
+        return json({ ok: true, id: row!.id, kind, key, text: ctext, url: await signed(path), tryons_used: used, tryons_limit: client.tryons_limit, tryons_left: Math.max(0, client.tryons_limit - used) + extra });
       }
       if (last && isQuota(last.status, last.d)) return json({ ok: false, reason: "billing" });
       console.error("tryon failed", JSON.stringify(last?.d)?.slice(0, 500));

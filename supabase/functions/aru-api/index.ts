@@ -6,9 +6,15 @@
 //   use       { kind: "tryon" | "analysis" } (+ токен) — списать одну примерку/анализ
 //   admin_list  { code }                         — (Мурат) все клиентки
 //   admin_grant { code, email, password?, plan, months, tryons_limit, note } — (Мурат) ручной доступ, оплата Kaspi
+//   admin_add   { code, email, tryons }        — (Мурат) докинуть примерки (оплата Kaspi)
+//   redeem      { license_key } (+ токен)      — активировать пакет примерок Gumroad вручную
+//   Gumroad Ping (форма, ?ping=1)              — пакет примерок начисляется сам после оплаты
+// Пакетные примерки (extra_tryons) не сгорают в конце месяца и тратятся после месячных.
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 
 const PRODUCT_ID = "RH0ftOQ4Z1Rnqq17qkMTMw=="; // Aru — Your Personal AI Stylist (Gumroad)
+const PACK_PRODUCT_ID = () => Deno.env.get("PACK_PRODUCT_ID") ?? ""; // товар «+N примерок» в Gumroad
+const PACK_TRYONS = () => Math.max(1, Number(Deno.env.get("PACK_TRYONS") ?? 20) || 20);
 const RATE_PER_HOUR = 10;          // не чаще 10 примерок в час
 const RECHECK_HOURS = 12;          // как часто сверяться с Gumroad
 
@@ -29,8 +35,8 @@ type Verdict = { ok: boolean; reason?: string; email?: string; sale_id?: string;
 function addMonths(d: Date, n: number) { const x = new Date(d); x.setUTCMonth(x.getUTCMonth() + n); return x; }
 
 // Спросить Gumroad: ключ настоящий и подписка жива?
-async function verifyGumroad(licenseKey: string): Promise<Verdict> {
-  const body = new URLSearchParams({ product_id: PRODUCT_ID, license_key: licenseKey.trim(), increment_uses_count: "false" });
+async function verifyGumroad(licenseKey: string, productId = PRODUCT_ID): Promise<Verdict> {
+  const body = new URLSearchParams({ product_id: productId, license_key: licenseKey.trim(), increment_uses_count: "false" });
   let r: Response;
   try {
     r = await fetch("https://api.gumroad.com/v2/licenses/verify", { method: "POST", body });
@@ -103,12 +109,43 @@ const publicView = (c: any) => ({
   paid_until: c.paid_until,
   tryons_used: c.tryons_used,
   tryons_limit: c.tryons_limit,
-  tryons_left: Math.max(0, c.tryons_limit - c.tryons_used),
+  extra_tryons: c.extra_tryons ?? 0,
+  tryons_left: Math.max(0, c.tryons_limit - c.tryons_used) + (c.extra_tryons ?? 0),
 });
+
+// Начислить пакет примерок по ключу Gumroad (один ключ — один раз)
+async function redeemPack(key: string, userId: string | null, emailHint?: string) {
+  if (!PACK_PRODUCT_ID()) return { ok: false, reason: "pack_off" };
+  const v = await verifyGumroad(key, PACK_PRODUCT_ID());
+  if (!v.ok && v.reason !== "subscription_ended") return { ok: false, reason: v.reason };
+  let uid = userId;
+  if (!uid) {
+    const em = String(v.email ?? emailHint ?? "").trim().toLowerCase();
+    const { data: c } = await db.from("clients").select("user_id").eq("email", em).maybeSingle();
+    if (!c) return { ok: false, reason: "no_client" };
+    uid = c.user_id;
+  }
+  const n = PACK_TRYONS();
+  const { error } = await db.from("pack_redemptions").insert({ license_key: key.trim(), user_id: uid, tryons: n });
+  if (error) return { ok: false, reason: "pack_used" };
+  const { data: c } = await db.from("clients").select("extra_tryons").eq("user_id", uid).maybeSingle();
+  const { data: u } = await db.from("clients").update({ extra_tryons: (c?.extra_tryons ?? 0) + n }).eq("user_id", uid).select("*").single();
+  return { ok: true, added: n, client: u };
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   if (req.method !== "POST") return json({ error: "method" }, 405);
+  // Gumroad Ping: приходит формой после каждой оплаты
+  if ((req.headers.get("content-type") ?? "").includes("application/x-www-form-urlencoded")) {
+    const f = new URLSearchParams(await req.text());
+    const key = f.get("license_key") ?? "";
+    if (PACK_PRODUCT_ID() && f.get("product_id") === PACK_PRODUCT_ID() && key) {
+      const r = await redeemPack(key, null, f.get("email") ?? "");
+      console.log("ping pack", f.get("email"), JSON.stringify({ ok: r.ok, reason: (r as any).reason }));
+    }
+    return new Response("ok");
+  }
   const b = await req.json().catch(() => ({}));
   const action = String(b.action ?? "");
 
@@ -152,22 +189,43 @@ Deno.serve(async (req) => {
       // action === "use": списать одну примерку/анализ
       const kind = b.kind === "analysis" ? "analysis" : "tryon";
       if (c.status !== "active") return json({ ok: false, reason: "inactive", ...publicView(c) });
-      if (kind === "tryon" && c.tryons_used >= c.tryons_limit) return json({ ok: false, reason: "quota", ...publicView(c) });
+      if (kind === "tryon" && c.tryons_used >= c.tryons_limit && (c.extra_tryons ?? 0) <= 0) return json({ ok: false, reason: "quota", ...publicView(c) });
       const since = new Date(Date.now() - 3600e3).toISOString();
       const { count } = await db.from("usage_log").select("id", { count: "exact", head: true })
         .eq("user_id", user.id).gte("created_at", since);
       if ((count ?? 0) >= RATE_PER_HOUR) return json({ ok: false, reason: "rate", ...publicView(c) });
       await db.from("usage_log").insert({ user_id: user.id, kind });
-      const used = kind === "tryon" ? c.tryons_used + 1 : c.tryons_used;
-      const { data: u } = await db.from("clients").update({ tryons_used: used }).eq("user_id", user.id).select("*").single();
+      const fromExtra = kind === "tryon" && c.tryons_used >= c.tryons_limit;
+      const patch = fromExtra ? { extra_tryons: (c.extra_tryons ?? 0) - 1 } : { tryons_used: kind === "tryon" ? c.tryons_used + 1 : c.tryons_used };
+      const { data: u } = await db.from("clients").update(patch).eq("user_id", user.id).select("*").single();
       return json({ ok: true, ...publicView(u ?? c) });
+    }
+
+    if (action === "redeem") {
+      const user = await userFromRequest(req);
+      if (!user) return json({ ok: false, reason: "not_signed_in" }, 401);
+      const key = String(b.license_key ?? "").trim();
+      if (!key) return json({ ok: false, reason: "no_key" });
+      const r = await redeemPack(key, user.id);
+      return json(r.ok ? { ok: true, added: r.added, ...publicView(r.client) } : r);
+    }
+
+    if (action === "admin_add") {
+      const ADMIN = Deno.env.get("ADMIN_CODE") ?? "";
+      if (!ADMIN || String(b.code ?? "") !== ADMIN) return json({ ok: false, reason: "bad_code" }, 403);
+      const email = String(b.email ?? "").trim().toLowerCase();
+      const n = Math.max(1, Math.min(1000, Number(b.tryons ?? 20) || 20));
+      const { data: c } = await db.from("clients").select("*").eq("email", email).maybeSingle();
+      if (!c) return json({ ok: false, reason: "no_client" });
+      const { data: u } = await db.from("clients").update({ extra_tryons: (c.extra_tryons ?? 0) + n }).eq("user_id", c.user_id).select("*").single();
+      return json({ ok: true, added: n, client: publicView(u) });
     }
 
     if (action === "admin_list" || action === "admin_grant") {
       const ADMIN = Deno.env.get("ADMIN_CODE") ?? "";
       if (!ADMIN || String(b.code ?? "") !== ADMIN) return json({ ok: false, reason: "bad_code" }, 403);
       if (action === "admin_list") {
-        const { data } = await db.from("clients").select("email,plan,source,status,paid_until,tryons_used,tryons_limit,note,created_at").order("created_at", { ascending: false });
+        const { data } = await db.from("clients").select("email,plan,source,status,paid_until,tryons_used,tryons_limit,extra_tryons,note,created_at").order("created_at", { ascending: false });
         return json({ ok: true, clients: data ?? [] });
       }
       const email = String(b.email ?? "").trim().toLowerCase();
