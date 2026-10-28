@@ -453,7 +453,7 @@ const S = {
   signed_as:["Вы вошли как","Сіз кірдіңіз:","Signed in as"], cont:["Продолжить","Жалғастыру","Continue"],
   sub_t:["Подписка","Жазылым","Subscription"], sub_status:["Статус","Күйі","Status"],
   st_active:["Активна","Белсенді","Active"], st_expired:["Закончилась","Аяқталды","Ended"], st_refunded:["Отменена","Жойылды","Cancelled"], st_cancelled:["Отменена","Тоқтатылды","Cancelled"],
-  paid_until:["Оплачено до","Төленген мерзім","Paid until"], tryons_left:["Примерок осталось","Қалған өлшеу","Try-ons left"],
+  paid_until:["Оплачено до","Төленген мерзім","Paid until"], extra_bought:["Докуплено (не сгорают)","Сатып алынған (күймейді)","Extra (never expire)"], tryons_left:["Примерок осталось","Қалған өлшеу","Try-ons left"],
   demo_mode:["Демо-режим: подписка не нужна","Демо режим: жазылым қажет емес","Demo mode: no subscription needed"],
   test_use:["Тест: списать 1 примерку","Тест: 1 өлшеуді есептен шығару","Test: use 1 try-on"],
   manage_sub:["Управлять подпиской","Жазылымды басқару","Manage subscription"],
@@ -1746,7 +1746,7 @@ SCREENS.profile = () => {
     <li><span>${t('plan_l')}</span><b>${S['plan_'+state.sub.plan]?t('plan_'+state.sub.plan):esc(state.sub.plan||'')}</b></li>
     <li><span>${t('sub_status')}</span><b>${t('st_'+(state.sub.status||'expired'))||state.sub.status}</b></li>
     <li><span>${t('paid_until')}</span><b>${state.sub.paid_until?fmtDate(new Date(state.sub.paid_until)):'—'}</b></li>
-    <li><span>${t('tryons_left')}</span><b>${state.sub.extra_tryons?`${Math.max(0,state.sub.tryons_left-state.sub.extra_tryons)} / ${state.sub.tryons_limit} + ${state.sub.extra_tryons}`:`${state.sub.tryons_left} / ${state.sub.tryons_limit}`}</b></li></ul>
+    <li><span>${t('tryons_left')}</span><b>${state.sub.extra_tryons?Math.max(0,state.sub.tryons_left-state.sub.extra_tryons):state.sub.tryons_left} / ${state.sub.tryons_limit}</b></li>${state.sub.extra_tryons?`<li><span>${t('extra_bought')}</span><b>${state.sub.extra_tryons}</b></li>`:''}</ul>
     <div class="row" style="gap:10px;margin-top:12px;flex-wrap:wrap"><button class="btn ghost sm" style="flex:1" data-act="buy">${t('manage_sub')}</button><button class="btn gold sm" style="flex:1" data-act="moretry">${ic('plus',16)} ${t('more_tries')}</button></div><button class="btn primary sm" style="width:100%;margin-top:10px" data-act="logout">${ic('logout',18)} ${t('logout')}</button></div>`
   :`<div class="card"><p class="small muted">${ic('sparkle',16)} ${t('demo_mode')}</p></div>`}
   ${REAL()?realParams():''}<div class="card" ${REAL()?'style="display:none"':''}><h3 class="h" style="font-size:20px;margin-bottom:4px">${t('my_params')}</h3><ul class="kv">
