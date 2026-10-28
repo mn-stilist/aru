@@ -583,7 +583,7 @@ const S = {
   hair_n_of:["{n} стрижек","{n} шаш үлгісі","{n} cuts"],
   tab_home:["Панель","Панель","Panel"], tab_looks:["Образы","Бейнелер","Looks"], tab_check:["Проверить","Тексеру","Check"], tab_wardrobe:["Гардероб","Гардероб","Wardrobe"], tab_chat:["Стилист","Стилист","Stylist"],
   drape_title:["Тест драпировки","Драпировка сынағы","Drape test"],
-  drape_sub:["Нажмите на цвет и посмотрите на лицо","Түсті басып, бетке қараңыз","Tap a colour and watch the face"],
+  drape_sub:["Нажмите на любой цвет: рамка вокруг лица станет этого цвета. Ваш цвет — лицо светится; цвет с красной точкой — лицо тускнеет.","Кез келген түсті басыңыз: бет айналасындағы жиек сол түске боялады. Сіздің түсіңіз — бет жарқырайды; қызыл нүктелі түс — бет солғындайды.","Tap any colour: the frame around the face takes that colour. Your colour makes the face glow; a colour with a red dot makes it look dull."],
   glows:["Лицо светится","Бет жарқырайды","Face glows"], dulls:["Лицо тускнеет","Бет солғындайды","Face looks dull"],
   my_colors:["Ваши цвета","Сіздің түстеріңіз","Your colours"], not_mine:["Не ваши цвета","Сіздікі емес түстер","Not your colours"],
   neutrals:["Базовые нейтрали","Негізгі бейтарап түстер","Your neutrals"],
@@ -606,7 +606,7 @@ const S = {
   shoes_t:["Обувь","Аяқ киім","Shoes"], heel:["Каблук 5–7 см","Өкше 5–7 см","5–7 cm heel"],
   bags_t:["Сумки","Сөмкелер","Bags"], details_t:["Детали","Бөлшектер","Details"],
   lips:["Губы","Ерін","Lips"], blush_t:["Румяна","Ұялық","Blush"], eyes_t:["Тени","Көз бояуы","Eyeshadow"],
-  tap_lip:["Нажмите на помаду, чтобы примерить","Өлшеп көру үшін ерін далабын басыңыз","Tap a lipstick to try it on"],
+  tap_lip:["Нажмите на любую помаду — рамка станет её цвета. Без крестика — ваш оттенок, с крестиком ✕ — не подходит: лицо тускнеет.","Кез келген ерін далабын басыңыз — жиек сол түске боялады. Белгісіз — сіздің реңкіңіз, ✕ белгісі бар — жараспайды: бет солғындайды.","Tap any lipstick and the frame takes its colour. No cross means your shade; a ✕ means it does not suit you and the face looks dull."],
   occ_work:["Работа","Жұмыс","Work"], occ_day:["Каждый день","Күнделікті","Everyday"], occ_party:["Праздник","Мереке","Celebration"], occ_date:["Свидание","Кездесу","Date"], occ_travel:["Путешествие","Саяхат","Travel"],
   what_in:["Из чего собран образ","Бейне неден құралған","What the look is made of"],
   hair_n:["Волосы","Шаш","Hair"], makeup_n:["Макияж","Макияж","Makeup"],
@@ -678,6 +678,8 @@ const S = {
   items_wait:["Aru фотографирует ваши вещи… 15–30 секунд","Aru заттарыңызды суретке түсіріп жатыр… 15–30 секунд","Aru is photographing your items… 15–30 seconds"],
   guide_short:["Ваш личный гид","Жеке нұсқаулығыңыз","Your personal guide"],
   looks_r_d:["6 поводов и свой вариант","6 себеп және өз нұсқаңыз","6 occasions and your own idea"],
+  show_on_me:["Показать на мне (1 примерка)","Маған көрсету (1 киіп көру)","Show it on me (1 try-on)"],
+  chat_look_done:["Вот этот образ на вас. Он сохранён во вкладке «Образы» → «Свой вариант». Осталось примерок: {n}","Міне, бұл бейне сізде. Ол «Бейнелер» → «Өз нұсқам» бөлімінде сақталды. Қалған киіп көру: {n}","Here is this look on you. It is saved in Looks → My own. Try-ons left: {n}"],
   guide_wait:["Aru готовит ваш личный гид: одежда, аксессуары, макияж… Это 10–20 секунд.","Aru сіздің жеке нұсқаулығыңызды дайындап жатыр: киім, аксессуарлар, макияж… 10–20 секунд.","Aru is preparing your personal guide: clothes, accessories, make-up… 10–20 seconds."],
   sil_t:["Какие силуэты вам идут","Сізге қандай силуэттер жарасады","Silhouettes that suit you"],
   chat_hello_r:["Здравствуйте! Я Aru, ваш стилист. Я знаю ваш цветотип, палитру и анкету — спрашивайте: что надеть, с чем сочетать, что купить.","Сәлеметсіз бе! Мен Aru — сіздің стилистіңізбін. Түс типіңізді, палитраңызды және сауалнамаңызды білемін — сұраңыз: не кию, немен үйлестіру, не сатып алу.","Hello! I am Aru, your stylist. I know your colour type, palette and answers — ask me what to wear, what goes with what, what to buy."],
@@ -1686,7 +1688,7 @@ SCREENS.wardrobe = () => {
 SCREENS.chat = () => {
   const msgs = [{me:false, text:t(REAL()&&AN()?'chat_hello_r':'chat_hello')}].concat(state.chat);
   return `<div class="chat-wrap"><div class="chat" id="chatlog">
-    ${msgs.map(m=>m.me?`<div class="msg me">${esc(m.text)}</div>`:`<div class="msg ai"><div class="ai-head"><span class="mini av">${avatar({drape:C.terracotta.hex})}</span>${t('stylist')}</div>${m.text&&typeof m.text==='object'?esc(tr(m.text)):esc(m.text)}${m.sw&&m.sw.length?`<div class="swr">${m.sw.map(k=>{ const c=typeof k==='string'?C[k]:{hex:hexOf(k),n:N3(k)}; return `<i style="background:${c.hex}" title="${esc(tr(c.n))}"></i>`; }).join('')}</div>`:''}</div>`).join('')}
+    ${msgs.map(m=>m.me?`<div class="msg me">${esc(m.text)}</div>`:`<div class="msg ai"><div class="ai-head"><span class="mini av">${avatar({drape:C.terracotta.hex})}</span>${t('stylist')}</div>${m.img?`<div class="tryon-frame" style="margin-top:4px"><img src="${esc(m.img)}" alt=""></div>`:''}${m.text&&typeof m.text==='object'?esc(tr(m.text)):esc(m.text||'')}${m.ask&&REAL()&&AN()?`<button class="chip" style="margin-top:10px;display:inline-flex;gap:6px;align-items:center" data-act="chatlook" data-arg="${m.ask}" ${state.aiBusy?'disabled':''}>${ic('sparkle',16)} ${t('show_on_me')}</button>`:''}${m.sw&&m.sw.length?`<div class="swr">${m.sw.map(k=>{ const c=typeof k==='string'?C[k]:{hex:hexOf(k),n:N3(k)}; return `<i style="background:${c.hex}" title="${esc(tr(c.n))}"></i>`; }).join('')}</div>`:''}</div>`).join('')}
     ${state.typing?`<div class="msg ai typing"><i></i><i></i><i></i></div>`:''}
   </div>
   <div style="position:sticky;bottom:0;background:var(--blush-2);padding-bottom:8px">
@@ -1704,7 +1706,7 @@ function ask(q){
   if(!q.trim()) return;
   if(REAL()&&AN()){ const hist=state.chat.slice(-6).map(m=>({me:m.me,text:typeof m.text==='string'?m.text:tr(m.text)}));
     state.chat.push({me:true,text:q}); state.typing=true; render();
-    aiApi('chat',{q, history:hist, lang:['ru','kk','en'][L]}).then(d=>{ state.typing=false; state.chat.push(d&&d.ok?{me:false,text:d.text,sw:d.colors||[]}:{me:false,text:t('r_'+(d&&d.reason==='rate'?'rate':'net'))}); render(); });
+    aiApi('chat',{q, history:hist, lang:['ru','kk','en'][L]}).then(d=>{ state.typing=false; state.chat.push(d&&d.ok?{me:false,text:d.text,sw:d.colors||[],ask:state.chat.length+1}:{me:false,text:t('r_'+(d&&d.reason==='rate'?'rate':'net'))}); render(); });
     return; }
   state.chat.push({me:true,text:q}); state.typing=true; render();
   setTimeout(()=>{ const a=answer(q); state.typing=false; state.chat.push({me:false,text:a.text,sw:a.sw}); render(); }, 900);
@@ -1928,6 +1930,12 @@ const ACT = {
   send:()=>{ const el=document.getElementById('chatIn'); const v=el.value; el.value=''; ask(v); },
   passport:async()=>{ renderPassport(); const imgs=[...document.querySelectorAll('#passport img')]; await Promise.all(imgs.map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r; setTimeout(r,8000);}))); window.print(); },
   delall:async()=>{ if(!confirm(t('del_all_confirm'))) return; const d=await aiApi('delete_all'); if(!d.ok){ toast(why(d.reason)); return; } state.photos={face:null,body:null}; PHOTO_HI={face:null,body:null}; await loadAI(); toast(t('all_deleted')); },
+  chatlook:async a=>{ const m=state.chat[+a-1]; if(!m||state.aiBusy) return; if(!FACE()){ toast(t('ai_need_photo')); return; }
+    const txt=String(m.text||'').slice(0,390); state.aiBusy='look:custom'; state.typing=true; render();
+    const d=await aiApi('tryon',{kind:'look',key:'custom',text:txt}); state.aiBusy=null; state.typing=false;
+    if(d&&d.ok){ state.ai.tryons=[{id:d.id,kind:'look',key:'custom',text:d.text,url:d.url}, ...(state.ai.tryons||[])]; if(state.sub){ state.sub.tryons_used=d.tryons_used; state.sub.tryons_left=Math.max(0,d.tryons_limit-d.tryons_used); } state.chat.push({me:false,img:d.url,text:t('chat_look_done',{n:state.sub?state.sub.tryons_left:''})}); }
+    else state.chat.push({me:false,text:why(d&&d.reason)});
+    render(); },
   cmp:a=>{ state.cmpOn = state.cmpOn===a?null:a; render(); },
   aicolor:a=>{ const [kind,key,ck]=a.split('|'); const c=C[ck]; if(!c) return; doTryon(kind,key,null,c.n[2]||c.n[0],tr(c.n)); },
   aishade:a=>{ const [key,en,lb]=a.split('|'); doTryon('hair',key,null,en,lb); },
