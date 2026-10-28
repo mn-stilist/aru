@@ -382,6 +382,12 @@ h3.h{font-family:var(--serif);font-size:24px;line-height:1.1;font-weight:700;col
 .photos{display:flex;gap:10px;margin-top:10px}
 .photos div{width:72px;height:92px;border-radius:14px;background:var(--blush);overflow:hidden;display:grid;place-items:center;color:var(--muted)}
 .photos img{width:100%;height:100%;object-fit:cover}
+.ba2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.ba2 div{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:3/4;background:var(--blush)}
+.ba2 img{width:100%;height:100%;object-fit:cover;display:block}
+.ba2 span{position:absolute;left:8px;top:8px;background:rgba(43,26,34,.72);color:#fff;font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:12px;z-index:1}
+.trytools{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.trytools button{flex:1;min-width:92px;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 8px;border-radius:14px;background:var(--blush);color:var(--berry);font-weight:800;font-size:12.5px}
 .styles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
 .styles .sl{position:relative;aspect-ratio:3/4;border-radius:14px;background:var(--blush);overflow:hidden;display:grid;place-items:center;color:var(--berry);border:1.5px dashed #E3B9C9;cursor:pointer;font-size:12px;font-weight:700;text-align:center}
 .styles .sl img{width:100%;height:100%;object-fit:cover}
@@ -657,6 +663,20 @@ const S = {
   redo:["Пройти разбор заново","Талдауды қайта өту","Redo my analysis"],
   delete_photos:["Удалить мои фото","Суреттерімді өшіру","Delete my photos"],
   del_confirm:["Удалить ваши фото и примеры стиля? Разбор и примерки останутся.","Суреттеріңіз бен стиль үлгілерін өшіру керек пе? Талдау мен киіп көрулер қалады.","Delete your photos and style examples? Your analysis and try-ons stay."],
+  hide_cmp:["Скрыть сравнение","Салыстыруды жасыру","Hide comparison"],
+  save_img:["Сохранить","Сақтау","Save"], share_img:["Поделиться","Бөлісу","Share"], saved_img:["Картинка сохранена","Сурет сақталды","Image saved"],
+  share_text:["Смотри, как мне идёт! Примерила в Aru — моём личном стилисте: https://mn-stilist.github.io/aru/landing/","Қара, маған қалай жарасады! Aru — жеке стилистімде киіп көрдім: https://mn-stilist.github.io/aru/landing/","Look how it suits me! I tried it on in Aru, my personal stylist: https://mn-stilist.github.io/aru/landing/"],
+  try_color:["Этот же образ в другом цвете из вашей палитры (1 примерка):","Осы бейне палитраңыздың басқа түсінде (1 киіп көру):","The same look in another colour from your palette (1 try-on):"],
+  try_shade:["Эта же стрижка в другом оттенке:","Осы шаш үлгісі басқа реңкте:","The same cut in another shade:"],
+  shade_tap:["Нажмите на оттенок — Aru примерит его на вас (1 примерка)","Реңкті басыңыз — Aru оны сізге киіп көрсетеді (1 киіп көру)","Tap a shade and Aru will try it on you (1 try-on)"],
+  tips_t:["Советы стилиста","Стилист кеңестері","Stylist tips"],
+  f_ok_r:["Такой фасон Aru вам советует","Мұндай фасонды Aru сізге ұсынады","Aru recommends this kind of piece for you"],
+  f_bad_r:["Такой фасон Aru советует избегать","Мұндай фасоннан Aru аулақ болуға кеңес береді","Aru suggests avoiding this kind of piece"],
+  guide_wait:["Aru готовит ваш личный гид: одежда, аксессуары, макияж… Это 10–20 секунд.","Aru сіздің жеке нұсқаулығыңызды дайындап жатыр: киім, аксессуарлар, макияж… 10–20 секунд.","Aru is preparing your personal guide: clothes, accessories, make-up… 10–20 seconds."],
+  sil_t:["Какие силуэты вам идут","Сізге қандай силуэттер жарасады","Silhouettes that suit you"],
+  chat_hello_r:["Здравствуйте! Я Aru, ваш стилист. Я знаю ваш цветотип, палитру и анкету — спрашивайте: что надеть, с чем сочетать, что купить.","Сәлеметсіз бе! Мен Aru — сіздің стилистіңізбін. Түс типіңізді, палитраңызды және сауалнамаңызды білемін — сұраңыз: не кию, немен үйлестіру, не сатып алу.","Hello! I am Aru, your stylist. I know your colour type, palette and answers — ask me what to wear, what goes with what, what to buy."],
+  transform_r:["Ваша последняя примерка","Соңғы киіп көруіңіз","Your latest try-on"],
+  no_tryons_yet:["Примерок пока нет — откройте «Образы» или «Причёски»","Әзірге киіп көру жоқ — «Бейнелер» немесе «Шаш үлгілері» бөлімін ашыңыз","No try-ons yet — open Looks or Hair"],
   photos_removed:["Вы удалили свои фото. Разбор и примерки сохранены. Для новых примерок загрузите фото заново: «Пройти разбор заново».","Суреттеріңізді өшірдіңіз. Талдау мен киіп көрулер сақталды. Жаңа киіп көру үшін суреттерді қайта жүктеңіз: «Талдауды қайта өту».","You deleted your photos. Your analysis and try-ons are kept. For new try-ons, upload photos again: Redo my analysis."],
   delete_all:["Удалить всё","Барлығын өшіру","Delete everything"],
   del_all_confirm:["Удалить всё: фото, примерки, разбор и анкету? Это нельзя отменить. Подписка останется.","Барлығын өшіру керек пе: суреттер, киіп көрулер, талдау және сауалнама? Бұны қайтару мүмкін емес. Жазылым сақталады.","Delete everything: photos, try-ons, analysis and answers? This cannot be undone. Your subscription stays."],
@@ -670,6 +690,12 @@ const S = {
   proto:["демо","демо","demo"],
   passport_t:["Стиль-паспорт","Стиль-паспорт","Style passport"],
   side_p:["Это Aru. Нажмите «Показать на демо-клиентке», чтобы посмотреть, как всё работает, или войдите со своим ключом.","Бұл — Aru. Бәрі қалай жұмыс істейтінін көру үшін «Демо-клиентте көрсету» батырмасын басыңыз немесе өз кілтіңізбен кіріңіз.","This is Aru. Tap Show on a demo client to see how it works, or sign in with your key."],
+  side_p_r:["Ваш личный стилист. Всё в приложении собрано по вашим фото и анкете.","Сіздің жеке стилистіңіз. Қосымшадағының бәрі сіздің суреттеріңіз бен сауалнамаңыз бойынша жиналған.","Your personal stylist. Everything here is built from your photos and answers."],
+  side_r0:["«Цвета» — ваша палитра и тест драпировки на вашем фото","«Түстер» — палитраңыз және суретіңіздегі драпировка сынағы","Colours — your palette and the drape test on your photo"],
+  side_r1:["«Причёски» — 8 стрижек и любой оттенок волос на вас","«Шаш үлгілері» — 8 үлгі және кез келген шаш реңкі","Hair — 8 cuts and any hair shade on you"],
+  side_r2:["«Образы» — поводы, свой вариант и тот же образ в другом цвете","«Бейнелер» — себептер, өз нұсқаңыз және басқа түстегі сол бейне","Looks — occasions, your own idea and the same look in another colour"],
+  side_r3:["«Проверить» — сфотографируйте вещь в магазине","«Тексеру» — дүкендегі затты суретке түсіріңіз","Check — photograph an item in the shop"],
+  side_r4:["«Стилист» — спросите, что надеть на той, работу, свидание","«Стилист» — тойға, жұмысқа, кездесуге не кию керегін сұраңыз","Stylist — ask what to wear to a toi, work or a date"],
   side_try:["Что попробовать","Нені көру керек","Things to try"],
   side_0:["8 стрижек и «Показать мастеру» во вкладке «Причёски»","«Шаш үлгілері» бетінде 8 үлгі және «Шеберге көрсету»","8 cuts and Show my stylist in Hair"],
   side_1:["«Как было / Как стало» во вкладке «Образы»","«Бейнелер» бетіндегі «Бұрын / Кейін»","Before / After in Looks"],
@@ -712,6 +738,8 @@ const C = {
 };
 const MINE = Object.keys(C).filter(k => C[k].g === 'mine');
 const NOT = Object.keys(C).filter(k => C[k].g === 'not');
+const NEUT = ['chocolate','beige','camel','taupe','olive'];
+let METAL = 'gold';
 
 const HAIRC = {
   chestnut:{hex:'#6E3F24',ok:1,n:['Золотистый каштан','Алтын құба','Golden chestnut']},
@@ -864,14 +892,14 @@ const TRYCL = {
 };
 
 
-const TIPS = [
+let TIPS = [
   ['Шоколадная водолазка под жакет кэмел мягче, чем чёрная.','Кэмел жакетінің астындағы шоколад водолазка қарадан жұмсақ.','A chocolate turtleneck under a camel blazer is softer than black.'],
   ['Золотые серьги-кольца делают взгляд теплее.','Алтын сақина сырғалар көзқарасты жылытады.','Gold hoops warm up your gaze.'],
   ['Подчёркивайте талию поясом — это ваш главный козырь.','Белді белдікпен ерекшелеңіз — бұл басты артықшылығыңыз.','Belt your waist: it is your strongest asset.'],
   ['Матовая замша и твид в вашей гамме выглядят дороже глянца.','Сіздің түстеріңіздегі күңгірт күдері мен твид жылтырдан қымбат көрінеді.','Matte suede and tweed in your shades look richer than gloss.']
 ];
 
-const CAPSULE = [['jacket','camel'],['trousers','chocolate'],['dress','marsala'],['shoes','rust'],['knit','sage'],['earrings','softgold']];
+let CAPSULE = [['jacket','camel'],['trousers','chocolate'],['dress','marsala'],['shoes','rust'],['knit','sage'],['earrings','softgold']];
 
 const CLOTHES = {
   yes:[['dress',['Платье-запах','Орама көйлек','Wrap dress']],['coat',['Пальто с поясом','Белдікті пальто','Belted coat']],['trousers',['Прямые брюки с высокой посадкой','Биік белді түзу шалбар','High-waist straight trousers']],['skirt',['Юбка-карандаш миди','Миди қарындаш юбка','Midi pencil skirt']],['top',['Блуза с V-вырезом','V-ойынды блузка','V-neck blouse']],['knit',['Приталенный трикотаж','Қонымды трикотаж','Fitted knit']]],
@@ -1089,6 +1117,55 @@ function fmtDate(dt){
   return dt.toLocaleDateString(L===0?'ru-RU':'en-GB',{weekday:'long',day:'numeric',month:'long'});
 }
 
+/* ---------- личные данные клиентки подставляются вместо демо (всё, что есть в демо, — и у неё) ---------- */
+const SNAP = JSON.parse(JSON.stringify({LIPS, BLUSH, EYES, CLOTHES, ACC, TIPS, CAPSULE, MINE, NOT, NEUT}));
+const setObj=(o,n)=>{ for(const k of Object.keys(o)) delete o[k]; Object.assign(o,n); };
+const setArr=(a,n)=>{ a.splice(0,a.length,...n); };
+let PERS='init';
+const N3 = c => Array.isArray(c&&c.name) ? c.name.map((x,i)=>x||c.name[0]) : [(c&&c.name)||'', (c&&(c.name_kk||c.name))||'', (c&&(c.name_en||c.name))||''];
+const T3 = v => Array.isArray(v) ? [v[0]||'', v[1]||v[0]||'', v[2]||v[0]||''] : [String(v||''),String(v||''),String(v||'')];
+function personalize(){
+  const real = REAL() && AN();
+  const sig = real ? ('r|'+(state.ai.analysis_at||'')+'|'+(AN().guide?'g':'-')+'|'+accId()) : 'demo';
+  if(sig===PERS) return; const wasDemo = !PERS.startsWith('r|'); PERS=sig;
+  if(!real){ const d=JSON.parse(JSON.stringify(SNAP)); setObj(LIPS,d.LIPS); setArr(BLUSH,d.BLUSH); setArr(EYES,d.EYES); setObj(CLOTHES,d.CLOTHES); setObj(ACC,d.ACC); TIPS=d.TIPS; CAPSULE=d.CAPSULE; setArr(MINE,d.MINE); setArr(NOT,d.NOT); setArr(NEUT,d.NEUT); METAL='gold';
+    CLOTHES.yesC=['terracotta','camel','chocolate','olive','coral','sage'].map(k=>C[k].hex); if(!LIPS[state.lip]) state.lip='rose'; if(!C[state.drape]||C[state.drape].g==='acc') state.drape='terracotta';
+    if(!wasDemo){ state.wardrobe=DEMO_W.map(([tp,k])=>mkItem(tp,k)); state.checks=[]; } return; }
+  const a=AN(), g=a.guide||{};
+  const best=(a.best_colors||[]).filter(Boolean), avoid=(a.avoid_colors||[]).filter(Boolean);
+  best.forEach((c,i)=>{ C['p'+i]={hex:hexOf(c), n:N3(c), g:'mine'}; });
+  avoid.forEach((c,i)=>{ C['x'+i]={hex:hexOf(c), n:N3(c), g:'not'}; });
+  setArr(MINE, best.map((c,i)=>'p'+i)); setArr(NOT, avoid.map((c,i)=>'x'+i));
+  const neu=(g.neutrals||[]).slice(0,5); neu.forEach((c,i)=>{ C['u'+i]={hex:hexOf(c), n:N3(c), g:'neutral'}; });
+  setArr(NEUT, neu.length? neu.map((c,i)=>'u'+i) : MINE.slice(0,5));
+  METAL = /серебр|silver/i.test((a.metal||'')+(a.metal_en||'')) ? 'silver' : 'gold';
+  const lo=(g.lips_ok&&g.lips_ok.length?g.lips_ok:(a.lips||[])), ln=g.lips_no||[], L2={};
+  lo.forEach((c,i)=>{ L2['l'+i]={hex:hexOf(c), ok:1, n:N3(c)}; }); ln.forEach((c,i)=>{ L2['m'+i]={hex:hexOf(c), ok:0, n:N3(c)}; });
+  if(Object.keys(L2).length){ setObj(LIPS,L2); if(!LIPS[state.lip]) state.lip=Object.keys(LIPS)[0]; }
+  if(g.blush) setArr(BLUSH, g.blush.map(c=>[hexOf(c),N3(c)]));
+  if(g.eyes) setArr(EYES, g.eyes.map(c=>[hexOf(c),N3(c)]));
+  if(g.clothes_yes){ CLOTHES.yes=g.clothes_yes.map(c=>[c.type||'top',N3(c)]); CLOTHES.yesC=g.clothes_yes.map(c=>hexOf(c)); }
+  if(g.clothes_no) CLOTHES.no=g.clothes_no.map(c=>[c.type||'oversize',N3(c)]);
+  if(g.necklines) CLOTHES.neck=g.necklines.map(T3); if(g.fabrics) CLOTHES.fab=g.fabrics.map(T3);
+  if(g.prints_yes) CLOTHES.prY=g.prints_yes.map(T3); if(g.prints_no) CLOTHES.prN=g.prints_no.map(T3);
+  if(g.shoe_shapes) ACC.shapes=g.shoe_shapes.map(T3); if(g.bag_shapes) ACC.bags=g.bag_shapes.map(T3); if(g.details) ACC.det=g.details.map(T3);
+  if(g.shoe_colors){ g.shoe_colors.forEach((c,i)=>{ C['s'+i]={hex:hexOf(c),n:N3(c),g:'acc'}; }); ACC.shoeC=g.shoe_colors.map((c,i)=>'s'+i); }
+  if(g.bag_colors){ g.bag_colors.forEach((c,i)=>{ C['b'+i]={hex:hexOf(c),n:N3(c),g:'acc'}; }); ACC.bagC=g.bag_colors.map((c,i)=>'b'+i); }
+  if(g.tips&&g.tips.length) TIPS=g.tips.map(T3);
+  if(g.clothes_yes) CAPSULE=g.clothes_yes.map(c=>[c.type||'top', nearest(hexOf(c), MINE).key]);
+  if(!C[state.drape]||!MINE.concat(NOT).includes(state.drape)) state.drape=MINE[0];
+  // гардероб и проверки — свои у каждой клиентки
+  let w=null; try{ w=JSON.parse(localStorage.getItem('aru_w_'+accId())||'null'); }catch(e){}
+  state.wardrobe=(w&&w.items)||[]; state.checks=(w&&w.checks)||[];
+  state.wardrobe.forEach(x=>{ const n=nearest(x.hex, MINE.concat(NOT)); x.key=n.key; x.mine=C[n.key].g!=='not'; });
+  SEQ=Math.max(SEQ,...state.wardrobe.map(x=>x.id+1),100);
+  if(!a.guide && !state.guideReq){ state.guideReq=true; aiApi('guide').then(d=>{ if(d&&d.ok&&state.ai&&state.ai.analysis){ state.ai.analysis.guide=d.guide; render(); } }); }
+}
+const FACE = () => (state.ai&&state.ai.face)||state.photos.face||null;
+// её фото в кружке с цветной «драпировкой»; без фото — рисованный аватар, как в демо
+const faceOr = (o, ring, dull, size) => (REAL()&&FACE()) ? `<div style="width:100%;height:100%;border-radius:50%;background:${ring};padding:${size||10}px;box-sizing:border-box"><img src="${FACE()}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;${dull?'filter:saturate(.7) brightness(.94) contrast(.92)':''}"></div>` : avatar(o);
+const GUIDE = () => (REAL()&&AN()&&AN().guide)||null;
+const guideWait = () => `<div class="card" style="text-align:center;padding:30px 16px"><div class="spin"></div><b>${t('guide_wait')}</b></div>`;
 const DEMO_FACE='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MDAgNzUwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0id2FsbCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI0VDRTdFMiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0Q5RDJDQiIvPjwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9ImxpZ2h0IiBjeD0iMC4yNSIgY3k9IjAuMiIgcj0iMC44Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGRkZGRkYiIHN0b3Atb3BhY2l0eT0iLjU1Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkZGRkZGIiBzdG9wLW9wYWNpdHk9IjAiLz48L3JhZGlhbEdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJza2luIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRTlCRTk4Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRDlBNTdEIi8+PC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iaGFpciIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzRBMkExQSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzNBMjAxNCIvPjwvbGluZWFyR3JhZGllbnQ+CiAgICA8Y2xpcFBhdGggaWQ9ImV5ZUwiPjxwYXRoIGQ9Ik0yMzggMzAyIFEyNjIgMjg1IDI4OCAyOTkgUTI2NCAzMTMgMjM4IDMwMiBaIi8+PC9jbGlwUGF0aD4KICAgIDxjbGlwUGF0aCBpZD0iZXllUiI+PHBhdGggZD0iTTMxMiAyOTkgUTMzOCAyODUgMzYyIDMwMiBRMzM2IDMxMyAzMTIgMjk5IFoiLz48L2NsaXBQYXRoPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNjAwIiBoZWlnaHQ9Ijc1MCIgZmlsbD0idXJsKCN3YWxsKSIvPgogIDxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNzUwIiBmaWxsPSJ1cmwoI2xpZ2h0KSIvPgogIDwhLS0gaGFpciwgYmFjayAtLT4KICA8cGF0aCBkPSJNMTY4IDMxMCBDMTQ4IDE3MCAyMjIgOTIgMzAwIDkyIEMzNzggOTIgNDUyIDE3MCA0MzIgMzEwIEw0NTIgNjQwIEM0MjAgNjY4IDM2MiA2NjAgMzQwIDY0MCBMMjYwIDY0MCBDMjM4IDY2MCAxODAgNjY4IDE0OCA2NDAgWiIgZmlsbD0idXJsKCNoYWlyKSIvPgogIDwhLS0gbmVjayAtLT4KICA8cGF0aCBkPSJNMjYyIDQ2MCBMMjYwIDU2NSBRMzAwIDU4OCAzNDAgNTY1IEwzMzggNDYwIFoiIGZpbGw9IiNEMDlBNzIiLz4KICA8cGF0aCBkPSJNMjYyIDQ3MCBRMzAwIDUwMCAzMzggNDcwIEwzMzggNDg1IFEzMDAgNTE1IDI2MiA0ODUgWiIgZmlsbD0iI0I5ODQ1RSIgb3BhY2l0eT0iLjQ1Ii8+CiAgPCEtLSB0b3AgLS0+CiAgPHBhdGggZD0iTTcwIDc2MCBDODIgNjQwIDE2OCA1OTIgMjUwIDU3MiBRMzAwIDYwNCAzNTAgNTcyIEM0MzIgNTkyIDUxOCA2NDAgNTMwIDc2MCBaIiBmaWxsPSIjQ0JDM0JBIi8+CiAgPHBhdGggZD0iTTI1MCA1NzIgUTMwMCA2MDQgMzUwIDU3MiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQjNBQUExIiBzdHJva2Utd2lkdGg9IjQiLz4KICA8IS0tIGhhaXIgc3RyYW5kcyBvdmVyIHNob3VsZGVycyAtLT4KICA8cGF0aCBkPSJNMjAzIDMzMCBDMTg2IDQ0MCAxODIgNTQ4IDE2NiA2NjggQzE5OCA2NjAgMjI0IDYxNiAyMzQgNTcyIEMyNDYgNDg2IDI0MiA0MDQgMjM2IDM0MCBaIiBmaWxsPSIjNDMyNjFBIi8+CiAgPHBhdGggZD0iTTM5NyAzMzAgQzQxNCA0NDAgNDE4IDU0OCA0MzQgNjY4IEM0MDIgNjYwIDM3NiA2MTYgMzY2IDU3MiBDMzU0IDQ4NiAzNTggNDA0IDM2NCAzNDAgWiIgZmlsbD0iIzQzMjYxQSIvPgogIDxwYXRoIGQ9Ik0xOTAgNDcwIEMxODggNTQwIDE4MiA2MDAgMTc2IDY1MCBNNDEyIDQ3MCBDNDE0IDU0MCA0MTggNjAwIDQyNCA2NTAiIHN0cm9rZT0iIzZFM0QyMiIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIiBvcGFjaXR5PSIuNyIvPgogIDwhLS0gZWFycyAtLT4KICA8IS0tIGZhY2UgLS0+CiAgPHBhdGggZD0iTTMwMCAxNzggQzM2MiAxNzggMzk3IDIyNCAzOTkgMjg4IEM0MDEgMzM0IDM5MyAzNzAgMzc1IDQwNSBDMzU0IDQ1MCAzMzAgNDgwIDMwMCA0ODIgQzI3MCA0ODAgMjQ2IDQ1MCAyMjUgNDA1IEMyMDcgMzcwIDE5OSAzMzQgMjAxIDI4OCBDMjAzIDIyNCAyMzggMTc4IDMwMCAxNzggWiIgZmlsbD0idXJsKCNza2luKSIvPgogIDxlbGxpcHNlIGN4PSIyNzIiIGN5PSIyNTAiIHJ4PSI1OCIgcnk9IjQwIiBmaWxsPSIjRkZGRkZGIiBvcGFjaXR5PSIuMTIiLz4KICA8ZWxsaXBzZSBjeD0iMjQ2IiBjeT0iMzYyIiByeD0iMzAiIHJ5PSIxOCIgZmlsbD0iI0Q4OEY2RSIgb3BhY2l0eT0iLjI4Ii8+CiAgPGVsbGlwc2UgY3g9IjM1NCIgY3k9IjM2MiIgcng9IjMwIiByeT0iMTgiIGZpbGw9IiNEODhGNkUiIG9wYWNpdHk9Ii4yOCIvPgogIDxwYXRoIGQ9Ik0yMjIgMzM4IFEyMzIgMzcyIDI1MiAzOTIgTTM3OCAzMzggUTM2OCAzNzIgMzQ4IDM5MiIgc3Ryb2tlPSIjQzg4RDY2IiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiIG9wYWNpdHk9Ii4zNSIvPgogIDwhLS0gYnJvd3MgLS0+CiAgPHBhdGggZD0iTTIzNiAyNzAgUTI1OCAyNTUgMjg2IDI2MiIgc3Ryb2tlPSIjM0EyMTE2IiBzdHJva2Utd2lkdGg9IjciIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0zMTQgMjYyIFEzNDIgMjU1IDM2NCAyNzAiIHN0cm9rZT0iIzNBMjExNiIgc3Ryb2tlLXdpZHRoPSI3IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8IS0tIGV5ZXMgLS0+CiAgPHBhdGggZD0iTTIzOCAzMDIgUTI2MiAyODUgMjg4IDI5OSBRMjY0IDMxMyAyMzggMzAyIFoiIGZpbGw9IiNGNkVGRTgiLz4KICA8ZyBjbGlwLXBhdGg9InVybCgjZXllTCkiPjxjaXJjbGUgY3g9IjI2NCIgY3k9IjI5OSIgcj0iMTAiIGZpbGw9IiM4QTVBMkIiLz48Y2lyY2xlIGN4PSIyNjQiIGN5PSIyOTkiIHI9IjYiIGZpbGw9IiNCMDdBM0MiIG9wYWNpdHk9Ii42Ii8+PGNpcmNsZSBjeD0iMjY0IiBjeT0iMjk5IiByPSI0LjIiIGZpbGw9IiMyNDE0MEMiLz48Y2lyY2xlIGN4PSIyNjciIGN5PSIyOTYiIHI9IjIiIGZpbGw9IiNGRkYiLz48L2c+CiAgPHBhdGggZD0iTTIzNiAzMDIgUTI2MSAyODMgMjkwIDI5OCIgc3Ryb2tlPSIjMjQxNDBDIiBzdHJva2Utd2lkdGg9IjMuNiIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTI4OCAyOTggTDI5NCAyOTQiIHN0cm9rZT0iIzI0MTQwQyIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0yNDYgMjkxIFEyNjQgMjgwIDI4NCAyODkiIHN0cm9rZT0iI0I5ODQ1RSIgc3Ryb2tlLXdpZHRoPSIxLjgiIGZpbGw9Im5vbmUiLz4KICA8cGF0aCBkPSJNMzEyIDI5OSBRMzM4IDI4NSAzNjIgMzAyIFEzMzYgMzEzIDMxMiAyOTkgWiIgZmlsbD0iI0Y2RUZFOCIvPgogIDxnIGNsaXAtcGF0aD0idXJsKCNleWVSKSI+PGNpcmNsZSBjeD0iMzM2IiBjeT0iMjk5IiByPSIxMCIgZmlsbD0iIzhBNUEyQiIvPjxjaXJjbGUgY3g9IjMzNiIgY3k9IjI5OSIgcj0iNiIgZmlsbD0iI0IwN0EzQyIgb3BhY2l0eT0iLjYiLz48Y2lyY2xlIGN4PSIzMzYiIGN5PSIyOTkiIHI9IjQuMiIgZmlsbD0iIzI0MTQwQyIvPjxjaXJjbGUgY3g9IjMzOSIgY3k9IjI5NiIgcj0iMiIgZmlsbD0iI0ZGRiIvPjwvZz4KICA8cGF0aCBkPSJNMzEwIDI5OCBRMzM5IDI4MyAzNjQgMzAyIiBzdHJva2U9IiMyNDE0MEMiIHN0cm9rZS13aWR0aD0iMy42IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMzEyIDI5OCBMMzA2IDI5NCIgc3Ryb2tlPSIjMjQxNDBDIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTMxNiAyODkgUTMzNiAyODAgMzU0IDI5MSIgc3Ryb2tlPSIjQjk4NDVFIiBzdHJva2Utd2lkdGg9IjEuOCIgZmlsbD0ibm9uZSIvPgogIDwhLS0gbm9zZSAtLT4KICA8cGF0aCBkPSJNMjk4IDMyNiBRMjk2IDM1MiAyODggMzY4IiBzdHJva2U9IiNCOTg0NUUiIHN0cm9rZS13aWR0aD0iMi42IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMjg0IDM3MiBRMjkyIDM4MCAzMDAgMzc3IFEzMDggMzgwIDMxNiAzNzIiIHN0cm9rZT0iI0E5NzM0RiIgc3Ryb2tlLXdpZHRoPSIyLjYiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDwhLS0gbGlwcyAtLT4KICA8cGF0aCBkPSJNMjY4IDQyMCBRMjg0IDQwOSAzMDAgNDE1IFEzMTYgNDA5IDMzMiA0MjAgUTMwMCA0MjUgMjY4IDQyMCBaIiBmaWxsPSIjQjA2MDVBIi8+CiAgPHBhdGggZD0iTTI2OCA0MjAgUTMwMCA0NDcgMzMyIDQyMCBRMzAwIDQyOSAyNjggNDIwIFoiIGZpbGw9IiNDNDc0NkIiLz4KICA8cGF0aCBkPSJNMjg2IDQzMiBRMzAwIDQzNyAzMTQgNDMyIiBzdHJva2U9IiNFNkE3OUIiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIgb3BhY2l0eT0iLjciLz4KICA8IS0tIGhhaXIsIGZyb250IHdpdGggbWlkZGxlIHBhcnQgLS0+CiAgPHBhdGggZD0iTTE5OCAzMDYgQzE5MCAyMDYgMjQ0IDE1NiAzMDAgMTU4IEMzNTYgMTU2IDQxMCAyMDYgNDAyIDMwNiBDMzk2IDI2MiAzNzIgMjIyIDMwNiAyMDQgTDMwMCAxOTYgTDI5NCAyMDQgQzIyOCAyMjIgMjA0IDI2MiAxOTggMzA2IFoiIGZpbGw9InVybCgjaGFpcikiLz4KICA8cGF0aCBkPSJNMTk4IDMwNiBDMTk2IDM3MCAyMDIgNDMwIDIxMCA0NjggQzIxNCA0MjAgMjE0IDM2MCAyMTcgMzA0IEMyMjIgMjYwIDI1MCAyMjYgMjkwIDIwNiBDMjQwIDIyMCAyMDUgMjUyIDE5OCAzMDYgWiIgZmlsbD0iIzQzMjYxQSIvPgogIDxwYXRoIGQ9Ik00MDIgMzA2IEM0MDQgMzcwIDM5OCA0MzAgMzkwIDQ2OCBDMzg2IDQyMCAzODYgMzYwIDM4MyAzMDQgQzM3OCAyNjAgMzUwIDIyNiAzMTAgMjA2IEMzNjAgMjIwIDM5NSAyNTIgNDAyIDMwNiBaIiBmaWxsPSIjNDMyNjFBIi8+CiAgPHBhdGggZD0iTTI5NiAyMDAgQzI2MiAyMTAgMjMyIDIzNiAyMjAgMjgwIE0zMDQgMjAwIEMzMzggMjEwIDM2OCAyMzYgMzgwIDI4MCIgc3Ryb2tlPSIjN0E0NDI2IiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiIG9wYWNpdHk9Ii43NSIvPgogIDxwYXRoIGQ9Ik0yNjAgMTIwIEMyNDAgMTQwIDIyNiAxNjUgMjIwIDE5NSBNMzQwIDEyMCBDMzYwIDE0MCAzNzQgMTY1IDM4MCAxOTUiIHN0cm9rZT0iIzZCM0EyMiIgc3Ryb2tlLXdpZHRoPSIzIiBmaWxsPSJub25lIiBvcGFjaXR5PSIuNTUiLz4KPC9zdmc+Cg==';
 const DEMO_BODY='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgOTAwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0id2FsbCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI0VDRTdFMiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0RDRDVDRSIvPjwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9ImxpZ2h0IiBjeD0iMC4yIiBjeT0iMC4xNSIgcj0iMC45Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGRkZGRkYiIHN0b3Atb3BhY2l0eT0iLjUiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNGRkZGRkYiIHN0b3Atb3BhY2l0eT0iMCIvPjwvcmFkaWFsR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iOTAwIiBmaWxsPSJ1cmwoI3dhbGwpIi8+CiAgPHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI5MDAiIGZpbGw9InVybCgjbGlnaHQpIi8+CiAgPHJlY3QgeT0iODE4IiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjgyIiBmaWxsPSIjQ0VDNkJEIi8+CiAgPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjgyNiIgcng9Ijk2IiByeT0iMTAiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPgogIDwhLS0gaGFpciBiYWNrIC0tPgogIDxwYXRoIGQ9Ik0xNTUgMTEyIEMxNTAgNjAgMTc4IDQ0IDIwMCA0NCBDMjIyIDQ0IDI1MCA2MCAyNDUgMTEyIEwyNTQgMjU1IEMyNDIgMjY2IDIyNCAyNjIgMjE4IDI1NCBMMTgyIDI1NCBDMTc2IDI2MiAxNTggMjY2IDE0NiAyNTUgWiIgZmlsbD0iIzQwMjQxQSIvPgogIDwhLS0gbmVjayAtLT4KICA8cGF0aCBkPSJNMTg3IDE1MCBMMTg2IDIwMCBRMjAwIDIwOCAyMTQgMjAwIEwyMTMgMTUwIFoiIGZpbGw9IiNEMDlBNzIiLz4KICA8IS0tIHRyb3VzZXJzIC0tPgogIDxwYXRoIGQ9Ik0xNjAgMzQ2IEwyNDAgMzQ2IEMyNjQgMzc4IDI3OCA0MTIgMjc1IDQ1OCBMMjYzIDgwMiBMMjI3IDgwMiBMMjA0IDUyMiBMMTk2IDUyMiBMMTczIDgwMiBMMTM3IDgwMiBMMTI1IDQ1OCBDMTIyIDQxMiAxMzYgMzc4IDE2MCAzNDYgWiIgZmlsbD0iIzZCNEEzQSIvPgogIDxwYXRoIGQ9Ik0xNTggMzU4IEwyNDIgMzU4IiBzdHJva2U9IiM0RTMzMjgiIHN0cm9rZS13aWR0aD0iNSIvPgogIDxwYXRoIGQ9Ik0yMDAgMzYyIEwyMDAgNDIwIiBzdHJva2U9IiM1QTNEMzAiIHN0cm9rZS13aWR0aD0iMiIvPgogIDwhLS0gc2hvZXMgLS0+CiAgPHBhdGggZD0iTTEzNSA4MDAgTDE3NiA4MDAgTDE4MSA4MjAgTDEyNyA4MjIgQzEyNiA4MTIgMTI5IDgwNCAxMzUgODAwIFoiIGZpbGw9IiM0QTJFMjIiLz4KICA8cGF0aCBkPSJNMjI0IDgwMCBMMjY1IDgwMCBDMjcxIDgwNCAyNzQgODEyIDI3MyA4MjIgTDIxOSA4MjAgWiIgZmlsbD0iIzRBMkUyMiIvPgogIDwhLS0gdG9wIC0tPgogIDxwYXRoIGQ9Ik0xMjggMjA1IEMxNTAgMTk2IDE3MCAxOTIgMjAwIDE5MiBDMjMwIDE5MiAyNTAgMTk2IDI3MiAyMDUgQzI3NCAyNjIgMjUyIDMwOCAyNDIgMzUwIEwxNTggMzUwIEMxNDggMzA4IDEyNiAyNjIgMTI4IDIwNSBaIiBmaWxsPSIjQ0JDM0JBIi8+CiAgPHBhdGggZD0iTTE4MiAxOTYgUTIwMCAyMTIgMjE4IDE5NiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQjNBQUExIiBzdHJva2Utd2lkdGg9IjMiLz4KICA8cGF0aCBkPSJNMTI4IDIwNSBDMTEyIDIyNiAxMDYgMzAwIDEwNCAzNjAgTDEwMiA0MjUgTDEyMSA0MjcgQzEyNSAzNzAgMTMzIDMwMCAxNDEgMjUwIFoiIGZpbGw9IiNDMkJBQjEiLz4KICA8cGF0aCBkPSJNMjcyIDIwNSBDMjg4IDIyNiAyOTQgMzAwIDI5NiAzNjAgTDI5OCA0MjUgTDI3OSA0MjcgQzI3NSAzNzAgMjY3IDMwMCAyNTkgMjUwIFoiIGZpbGw9IiNDMkJBQjEiLz4KICA8ZWxsaXBzZSBjeD0iMTExIiBjeT0iNDQyIiByeD0iOSIgcnk9IjE3IiBmaWxsPSIjRDA5QTcyIi8+CiAgPGVsbGlwc2UgY3g9IjI4OSIgY3k9IjQ0MiIgcng9IjkiIHJ5PSIxNyIgZmlsbD0iI0QwOUE3MiIvPgogIDwhLS0gaGFpciBzdHJhbmRzIG92ZXIgdGhlIHNob3VsZGVycyAtLT4KICA8cGF0aCBkPSJNMTYwIDEyMCBDMTUyIDE3MCAxNTAgMjIwIDE0NiAyNjIgQzE2MCAyNTggMTcwIDI0MCAxNzQgMjIyIEMxNzggMTkwIDE3NiAxNTAgMTcyIDEyNCBaIiBmaWxsPSIjNDMyNjFBIi8+CiAgPHBhdGggZD0iTTI0MCAxMjAgQzI0OCAxNzAgMjUwIDIyMCAyNTQgMjYyIEMyNDAgMjU4IDIzMCAyNDAgMjI2IDIyMiBDMjIyIDE5MCAyMjQgMTUwIDIyOCAxMjQgWiIgZmlsbD0iIzQzMjYxQSIvPgogIDwhLS0gaGVhZCAtLT4KICA8ZWxsaXBzZSBjeD0iMjAwIiBjeT0iMTA4IiByeD0iMzgiIHJ5PSI0OSIgZmlsbD0iI0UzQjQ4QyIvPgogIDxwYXRoIGQ9Ik0xNzYgOTggUTE4NiA5MiAxOTYgOTYgTTIwNCA5NiBRMjE0IDkyIDIyNCA5OCIgc3Ryb2tlPSIjM0EyMTE2IiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0xNzggMTA4IFExODYgMTA0IDE5NCAxMDcgTTIwNiAxMDcgUTIxNCAxMDQgMjIyIDEwOCIgc3Ryb2tlPSIjMjQxNDBDIiBzdHJva2Utd2lkdGg9IjIuNCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTE5OSAxMTIgUTE5NyAxMjIgMTk0IDEyNiBRMjAwIDEyOSAyMDYgMTI2IiBzdHJva2U9IiNCMDdBNTQiIHN0cm9rZS13aWR0aD0iMS42IiBmaWxsPSJub25lIi8+CiAgPHBhdGggZD0iTTE5MCAxMzggUTIwMCAxMzQgMjEwIDEzOCBRMjAwIDE0NSAxOTAgMTM4IFoiIGZpbGw9IiNCMDYwNUEiLz4KICA8ZWxsaXBzZSBjeD0iMTgyIiBjeT0iMTI0IiByeD0iOSIgcnk9IjUiIGZpbGw9IiNEODhGNkUiIG9wYWNpdHk9Ii4zIi8+PGVsbGlwc2UgY3g9IjIxOCIgY3k9IjEyNCIgcng9IjkiIHJ5PSI1IiBmaWxsPSIjRDg4RjZFIiBvcGFjaXR5PSIuMyIvPgogIDwhLS0gaGFpciBmcm9udCB3aXRoIG1pZGRsZSBwYXJ0IC0tPgogIDxwYXRoIGQ9Ik0xNTggMTE2IEMxNTIgNzAgMTc4IDU0IDIwMCA1NSBDMjIyIDU0IDI0OCA3MCAyNDIgMTE2IEMyMzggOTIgMjI0IDc2IDIwMyA3MCBMMjAwIDY2IEwxOTcgNzAgQzE3NiA3NiAxNjIgOTIgMTU4IDExNiBaIiBmaWxsPSIjNDAyNDFBIi8+CiAgPHBhdGggZD0iTTE1OCAxMTYgQzE1NyAxNDAgMTYwIDE2MCAxNjQgMTcyIEMxNjggMTUwIDE2OCAxMjYgMTcyIDEwNiBDMTc1IDkyIDE4NCA4MCAxOTYgNzIgQzE3NiA3OCAxNjAgOTQgMTU4IDExNiBaIiBmaWxsPSIjNDMyNjFBIi8+CiAgPHBhdGggZD0iTTI0MiAxMTYgQzI0MyAxNDAgMjQwIDE2MCAyMzYgMTcyIEMyMzIgMTUwIDIzMiAxMjYgMjI4IDEwNiBDMjI1IDkyIDIxNiA4MCAyMDQgNzIgQzIyNCA3OCAyNDAgOTQgMjQyIDExNiBaIiBmaWxsPSIjNDMyNjFBIi8+CiAgPCEtLSBoZWlnaHQgbWFya3MgLS0+CiAgPHBhdGggZD0iTTM1MiA1NiBMMzUyIDgyMiIgc3Ryb2tlPSIjQzI0NTZFIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWRhc2hhcnJheT0iNSA1Ii8+CiAgPHBhdGggZD0iTTM0MiA1NiBMMzYyIDU2IE0zNDIgODIyIEwzNjIgODIyIiBzdHJva2U9IiNDMjQ1NkUiIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjM1OCIgeT0iNDQ2IiBmb250LWZhbWlseT0iTWFucm9wZSwgQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNDMjQ1NkUiIHRyYW5zZm9ybT0icm90YXRlKC05MCAzNTggNDQ2KSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+MTY1INGB0Lw8L3RleHQ+Cjwvc3ZnPgo=';
 
@@ -1107,7 +1184,9 @@ const state = {
 };
 let ONB={}; try{ ONB=JSON.parse(localStorage.getItem('aru_onb_v1')||'{}')||{}; }catch(e){}
 const accId=()=> (typeof AUTH!=='undefined'&&AUTH&&!state.demo)?('u:'+(AUTH.email||'')):'demo';
-function save(){ try{ if(state.onboarded) ONB[accId()]=true; localStorage.setItem('aru_onb_v1',JSON.stringify(ONB)); localStorage.setItem('aru_proto_v1', JSON.stringify({L, onboarded:state.onboarded, wardrobe:state.wardrobe.map(w=>({...w,photo:null})), checks:state.checks.map(c=>({...c,photo:null}))})); }catch(e){} }
+function save(){ try{ if(state.onboarded) ONB[accId()]=true; localStorage.setItem('aru_onb_v1',JSON.stringify(ONB));
+  if(typeof REAL==='function'&&REAL()&&PERS!=='demo'){ localStorage.setItem('aru_w_'+accId(), JSON.stringify({items:state.wardrobe.map(w=>({...w,photo:null})), checks:state.checks.map(c=>({...c,photo:null}))})); const d=JSON.parse(localStorage.getItem('aru_proto_v1')||'{}'); d.L=L; localStorage.setItem('aru_proto_v1',JSON.stringify(d)); return; }
+  localStorage.setItem('aru_proto_v1', JSON.stringify({L, onboarded:state.onboarded, wardrobe:state.wardrobe.map(w=>({...w,photo:null})), checks:state.checks.map(c=>({...c,photo:null}))})); }catch(e){} }
 function load(){ try{ const d=JSON.parse(localStorage.getItem('aru_proto_v1')||'null'); if(!d) return; L=d.L||0; state.onboarded=!!d.onboarded; if(Array.isArray(d.wardrobe)&&d.wardrobe.length) state.wardrobe=d.wardrobe; if(Array.isArray(d.checks)) state.checks=d.checks; SEQ=Math.max(SEQ,...state.wardrobe.map(w=>w.id+1)); }catch(e){} }
 
 const harmony = () => { const w=state.wardrobe; return w.length ? Math.round(100*w.filter(x=>x.mine).length/w.length) : 0; };
@@ -1214,20 +1293,26 @@ SCREENS.home = () => {
     <span class="match">${ic('leaf',14)} ${t('match')}</span>
     <div class="strip">${MINE.map(k=>`<i style="background:${C[k].hex}"></i>`).join('')}</div>
   </div>`}
-  ${REAL()?'':`<h3 class="sec">${t('indicators')}</h3>
+  ${(REAL()&&!AN())?'':`<h3 class="sec">${t('indicators')}</h3>
   <div class="ind">
-    <div class="card">${ring(78,'#C2456E')}<div><span>${t('undertone')}</span><b>${t('warm')}</b></div></div>
+    ${(()=>{ const a=REAL()?AN():null, pc=(v,m)=>{ v=String(v||'').toLowerCase(); for(const [re,n] of m) if(re.test(v)) return n; return 50; };
+      return a ? `<div class="card">${ring(pc(a.undertone,[[/тёпл|тепл|warm/,78],[/холод|cool/,22]]),'#C2456E')}<div><span>${t('undertone')}</span><b>${esc(a.undertone||'—')}</b></div></div>
+    <div class="card">${ring(pc(a.contrast,[[/низк|low/,25],[/высок|high/,85]]),'#D9A441')}<div><span>${t('contrast')}</span><b>${esc(a.contrast||'—')}</b></div></div>
+    <div class="card">${ring(pc(a.chroma,[[/мягк|soft|muted/,35],[/чист|clear|bright/,80]]),'#8E6C88')}<div><span>${t('chroma')}</span><b>${esc(a.chroma||'—')}</b></div></div>`
+      : `<div class="card">${ring(78,'#C2456E')}<div><span>${t('undertone')}</span><b>${t('warm')}</b></div></div>
     <div class="card">${ring(45,'#D9A441')}<div><span>${t('contrast')}</span><b>${t('medium')}</b></div></div>
-    <div class="card">${ring(35,'#8E6C88')}<div><span>${t('chroma')}</span><b>${t('muted_v')}</b></div></div>
+    <div class="card">${ring(35,'#8E6C88')}<div><span>${t('chroma')}</span><b>${t('muted_v')}</b></div></div>`; })()}
     <button class="card" data-act="go" data-arg="wardrobe">${ring(h,h>=70?'#3E8A68':'#C98A2B')}<div><span>${t('harmony')}</span><b>${state.wardrobe.filter(x=>x.mine).length} / ${state.wardrobe.length}</b></div></button>
   </div>`}
   <h3 class="sec">${t('sections')}</h3>
   <div class="tiles">
-    ${REAL()?`${tile('hair','scissors','#9A4A26','s_hair')}${tile('looks','hanger','#3F7F7A','s_looks')}`:`${tile('colors','palette','#C2456E','s_colors')}${tile('hair','scissors','#9A4A26','s_hair')}
+    ${(REAL()&&!AN())?`${tile('hair','scissors','#9A4A26','s_hair')}${tile('looks','hanger','#3F7F7A','s_looks')}`:`${tile('colors','palette','#C2456E','s_colors')}${tile('hair','scissors','#9A4A26','s_hair')}
     ${tile('clothes','dress','#6D2E46','s_clothes')}${tile('acc','gem','#B8892F','s_acc')}
     ${tile('makeup','lipstick','#B5605A','s_makeup')}${tile('looks','hanger','#3F7F7A','s_looks')}`}
   </div>
   <div class="tipcard">${ic('sparkle',24)}<div><p style="font-size:12px;font-weight:800;color:#8A5A12">${t('tip_day')}</p><p>${tr(curTips()[state.tip%curTips().length])}</p><button data-act="tip">${t('another_tip')}</button></div></div>
+  ${REAL()?(()=>{ const tr0=((state.ai&&state.ai.tryons)||[]).find(x=>x.kind==='look')||((state.ai&&state.ai.tryons)||[])[0];
+    return AN()?`<h3 class="sec">${t('transform_r')}</h3>${tr0?`<button class="card" data-act="go" data-arg="${tr0.kind==='hair'?'hair':'looks'}" style="display:block;width:100%;text-align:left;padding:12px"><div class="tryon-frame"><img src="${esc(tr0.url)}" alt=""></div><div class="row" style="justify-content:space-between;margin-top:10px"><b>${esc(tr0.text||'')}</b><span class="link" style="font-size:13.5px">${t('open_look')}</span></div></button>`:`<p class="small muted" style="margin:0 2px">${t('no_tryons_yet')}</p>`}`:''; })():''}
   ${REAL()?'':`<h3 class="sec">${t('your_transform')} <span class="count">${tr(TRYCL.aigerim.looks.work.t)}</span></h3>
   <button class="card" data-act="openlook" data-arg="work" style="display:block;width:100%;text-align:left;padding:12px">
     <div class="tryon-frame"><img src="img/aigerim-work.jpg" alt=""></div>
@@ -1241,20 +1326,20 @@ SCREENS.colors = () => {
   const sw=(key)=>`<button class="sw ${state.drape===key?'on':''}" data-act="drape" data-arg="${key}" aria-label="${tr(C[key].n)}"><i style="background:${C[key].hex}"></i><span>${tr(C[key].n)}</span></button>`;
   return `<section class="pad">
   <div class="drape">
-    <div class="av">${avatar({drape:c.hex,dull:!mine,cut:state.cut,hair:HAIRC[state.hairc].hex})}</div>
+    <div class="av">${faceOr({drape:c.hex,dull:!mine,cut:state.cut,hair:HAIRC[state.hairc].hex}, c.hex, !mine, 16)}</div>
     <div><p class="small muted" style="font-weight:700">${t('drape_title')}</p><div class="cname">${tr(c.n)}</div>
       <span class="verdict ${mine?'ok':'bad'}">${ic(mine?'check':'cross',16,2.4)} ${mine?t('glows'):t('dulls')}</span>
       <p class="tiny muted" style="margin-top:8px">${t('drape_sub')}</p></div>
   </div>
-  <h3 class="sec">${t('my_colors')} <span class="count">16</span></h3>
+  <h3 class="sec">${t('my_colors')} <span class="count">${MINE.length}</span></h3>
   <div class="sw-grid">${MINE.map(sw).join('')}</div>
-  <h3 class="sec">${t('not_mine')} <span class="count">8</span></h3>
+  <h3 class="sec">${t('not_mine')} <span class="count">${NOT.length}</span></h3>
   <div class="sw-grid not">${NOT.map(sw).join('')}</div>
   <div class="card" style="margin-top:22px"><h3 class="h" style="font-size:21px">${t('neutrals')}</h3><p class="small muted">${t('neutrals_d')}</p>
-    <div class="neutrals">${['chocolate','beige','camel','taupe','olive'].map(x=>`<div><i style="background:${C[x].hex}"></i>${tr(C[x].n)}</div>`).join('')}</div></div>
+    <div class="neutrals">${NEUT.map(x=>`<div><i style="background:${C[x].hex}"></i>${tr(C[x].n)}</div>`).join('')}</div></div>
   <div class="card"><h3 class="h" style="font-size:21px">${t('metal')}</h3>
-    <div class="metal"><div style="background:#FBF3E2"><div class="disc" style="background:radial-gradient(circle at 35% 30%,#FFF1C4,#D9A441 55%,#9C6E1E)"></div>${t('gold')}<br><span class="pill ok" style="margin-top:6px">${ic('check',13,2.6)} ${t('rec')}</span></div>
-    <div style="background:#F2F3F5"><div class="disc" style="background:radial-gradient(circle at 35% 30%,#FFFFFF,#BFC5CC 55%,#7D858F)"></div>${t('silver')}<br><span class="pill bad" style="margin-top:6px">${ic('cross',13,2.6)} ${t('not_rec')}</span></div></div></div>
+    <div class="metal"><div style="background:#FBF3E2"><div class="disc" style="background:radial-gradient(circle at 35% 30%,#FFF1C4,#D9A441 55%,#9C6E1E)"></div>${t('gold')}<br>${METAL==='gold'?`<span class="pill ok" style="margin-top:6px">${ic('check',13,2.6)} ${t('rec')}</span>`:`<span class="pill bad" style="margin-top:6px">${ic('cross',13,2.6)} ${t('not_rec')}</span>`}</div>
+    <div style="background:#F2F3F5"><div class="disc" style="background:radial-gradient(circle at 35% 30%,#FFFFFF,#BFC5CC 55%,#7D858F)"></div>${t('silver')}<br>${METAL==='silver'?`<span class="pill ok" style="margin-top:6px">${ic('check',13,2.6)} ${t('rec')}</span>`:`<span class="pill bad" style="margin-top:6px">${ic('cross',13,2.6)} ${t('not_rec')}</span>`}</div></div></div>
 </section>`;
 };
 
@@ -1312,10 +1397,22 @@ function realHero(){
     <div class="hairc">${(a.avoid_colors||[]).map(c=>`<button class="avoid"><i style="background:${esc(hexOf(c))}"></i>${esc(cname(c))}</button>`).join('')}</div>
     ${a.face_shape?`<p class="small muted" style="margin-top:12px"><b>${t('ai_face')}:</b> ${esc(a.face_shape)}</p>`:''}</div>`;
 }
+// под готовой примеркой: было/стало, сохранить, поделиться
+function tryTools(kind,key,got){
+  if(!got) return '';
+  const id=kind+':'+key+':'+got.id, on=state.cmpOn===id, before=kind==='hair'?FACE():((state.ai&&state.ai.body)||state.photos.body||FACE());
+  return `${got.text?`<p class="small muted" style="margin:6px 2px 0">${esc(got.text.startsWith('🎨')?got.text:'«'+got.text+'»')}</p>`:''}
+  ${on&&before?`<div class="ba2"><div><span>${t('before')}</span><img src="${esc(before)}" alt=""></div><div><span>${t('after')}</span><img src="${esc(got.url)}" alt="" style="object-position:${kind==='hair'?'50%':'0%'} 30%"></div></div>`:''}
+  <div class="trytools">${before?`<button data-act="cmp" data-arg="${id}">${ic('refresh',16)} ${on?t('hide_cmp'):t('before')+' / '+t('after')}</button>`:''}<button data-act="savetry" data-arg="${got.id}">${ic('download',16)} ${t('save_img')}</button><button data-act="sharetry" data-arg="${got.id}">${ic('send',16)} ${t('share_img')}</button></div>`;
+}
+function colorRow(kind,key){
+  const cols=MINE.slice(0,10); if(!cols.length) return '';
+  return `<p class="small" style="font-weight:800;margin:14px 2px 8px">${t(kind==='hair'?'try_shade':'try_color')}</p><div class="hairc">${cols.map(k=>`<button class="on-none" data-act="aicolor" data-arg="${kind}|${key}|${k}"><i style="background:${C[k].hex}"></i>${esc(tr(C[k].n))}</button>`).join('')}</div>`;
+}
 function tryBlock(kind,key,label){
   const got=lastTry(kind,key), busy=state.aiBusy===kind+':'+key, face=(state.ai&&state.ai.face)||state.photos.face;
   const left=state.sub?state.sub.tryons_left:'';
-  const frame = got ? `<div class="tryon-frame"><img src="${got.url}" alt="${esc(label)}"></div>`
+  const frame = got ? `<div class="tryon-frame"><img src="${got.url}" alt="${esc(label)}"></div>${tryTools(kind,key,got)}`
     : `<div class="tryon-frame hair-ph" style="min-height:220px">${face?`<img src="${face}" alt="" style="max-height:340px;object-fit:cover">`:''}<div class="ph-over"><span>${ic(kind==='hair'?'scissors':'hanger',24)}</span><b>${busy?t('ai_tryon_wait'):esc(label)}</b></div></div>`;
   return `${frame}<button class="btn ${got?'ghost':'primary'}" style="width:100%;margin-top:12px" data-act="aitry" data-arg="${kind}|${key}" ${busy?'disabled':''}>${ic('sparkle',18)} ${busy?t('ai_tryon_wait'):(got?t('ai_again'):t('ai_tryon'))}</button>
     <p class="small muted" style="text-align:center;margin-top:6px">${t('ai_tryon_n',{n:left})}</p>`;
@@ -1329,7 +1426,7 @@ function customBlock(kind){
     <textarea class="text-in" id="customTxt" data-kind="${kind}" rows="4" maxlength="400" placeholder="${t(kind==='hair'?'own_hair_ph':'own_look_ph')}" style="width:100%;resize:vertical;min-height:96px">${esc(txt)}</textarea>
     <button class="btn primary" style="width:100%;margin-top:12px" data-act="aicustom" data-arg="${kind}" ${busy?'disabled':''}>${ic('sparkle',18)} ${busy?t('ai_tryon_wait'):t('ai_tryon')}</button>
     <p class="small muted" style="text-align:center;margin-top:6px">${t('ai_tryon_n',{n:left})}</p>
-    ${got.map(x=>`<div style="margin-top:14px"><div class="tryon-frame"><img src="${x.url}" alt=""></div>${x.text?`<p class="small muted" style="margin:6px 2px 0">«${esc(x.text)}»</p>`:''}</div>`).join('')}
+    ${got.map(x=>`<div style="margin-top:14px"><div class="tryon-frame"><img src="${x.url}" alt=""></div>${tryTools(kind,'custom',x)}</div>`).join('')}
   </div>`;
 }
 function realHair(){
@@ -1343,7 +1440,7 @@ function realHair(){
     ${tryBlock('hair',h.id,tr(h.n))}
     <div class="look-head" style="margin-top:12px"><div><h3 class="h">${tr(h.n)}</h3><p class="small muted" style="font-weight:700">${tr(h.len)} · ${tr(h.bang)}</p></div></div>
     <div class="whybox"><b>${t('why_hair')}</b>${tr(h.why)}</div>
-    ${ok.length?`<p class="small" style="font-weight:800;margin:14px 2px 8px">${t('shade_t')}</p><div class="hairc">${ok.map(c=>`<button class="on-none"><i style="background:${esc(hexOf(c))}"></i>${esc(cname(c))}</button>`).join('')}${no.map(c=>`<button class="avoid"><i style="background:${esc(hexOf(c))}"></i>${esc(cname(c))}</button>`).join('')}</div>`:''}
+    ${ok.length?`<p class="small" style="font-weight:800;margin:14px 2px 4px">${t('shade_t')}</p><p class="tiny muted" style="margin:0 2px 8px">${t('shade_tap')}</p><div class="hairc">${ok.map(c=>`<button class="on-none" data-act="aishade" data-arg="${h.id}|${esc(c.name_en||c.name||'')}|${esc(cname(c))}"><i style="background:${esc(hexOf(c))}"></i>${esc(cname(c))}</button>`).join('')}${no.map(c=>`<button class="avoid"><i style="background:${esc(hexOf(c))}"></i>${esc(cname(c))}</button>`).join('')}</div>`:''}
     <button class="btn ghost" style="width:100%;margin-top:16px" data-act="go" data-arg="master">${ic('scissors',18)} ${t('show_master')}</button>
   </div>`}
 </section>`;
@@ -1356,6 +1453,7 @@ function realLooks(){
   <div class="occ">${REAL_OCC.map(([k,n])=>`<button class="chip ${state.rocc!=='custom'&&o[0]===k?'on':''}" data-act="rocc" data-arg="${k}">${tr(n)}</button>`).join('')}<button class="chip ${state.rocc==='custom'?'on':''}" data-act="rocc" data-arg="custom">${t('own_look')}</button></div>
   ${state.rocc==='custom'?customBlock('look'):`<div class="card" style="margin-top:12px;padding:12px">
     ${tryBlock('look',o[0],tr(o[1]))}
+    ${lastTry('look',o[0])?colorRow('look',o[0]):''}
     ${a?`<p class="small" style="font-weight:800;margin:14px 2px 8px">${t('ai_palette')}</p><div class="strip-mini" style="display:flex;border-radius:10px;overflow:hidden;height:22px">${(a.best_colors||[]).slice(0,10).map(c=>`<i style="flex:1;background:${esc(hexOf(c))}"></i>`).join('')}</div>`:''}
   </div>`}
 </section>`;
@@ -1401,11 +1499,11 @@ SCREENS.master = () => {
 </section>`;
 };
 
-SCREENS.clothes = () => `<section class="pad">
-  <div class="card body-card">${BODY_SVG}<div><p class="small muted" style="font-weight:700">${t('body_type')}</p><div class="cname">${t('hourglass')}</div><p class="small" style="margin-top:4px">${t('hourglass_d')}</p>
-    <div class="meas"><div>${t('shoulders')}<span class="bar"><i style="width:92%"></i></span>92</div><div>${t('waist')}<span class="bar"><i style="width:70%"></i></span>70</div><div>${t('hips')}<span class="bar"><i style="width:96%"></i></span>96</div></div></div></div>
+SCREENS.clothes = () => (REAL()&&!GUIDE()) ? `<section class="pad">${guideWait()}</section>` : `<section class="pad">
+  ${REAL()?`<div class="card"><p class="small muted" style="font-weight:700">${t('sil_t')}</p><p style="margin-top:6px">${esc(tr(T3(GUIDE().silhouettes)))}</p></div>`:`<div class="card body-card">${BODY_SVG}<div><p class="small muted" style="font-weight:700">${t('body_type')}</p><div class="cname">${t('hourglass')}</div><p class="small" style="margin-top:4px">${t('hourglass_d')}</p>
+    <div class="meas"><div>${t('shoulders')}<span class="bar"><i style="width:92%"></i></span>92</div><div>${t('waist')}<span class="bar"><i style="width:70%"></i></span>70</div><div>${t('hips')}<span class="bar"><i style="width:96%"></i></span>96</div></div></div></div>`}
   <h3 class="sec">${t('your_sil')}</h3>
-  <div class="gar-grid">${CLOTHES.yes.map(([tp,n],i)=>`<div class="gar">${garment(tp,C[['terracotta','camel','chocolate','olive','coral','sage'][i]].hex)}<span class="ok-c">${ic('check',14,2.6)}</span> ${tr(n)}</div>`).join('')}</div>
+  <div class="gar-grid">${CLOTHES.yes.map(([tp,n],i)=>`<div class="gar">${garment(tp,(CLOTHES.yesC||[])[i]||'#C9A9B6')}<span class="ok-c">${ic('check',14,2.6)}</span> ${tr(n)}</div>`).join('')}</div>
   <h3 class="sec">${t('avoid_sil')}</h3>
   <div class="gar-grid">${CLOTHES.no.map(([tp,n])=>`<div class="gar no">${garment(tp,'#B9A9B1')}<span class="bad-c">${ic('cross',14,2.6)}</span> ${tr(n)}</div>`).join('')}</div>
   <div class="card" style="margin-top:18px"><h3 class="h" style="font-size:21px;margin-bottom:10px">${t('necklines')}</h3><div class="chips">${CLOTHES.neck.map(n=>`<span class="chip static yes">${tr(n)}</span>`).join('')}</div></div>
@@ -1413,13 +1511,13 @@ SCREENS.clothes = () => `<section class="pad">
   <div class="card"><h3 class="h" style="font-size:21px;margin-bottom:10px">${t('prints')}</h3><div class="chips">${CLOTHES.prY.map(n=>`<span class="chip static yes">${tr(n)}</span>`).join('')}${CLOTHES.prN.map(n=>`<span class="chip static no">${tr(n)}</span>`).join('')}</div></div>
 </section>`;
 
-SCREENS.acc = () => `<section class="pad">
+SCREENS.acc = () => (REAL()&&!GUIDE()) ? `<section class="pad">${guideWait()}</section>` : `<section class="pad">
   <div class="card"><h3 class="h" style="font-size:21px">${t('metal')}</h3>
     <div class="metal">
-      <div style="background:#FBF3E2"><div class="av" style="width:100px;height:100px;border-radius:50%;overflow:hidden;margin:0 auto 8px">${avatar({earring:'#D9A441',drape:C.chocolate.hex})}</div>${t('gold')}<br><span class="pill ok" style="margin-top:6px">${ic('check',13,2.6)} ${t('rec')}</span></div>
-      <div style="background:#F2F3F5"><div class="av" style="width:100px;height:100px;border-radius:50%;overflow:hidden;margin:0 auto 8px">${avatar({earring:'#B8BEC6',drape:C.chocolate.hex,dull:true})}</div>${t('silver')}<br><span class="pill bad" style="margin-top:6px">${ic('cross',13,2.6)} ${t('not_rec')}</span></div>
+      <div style="background:#FBF3E2"><div class="av" style="width:100px;height:100px;border-radius:50%;overflow:hidden;margin:0 auto 8px">${faceOr({earring:'#D9A441',drape:C[NEUT[0]].hex,dull:METAL!=='gold'},'#D9A441',METAL!=='gold',7)}</div>${t('gold')}<br>${METAL==='gold'?`<span class="pill ok" style="margin-top:6px">${ic('check',13,2.6)} ${t('rec')}</span>`:`<span class="pill bad" style="margin-top:6px">${ic('cross',13,2.6)} ${t('not_rec')}</span>`}</div>
+      <div style="background:#F2F3F5"><div class="av" style="width:100px;height:100px;border-radius:50%;overflow:hidden;margin:0 auto 8px">${faceOr({earring:'#B8BEC6',drape:C[NEUT[0]].hex,dull:METAL!=='silver'},'#B8BEC6',METAL!=='silver',7)}</div>${t('silver')}<br>${METAL==='silver'?`<span class="pill ok" style="margin-top:6px">${ic('check',13,2.6)} ${t('rec')}</span>`:`<span class="pill bad" style="margin-top:6px">${ic('cross',13,2.6)} ${t('not_rec')}</span>`}</div>
     </div></div>
-  <div class="card"><div class="row" style="justify-content:space-between"><h3 class="h" style="font-size:21px">${t('shoes_t')}</h3><span class="pill warn">${t('heel')}</span></div>
+  <div class="card"><div class="row" style="justify-content:space-between"><h3 class="h" style="font-size:21px">${t('shoes_t')}</h3>${REAL()?'':`<span class="pill warn">${t('heel')}</span>`}</div>
     <div class="gar-grid" style="margin-top:12px">${ACC.shoeC.map((k,i)=>`<div class="gar" style="box-shadow:none;background:var(--blush-2)">${garment(i===2?'boots':'shoes',C[k].hex)}${tr(C[k].n)}</div>`).join('')}</div>
     <div class="chips" style="margin-top:12px">${ACC.shapes.map(n=>`<span class="chip static yes">${tr(n)}</span>`).join('')}</div></div>
   <div class="card"><h3 class="h" style="font-size:21px">${t('bags_t')}</h3>
@@ -1429,15 +1527,16 @@ SCREENS.acc = () => `<section class="pad">
 </section>`;
 
 SCREENS.makeup = () => {
-  const lp=LIPS[state.lip];
+  if(REAL()&&!GUIDE()) return `<section class="pad">${guideWait()}</section>`;
+  const lp=LIPS[state.lip]||LIPS[Object.keys(LIPS)[0]];
   const stick=(k)=>`<button class="sw ${state.lip===k?'on':''}" data-act="lip" data-arg="${k}" style="position:relative"><svg viewBox="0 0 40 70" width="40" height="70" aria-hidden="true"><rect x="10" y="34" width="20" height="34" rx="3" fill="#D9A441"/><rect x="12" y="24" width="16" height="12" fill="#E7C27A"/><path d="M13 24 V10 L27 2 V24 Z" fill="${LIPS[k].hex}"/></svg><span>${tr(LIPS[k].n)}</span>${LIPS[k].ok?'':`<span class="pill bad" style="padding:1px 6px">${ic('cross',11,2.6)}</span>`}</button>`;
   return `<section class="pad">
   <div class="card" style="display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center">
-    <div class="av" style="width:150px;height:150px;border-radius:50%;overflow:hidden">${avatar({lip:lp.hex,dull:!lp.ok,drape:C.beige.hex,cut:state.cut,hair:HAIRC[state.hairc].hex})}</div>
+    <div class="av" style="width:150px;height:150px;border-radius:50%;overflow:hidden">${faceOr({lip:lp.hex,dull:!lp.ok,drape:C[NEUT[1]||NEUT[0]].hex,cut:state.cut,hair:HAIRC[state.hairc].hex}, lp.hex, !lp.ok, 14)}</div>
     <div><p class="small muted" style="font-weight:700">${t('lips')}</p><div class="cname">${tr(lp.n)}</div><span class="verdict ${lp.ok?'ok':'bad'}">${ic(lp.ok?'check':'cross',16,2.4)} ${lp.ok?t('rec'):t('not_rec')}</span><p class="tiny muted" style="margin-top:8px">${t('tap_lip')}</p></div>
   </div>
   <h3 class="sec">${t('lips')}</h3>
-  <div class="sw-grid" style="grid-template-columns:repeat(5,1fr)">${Object.keys(LIPS).map(stick).join('')}</div>
+  <div class="sw-grid" style="grid-template-columns:repeat(5,1fr)">${Object.keys(LIPS).map(stick).join('')}</div>${GUIDE()&&GUIDE().makeup_note?`<div class="whybox" style="margin-top:12px">${esc(tr(T3(GUIDE().makeup_note)))}</div>`:''}
   <h3 class="sec">${t('blush_t')}</h3>
   <div class="sw-grid">${BLUSH.map(([h,n])=>`<div class="sw"><i style="background:radial-gradient(circle,${h} 35%,${shade(h,30)} 100%);border-radius:50%"></i><span>${tr(n)}</span></div>`).join('')}</div>
   <h3 class="sec">${t('eyes_t')}</h3>
@@ -1502,7 +1601,7 @@ SCREENS.check = () => {
       <div class="detect"><span class="dot" style="background:${r.hex}"></span><div><b>${t('detected')}</b><br><span class="muted">${t('closest',{c:tr(C[r.key].n).toLowerCase()})}</span></div><span class="dot" style="background:${C[r.key].hex};margin-left:auto"></span></div>
       <ul class="list-check" style="margin-top:12px">
         <li><span class="${r.cs==='ok'?'ok-c':r.cs==='close'?'warn-c':'bad-c'}">${ic(r.cs==='bad'?'cross':'check',18,2.4)}</span>${t('c_'+r.cs)}</li>
-        <li><span class="${r.fit?'ok-c':'bad-c'}">${ic(r.fit?'check':'cross',18,2.4)}</span>${t(r.fit?'f_ok':'f_bad')}</li>
+        <li><span class="${r.fit?'ok-c':'bad-c'}">${ic(r.fit?'check':'cross',18,2.4)}</span>${t((r.fit?'f_ok':'f_bad')+(REAL()&&AN()?'_r':''))}</li>
         <li><span class="ok-c">${ic('hanger',18)}</span>${t('combo',{n:r.combo})}</li>
         ${r.alt?`<li><span class="warn-c">${ic('sparkle',18)}</span><span>${t('alt',{c:tr(C[r.alt].n).toLowerCase()})} <span class="dot" style="display:inline-block;vertical-align:-2px;background:${C[r.alt].hex}"></span></span></li>`:''}
       </ul>
@@ -1530,7 +1629,7 @@ function runCheck(hex, type, photo){
     if(C[all.key].g==='mine' && all.d<=20){ cs='ok'; cScore=100-all.d; }
     else if(C[all.key].g==='mine' || m.d < all.d + 4){ cs='close'; cScore=Math.max(52,74-(m.d-20)); }
     else { cs='bad'; cScore=Math.max(10,38-all.d/4); }
-    const fit = type!=='oversize';
+    const G=GUIDE(), fit = G ? !(G.clothes_no||[]).some(c=>c.type===type) : type!=='oversize';
     let score = Math.round(cScore*0.7 + (fit?100:25)*0.3);
     if(cs==='bad') score = Math.min(score, 42);
     const combo = state.wardrobe.filter(w=>w.mine && w.type!==type).length;
@@ -1561,9 +1660,9 @@ SCREENS.wardrobe = () => {
 };
 
 SCREENS.chat = () => {
-  const msgs = [{me:false, text:t('chat_hello')}].concat(state.chat);
+  const msgs = [{me:false, text:t(REAL()&&AN()?'chat_hello_r':'chat_hello')}].concat(state.chat);
   return `<div class="chat-wrap"><div class="chat" id="chatlog">
-    ${msgs.map(m=>m.me?`<div class="msg me">${esc(m.text)}</div>`:`<div class="msg ai"><div class="ai-head"><span class="mini av">${avatar({drape:C.terracotta.hex})}</span>${t('stylist')}</div>${m.text&&typeof m.text==='object'?esc(tr(m.text)):esc(m.text)}${m.sw?`<div class="swr">${m.sw.map(k=>`<i style="background:${C[k].hex}" title="${tr(C[k].n)}"></i>`).join('')}</div>`:''}</div>`).join('')}
+    ${msgs.map(m=>m.me?`<div class="msg me">${esc(m.text)}</div>`:`<div class="msg ai"><div class="ai-head"><span class="mini av">${avatar({drape:C.terracotta.hex})}</span>${t('stylist')}</div>${m.text&&typeof m.text==='object'?esc(tr(m.text)):esc(m.text)}${m.sw&&m.sw.length?`<div class="swr">${m.sw.map(k=>{ const c=typeof k==='string'?C[k]:{hex:hexOf(k),n:N3(k)}; return `<i style="background:${c.hex}" title="${esc(tr(c.n))}"></i>`; }).join('')}</div>`:''}</div>`).join('')}
     ${state.typing?`<div class="msg ai typing"><i></i><i></i><i></i></div>`:''}
   </div>
   <div style="position:sticky;bottom:0;background:var(--blush-2);padding-bottom:8px">
@@ -1579,6 +1678,10 @@ function answer(q){
 }
 function ask(q){
   if(!q.trim()) return;
+  if(REAL()&&AN()){ const hist=state.chat.slice(-6).map(m=>({me:m.me,text:typeof m.text==='string'?m.text:tr(m.text)}));
+    state.chat.push({me:true,text:q}); state.typing=true; render();
+    aiApi('chat',{q, history:hist, lang:['ru','kk','en'][L]}).then(d=>{ state.typing=false; state.chat.push(d&&d.ok?{me:false,text:d.text,sw:d.colors||[]}:{me:false,text:t('r_'+(d&&d.reason==='rate'?'rate':'net'))}); render(); });
+    return; }
   state.chat.push({me:true,text:q}); state.typing=true; render();
   setTimeout(()=>{ const a=answer(q); state.typing=false; state.chat.push({me:false,text:a.text,sw:a.sw}); render(); }, 900);
 }
@@ -1618,6 +1721,8 @@ SCREENS.profile = () => {
 
 /* ---------- side panel & passport ---------- */
 function renderSide(){
+  if(REAL()){ document.getElementById('side').innerHTML = `<div class="mark">Aru</div><p class="ver">${t('side_ver')}</p><p>${t('side_p_r')}</p>
+  <p style="font-weight:800;margin-top:20px">${t('side_try')}</p><ul>${['side_r0','side_r1','side_r2','side_r3','side_r4'].map((k,i)=>`<li>${ic(['palette','scissors','hanger','camera','chat'][i])}<span>${t(k)}</span></li>`).join('')}</ul>`; return; }
   document.getElementById('side').innerHTML = `<div class="mark">Aru</div><p class="ver">${t('side_ver')}</p><p>${t('side_p')}</p>
   <p style="font-weight:800;margin-top:20px">${t('side_try')}</p><ul>${['side_0','side_1','side_2','side_3','side_4'].map((k,i)=>`<li>${ic(['scissors','hanger','palette','camera','chat'][i])}<span>${t(k)}</span></li>`).join('')}</ul>`;
 }
@@ -1631,7 +1736,15 @@ function renderPassport(){
     <h2>${t('my_colors')}</h2>${sw(a.best_colors)}
     <h2>${t('not_mine')}</h2>${sw(a.avoid_colors)}
     <h2>${t('shade_t')}</h2>${sw(a.hair_shades)}
-    ${a.lips?`<h2>${t('makeup_n')}</h2>${sw(a.lips)}`:''}
+    ${a.lips&&!a.guide?`<h2>${t('makeup_n')}</h2>${sw(a.lips)}`:''}
+    ${a.guide?(()=>{ const g=a.guide, li=x=>`<li>${esc(tr(T3(x)))}</li>`, sw3=list=>`<div class="pg">${(list||[]).map(c=>`<div><i style="background:${esc(hexOf(c))}"></i>${esc(tr(N3(c)))}</div>`).join('')}</div>`;
+      return `<h2>${t('s_clothes')}</h2><p>${esc(tr(T3(g.silhouettes)))}</p>${sw3(g.clothes_yes)}
+      <p><b>${t('avoid_sil')}:</b> ${(g.clothes_no||[]).map(c=>esc(tr(N3(c)))).join(' · ')}</p>
+      <p><b>${t('necklines')}:</b> ${(g.necklines||[]).map(x=>esc(tr(T3(x)))).join(' · ')} &nbsp; <b>${t('fabrics')}:</b> ${(g.fabrics||[]).map(x=>esc(tr(T3(x)))).join(' · ')}</p>
+      <h2>${t('s_acc')}</h2><p><b>${t('metal')}:</b> ${esc(a.metal||'')}</p>${sw3((g.shoe_colors||[]).concat(g.bag_colors||[]))}
+      <p>${(g.shoe_shapes||[]).concat(g.bag_shapes||[]).map(x=>esc(tr(T3(x)))).join(' · ')}</p>
+      <h2>${t('s_makeup')}</h2>${sw3((g.lips_ok||[]).concat(g.blush||[]).concat(g.eyes||[]))}${g.makeup_note?`<p>${esc(tr(T3(g.makeup_note)))}</p>`:''}
+      <h2>${t('tips_t')}</h2><ul>${(g.tips||[]).map(li).join('')}</ul>`; })():''}
     ${pics.length?`<h2>${t('s_hair')} · ${t('s_looks')}</h2>${pics.map(x=>`<div style="break-inside:avoid;margin:10px 0"><p><b>${x.key==='custom'?t('own_look').replace(/^✍\s*/,'')+(x.text?': «'+esc(x.text)+'»':''):(x.kind==='hair'?HN(x.key):ON(x.key))}</b></p>${x.kind==='hair'&&x.key!=='custom'?HD(x.key):''}<img src="${x.url}" style="width:100%;border-radius:8px"></div>`).join('')}`:''}`;
     return; }
   document.getElementById('passport').innerHTML = `<h1>Aru</h1><p><b>${t('passport_t')}</b>: ${t('user_name')}</p>
@@ -1646,7 +1759,7 @@ function renderPassport(){
 /* ---------- render & router ---------- */
 const phone = document.getElementById('phone');
 let lastScreen=null;
-function render(){
+function render(){ try{ personalize(); }catch(e){ console.error(e); }
   const cont=document.getElementById('content');
   const keep = (cont && lastScreen===state.screen) ? cont.scrollTop : 0;
   const tabs = ['home','hair','looks','check','wardrobe','chat'].includes(state.screen);
@@ -1715,9 +1828,9 @@ async function realAnalysis(){
   return an;
 }
 const lastTry = (kind,key) => ((state.ai&&state.ai.tryons)||[]).find(x=>x.kind===kind&&x.key===key);
-async function doTryon(kind,key,text){
+async function doTryon(kind,key,text,color,label){
   if(state.aiBusy) return; state.aiBusy=kind+':'+key; render();
-  const d=await aiApi('tryon',{kind,key,text}); state.aiBusy=null;
+  const d=await aiApi('tryon',{kind,key,text,color,color_label:label}); state.aiBusy=null;
   if(d.ok){ state.ai=state.ai||{tryons:[]}; state.ai.tryons=[{id:d.id,kind,key,text:d.text,url:d.url}, ...(state.ai.tryons||[])]; state.ai.tryons_used=d.tryons_used; if(state.sub){ state.sub.tryons_used=d.tryons_used; state.sub.tryons_left=Math.max(0,d.tryons_limit-d.tryons_used); } }
   render(); if(!d.ok) toast(why(d.reason));
 }
@@ -1791,6 +1904,16 @@ const ACT = {
   send:()=>{ const el=document.getElementById('chatIn'); const v=el.value; el.value=''; ask(v); },
   passport:async()=>{ renderPassport(); const imgs=[...document.querySelectorAll('#passport img')]; await Promise.all(imgs.map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r; setTimeout(r,8000);}))); window.print(); },
   delall:async()=>{ if(!confirm(t('del_all_confirm'))) return; const d=await aiApi('delete_all'); if(!d.ok){ toast(why(d.reason)); return; } state.photos={face:null,body:null}; PHOTO_HI={face:null,body:null}; await loadAI(); toast(t('all_deleted')); },
+  cmp:a=>{ state.cmpOn = state.cmpOn===a?null:a; render(); },
+  aicolor:a=>{ const [kind,key,ck]=a.split('|'); const c=C[ck]; if(!c) return; doTryon(kind,key,null,c.n[2]||c.n[0],tr(c.n)); },
+  aishade:a=>{ const [key,en,lb]=a.split('|'); doTryon('hair',key,null,en,lb); },
+  savetry:async a=>{ const x=((state.ai&&state.ai.tryons)||[]).find(y=>String(y.id)===a); if(!x) return;
+    try{ const b=await (await fetch(x.url)).blob(); const u=URL.createObjectURL(b); const el=document.createElement('a'); el.href=u; el.download='Aru_'+(x.kind==='hair'?'prichyoska':'obraz')+'_'+x.id+'.jpg'; document.body.appendChild(el); el.click(); el.remove(); setTimeout(()=>URL.revokeObjectURL(u),4000); toast(t('saved_img')); }
+    catch(e){ window.open(x.url,'_blank'); } },
+  sharetry:async a=>{ const x=((state.ai&&state.ai.tryons)||[]).find(y=>String(y.id)===a); if(!x) return; const msg=t('share_text');
+    try{ const b=await (await fetch(x.url)).blob(); const f=new File([b],'Aru.jpg',{type:b.type||'image/jpeg'});
+      if(navigator.canShare&&navigator.canShare({files:[f]})){ await navigator.share({files:[f],text:msg}); return; } }catch(e){ if(e&&e.name==='AbortError') return; }
+    window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank'); },
   delstyle:async a=>{ const i=+a; if(REAL()){ state.styleBusy=i; render(); const d=await aiApi('save_style',{slot:i}); state.styleBusy=null; if(!d.ok){ render(); toast(why(d.reason)); return; } state.ai.styles=d.styles; } else { state.styleLocal=state.styleLocal||[]; state.styleLocal[i]=null; } render(); toast(t('style_removed')); },
   redo:()=>{ state.step=0; state.prev=[]; state.screen='onboard'; render(); },
   delphotos:async()=>{ if(REAL() && !confirm(t('del_confirm'))) return; state.photos={face:null,body:null}; PHOTO_HI={face:null,body:null}; if(REAL()){ const d=await aiApi('delete_photos'); if(!d.ok){ toast(why(d.reason)); return; } await loadAI(); } render(); toast(t('photos_deleted')); },

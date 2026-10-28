@@ -5,6 +5,9 @@
 //   tryon         { kind: "look"|"hair", key, text? } — примерка (тратит 1 из лимита); key "custom" + text — свой вариант её словами
 //   list          {}                          — всё сохранённое: разбор, примерки, ссылки на фото
 //   save_style    { slot: 0..2, image?: dataURL } — пример стиля «хочу вот так» (без image — убрать)
+//   guide         {}                          — личный гид стиля по разбору (одежда, аксессуары, макияж, советы)
+//   chat          { q, history? }             — вопрос стилисту, ответ с учётом её разбора
+//   tryon: color? — тот же образ в другом цвете из палитры / причёска в другом оттенке волос
 //   delete_photos {}                          — удалить два исходных фото (разбор и примерки остаются)
 //   delete_all    {}                          — удалить всё: фото, примерки, разбор, анкету (подписка остаётся)
 // Живые клиентки обрабатываются только на платном тарифе Google (секрет GEMINI_PAID = 1).
@@ -61,8 +64,8 @@ function palette(a: any) {
   const avoid = (a?.avoid_colors ?? []).map((c: any) => (typeof c === "string" ? c : c?.name_en || c?.name)).filter(Boolean).slice(0, 4);
   return { best: best.join(", "), avoid: avoid.join(", "), metal: a?.metal_en || a?.metal || "" };
 }
-function hairPrompt(key: string, a: any, answers?: any, text?: string, sl = "") {
-  const shade = (a?.hair_shades ?? []).map((c: any) => c?.name_en || c?.name).filter(Boolean)[0] || "her natural hair colour";
+function hairPrompt(key: string, a: any, answers?: any, text?: string, sl = "", color = "") {
+  const shade = color || (a?.hair_shades ?? []).map((c: any) => c?.name_en || c?.name).filter(Boolean)[0] || "her natural hair colour";
   return FACE_RULE + sl +
     "Create one wide image made of three side-by-side head-and-shoulders photos of her against a plain soft light grey studio background. " +
     "Show the hairstyle from different angles: left — head turned to the left with a happy smile, middle — three-quarter view to the right glancing at the camera over her shoulder, right — looking slightly up and to the side, joyful expression. " +
@@ -99,6 +102,40 @@ Reply with strict JSON only, no comments, in this exact shape:
 "face_shape":"овальное|круглое|квадратное|сердечко|вытянутое|ромб",
 "why":"2 sentences in Russian explaining the colour type in simple words, addressing her directly as вы (У вас…)",
 "confidence":0.0}`;
+
+const T3 = '["Russian","Kazakh","English"]';
+const GUIDE_PROMPT = (a: any, answers: any) => `You are an experienced personal stylist. Build a personal style guide for a woman.
+Her colour analysis: ${JSON.stringify({ season: a?.season, undertone: a?.undertone, contrast: a?.contrast, chroma: a?.chroma, metal: a?.metal, best_colors: a?.best_colors, avoid_colors: a?.avoid_colors, lips: a?.lips, hair_shades: a?.hair_shades })}.
+Her questionnaire: ${JSON.stringify(answers ?? {})}. Respect what she does not wear and her wishes. Modern 2026 style, real wearable clothes, Kazakhstan city life.
+Do NOT name a body type. All colours must come from or harmonise with her best colours. Each text field is an array of 3 strings: ${T3}. Keep names short (2-4 words), tips one sentence.
+Reply with strict JSON only:
+{"neutrals":[{"name":${T3},"hex":"#RRGGBB"} x5],
+"clothes_yes":[{"type":"dress|coat|trousers|skirt|top|knit|jacket|jeans","name":${T3},"hex":"#RRGGBB"} x6],
+"clothes_no":[{"type":"dress|coat|trousers|skirt|top|knit|jacket|jeans|oversize","name":${T3}} x3],
+"silhouettes":${T3},
+"necklines":[${T3} x4],"fabrics":[${T3} x5],"prints_yes":[${T3} x3],"prints_no":[${T3} x2],
+"shoe_shapes":[${T3} x3],"shoe_colors":[{"name":${T3},"hex":"#RRGGBB"} x3],
+"bag_shapes":[${T3} x2],"bag_colors":[{"name":${T3},"hex":"#RRGGBB"} x3],
+"details":[${T3} x3],
+"lips_ok":[{"name":${T3},"hex":"#RRGGBB"} x3],"lips_no":[{"name":${T3},"hex":"#RRGGBB"} x2],
+"blush":[{"name":${T3},"hex":"#RRGGBB"} x2],"eyes":[{"name":${T3},"hex":"#RRGGBB"} x3],
+"makeup_note":${T3},
+"tips":[${T3} x6]}`;
+const CHAT_PROMPT = (a: any, answers: any, history: any[], q: string, lang: string) => `You are Aru, a warm and practical personal stylist for this woman. Answer in ${lang === "kk" ? "Kazakh" : lang === "en" ? "English" : "Russian"}, 2-5 short sentences, concrete: which garments, which of HER colours (use her colour names), metal, shoes, hair or makeup. No body-type labels. If the question is not about style, gently bring it back to style.
+Her colour analysis: ${JSON.stringify({ season: a?.season, undertone: a?.undertone, contrast: a?.contrast, metal: a?.metal, best_colors: (a?.best_colors ?? []).map((c: any) => c?.name), avoid_colors: (a?.avoid_colors ?? []).map((c: any) => c?.name), lips: (a?.lips ?? []).map((c: any) => c?.name) })}.
+Her questionnaire: ${JSON.stringify(answers ?? {})}.
+Conversation so far: ${JSON.stringify((history ?? []).slice(-6))}.
+Her question: ${JSON.stringify(q)}.
+Reply with strict JSON only: {"text":"answer","colors":["exact names of 1-3 of her best colours you recommend"]}`;
+async function makeGuide(a: any, answers: any) {
+  for (const model of TEXT_MODELS) {
+    const { status, d } = await gemini(model, [{ text: GUIDE_PROMPT(a, answers) }], { responseMimeType: "application/json", temperature: 0.3 }, 60000);
+    if (isQuota(status, d)) return null;
+    const txt = d?.candidates?.[0]?.content?.parts?.map((p: any) => p.text ?? "").join("") ?? "";
+    try { const g = JSON.parse(txt); if (g?.clothes_yes?.length) return g; } catch { /* следующая модель */ }
+  }
+  return null;
+}
 
 /* ---------- Gemini ---------- */
 async function gemini(model: string, parts: unknown[], cfg: Record<string, unknown>, ms: number) {
@@ -222,11 +259,45 @@ Deno.serve(async (req) => {
       return json({ ok: true, removed: paths.length });
     }
 
+    if (action === "guide" || action === "chat") {
+      if (!enabled) return json({ ok: false, reason: "not_enabled" });
+      if (!KEY()) return json({ ok: false, reason: "no_key" });
+      const { data: an } = await db.from("analyses").select("id,result").eq("user_id", uid).order("created_at", { ascending: false }).limit(1).maybeSingle();
+      if (!an) return json({ ok: false, reason: "need_analysis" });
+      if (action === "guide") {
+        if (an.result?.guide) return json({ ok: true, guide: an.result.guide });
+        const guide = await makeGuide(an.result, prof?.answers);
+        if (!guide) return json({ ok: false, reason: "ai_failed" });
+        await db.from("analyses").update({ result: { ...an.result, guide } }).eq("id", an.id);
+        return json({ ok: true, guide });
+      }
+      const q = clean(b.q, 500);
+      if (q.length < 2) return json({ ok: false, reason: "bad_input" });
+      const since = new Date(Date.now() - 3600e3).toISOString();
+      const { count } = await db.from("usage_log").select("id", { count: "exact", head: true }).eq("user_id", uid).eq("kind", "chat").gte("created_at", since);
+      if ((count ?? 0) >= 40) return json({ ok: false, reason: "rate" });
+      const hist = Array.isArray(b.history) ? b.history.slice(-6).map((m: any) => ({ me: !!m?.me, text: clean(m?.text, 400) })) : [];
+      for (const model of TEXT_MODELS) {
+        const { status, d } = await gemini(model, [{ text: CHAT_PROMPT(an.result, prof?.answers, hist, q, String(b.lang ?? "ru")) }], { responseMimeType: "application/json", temperature: 0.5 }, 40000);
+        if (isQuota(status, d)) return json({ ok: false, reason: "billing" });
+        const txt = d?.candidates?.[0]?.content?.parts?.map((p: any) => p.text ?? "").join("") ?? "";
+        try {
+          const r = JSON.parse(txt);
+          if (!r?.text) continue;
+          const names = (Array.isArray(r.colors) ? r.colors : []).map((x: any) => String(x).toLowerCase());
+          const colors = (an.result?.best_colors ?? []).filter((c: any) => names.some((n: string) => String(c?.name ?? "").toLowerCase() === n || String(c?.name_en ?? "").toLowerCase() === n)).slice(0, 3);
+          await db.from("usage_log").insert({ user_id: uid, kind: "chat" });
+          return json({ ok: true, text: String(r.text), colors });
+        } catch { /* следующая модель */ }
+      }
+      return json({ ok: false, reason: "ai_failed" });
+    }
+
     if (action === "analyze" || action === "tryon") {
       if (!enabled) return json({ ok: false, reason: "not_enabled" });
       if (!KEY()) return json({ ok: false, reason: "no_key" });
       const since = new Date(Date.now() - 3600e3).toISOString();
-      const { count } = await db.from("usage_log").select("id", { count: "exact", head: true }).eq("user_id", uid).gte("created_at", since);
+      const { count } = await db.from("usage_log").select("id", { count: "exact", head: true }).eq("user_id", uid).neq("kind", "chat").gte("created_at", since);
       if ((count ?? 0) >= RATE_PER_HOUR) return json({ ok: false, reason: "rate" });
       const face = await readFile(prof?.face_path ?? null);
       if (!face) return json({ ok: false, reason: "need_photo" });
@@ -260,6 +331,8 @@ Deno.serve(async (req) => {
           for (const k of ["best_colors", "avoid_colors", "hair_shades", "lips"]) for (const c of (Array.isArray(result[k]) ? result[k] : [])) {
             if (c && typeof c === "object" && !HX.test(String(c.hex ?? "").trim())) { const v = [c.name_en, c.name].find((x: any) => HX.test(String(x ?? "").trim())); if (v) { c.hex = String(v).trim(); if (c.name_en === v) delete c.name_en; } }
           }
+          const guide = await makeGuide(result, prof?.answers);
+          if (guide) result.guide = guide;
           await db.from("analyses").insert({ user_id: uid, result, model });
           await db.from("usage_log").insert({ user_id: uid, kind: "analysis" });
           return json({ ok: true, analysis: result });
@@ -272,6 +345,7 @@ Deno.serve(async (req) => {
       const kind = b.kind === "hair" ? "hair" : "look";
       const key = String(b.key ?? "");
       const text = clean(b.text);
+      const color = clean(b.color, 60);
       if (key === "custom" ? text.length < 3 : !(kind === "hair" ? HAIR : LOOK)[key]) return json({ ok: false, reason: "bad_input" });
       if (client.tryons_used >= client.tryons_limit) return json({ ok: false, reason: "quota" });
       const { data: an } = await db.from("analyses").select("result").eq("user_id", uid).order("created_at", { ascending: false }).limit(1).maybeSingle();
@@ -280,7 +354,8 @@ Deno.serve(async (req) => {
       const useStyles = kind === "look" || key === "custom";
       const styleImgs = useStyles ? (await Promise.all((prof?.style_paths ?? []).filter(Boolean).slice(0, MAX_STYLES).map((x: string) => readFile(x)))).filter(Boolean) as string[] : [];
       const sl = styleLine(imgs.length, styleImgs.length);
-      const prompt = kind === "hair" ? hairPrompt(key, an.result, prof?.answers, text, sl) : lookPrompt(key, an.result, prof?.answers, text, sl);
+      let prompt = kind === "hair" ? hairPrompt(key, an.result, prof?.answers, text, sl, color) : lookPrompt(key, an.result, prof?.answers, text, sl);
+      if (color && kind === "look") prompt += ` IMPORTANT: make the main garment (dress, or jacket/top) in the colour "${color}", keep the rest of the outfit harmonious with it.`;
       const parts = [...imgs, ...styleImgs.map((d) => ({ inline_data: { mime_type: "image/jpeg", data: d } })), { text: prompt }];
       let last: any = null;
       for (const model of IMAGE_MODELS) {
@@ -294,14 +369,15 @@ Deno.serve(async (req) => {
         if (!data) continue;
         const mime = part?.inlineData?.mimeType ?? part?.inline_data?.mime_type ?? "image/png";
         const ext = mime.includes("jpeg") ? "jpg" : "png";
-        const { data: row } = await db.from("tryons").insert({ user_id: uid, kind, key, status: "done", model, custom_text: key === "custom" ? text : null }).select("id").single();
+        const ctext = key === "custom" ? text : (color ? "🎨 " + (clean(b.color_label, 60) || color) : null);
+        const { data: row } = await db.from("tryons").insert({ user_id: uid, kind, key, status: "done", model, custom_text: ctext }).select("id").single();
         const path = `${uid}/tryons/${row!.id}.${ext}`;
         await db.storage.from(BUCKET).upload(path, decodeBase64(data), { contentType: mime, upsert: true });
         await db.from("tryons").update({ image_path: path }).eq("id", row!.id);
         await db.from("usage_log").insert({ user_id: uid, kind: "tryon" });
         const used = client.tryons_used + 1;
         await db.from("clients").update({ tryons_used: used }).eq("user_id", uid);
-        return json({ ok: true, id: row!.id, kind, key, text: key === "custom" ? text : null, url: await signed(path), tryons_used: used, tryons_limit: client.tryons_limit });
+        return json({ ok: true, id: row!.id, kind, key, text: ctext, url: await signed(path), tryons_used: used, tryons_limit: client.tryons_limit });
       }
       if (last && isQuota(last.status, last.d)) return json({ ok: false, reason: "billing" });
       console.error("tryon failed", JSON.stringify(last?.d)?.slice(0, 500));
