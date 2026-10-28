@@ -373,7 +373,7 @@ h3.h{font-family:var(--serif);font-size:24px;line-height:1.1;font-weight:700;col
 .kv li:last-child{border-bottom:0}
 .kv span{color:var(--muted)} .kv b{text-align:right}
 .menu{display:grid;gap:10px;margin-top:14px}
-.menu button{display:flex;align-items:center;gap:12px;background:var(--white);padding:14px 16px;border-radius:var(--r-md);font-weight:700;box-shadow:var(--lift-sm);text-align:left}
+.menu button,.menu .menu-a{color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:12px;background:var(--white);padding:14px 16px;border-radius:var(--r-md);font-weight:700;box-shadow:var(--lift-sm);text-align:left}
 .menu button .ic{color:var(--rose)}
 .menu button.danger{color:var(--bad)} .menu button.danger .ic{color:var(--bad)}
 .seri{display:flex;align-items:center;gap:14px;background:#22313A;color:#E7EEF2;border-radius:var(--r-lg);padding:16px;margin-top:14px}
@@ -687,6 +687,7 @@ const S = {
   hair_fun_sub:["Хотите попробовать смелый цвет? Нажмите — Aru покрасит вам волосы на фото (1 примерка). Эти цвета не обязательно под ваш цветотип — просто посмотреть.","Батыл түсті көргіңіз келе ме? Басыңыз — Aru суретте шашыңызды бояйды (1 киіп көру). Бұл түстер міндетті түрде түс типіңізге сай емес — жай көру үшін.","Want to try a bold colour? Tap it and Aru will colour your hair on the photo (1 try-on). These are not necessarily for your colour type — just to see."],
   own_shade:["Свой цвет","Өз түсім","My own colour"],
   try_own_shade:["Выбрать свой цвет и примерить","Өз түсіңізді таңдап, киіп көру","Pick my own colour and try it"],
+  lessons:["Уроки: как пользоваться Aru","Сабақтар: Aru-ды қалай пайдалану","Lessons: how to use Aru"],
   guide_wait:["Aru готовит ваш личный гид: одежда, аксессуары, макияж… Это 10–20 секунд.","Aru сіздің жеке нұсқаулығыңызды дайындап жатыр: киім, аксессуарлар, макияж… 10–20 секунд.","Aru is preparing your personal guide: clothes, accessories, make-up… 10–20 seconds."],
   sil_t:["Какие силуэты вам идут","Сізге қандай силуэттер жарасады","Silhouettes that suit you"],
   chat_hello_r:["Здравствуйте! Я Aru, ваш стилист. Я знаю ваш цветотип, палитру и анкету — спрашивайте: что надеть, с чем сочетать, что купить.","Сәлеметсіз бе! Мен Aru — сіздің стилистіңізбін. Түс типіңізді, палитраңызды және сауалнамаңызды білемін — сұраңыз: не кию, немен үйлестіру, не сатып алу.","Hello! I am Aru, your stylist. I know your colour type, palette and answers — ask me what to wear, what goes with what, what to buy."],
@@ -1759,6 +1760,7 @@ SCREENS.profile = () => {
   <div class="card"><h3 class="h" style="font-size:20px">${t('style_my')}</h3><p class="tiny muted" style="margin-top:4px">${t('style_sub')}</p>${styleSlots()}</div>
 
   <div class="menu">
+    <a class="menu-a" href="../guide/" target="_blank" rel="noopener">${ic('sparkle')} ${t('lessons')}</a>
     <button data-act="cover">${ic('home')} ${t('to_cover')}</button>
     <button data-act="passport">${ic('download')} ${t('passport')}</button>
     <button data-act="redo">${ic('refresh')} ${t('redo')}</button>
@@ -1771,7 +1773,7 @@ SCREENS.profile = () => {
 /* ---------- side panel & passport ---------- */
 function renderSide(){
   if(REAL()){ document.getElementById('side').innerHTML = `<div class="mark">Aru</div><p class="ver">${t('side_ver')}</p><p>${t('side_p_r')}</p>
-  <p style="font-weight:800;margin-top:20px">${t('side_try')}</p><ul>${['side_r0','side_r1','side_r2','side_r3','side_r4'].map((k,i)=>`<li>${ic(['palette','scissors','hanger','camera','chat'][i])}<span>${t(k)}</span></li>`).join('')}</ul>`; return; }
+  <p style="font-weight:800;margin-top:20px">${t('side_try')}</p><ul>${['side_r0','side_r1','side_r2','side_r3','side_r4'].map((k,i)=>`<li>${ic(['palette','scissors','hanger','camera','chat'][i])}<span>${t(k)}</span></li>`).join('')}</ul><p style="margin-top:18px"><a href="../guide/" target="_blank" rel="noopener" style="font-weight:800;color:var(--rose)">${t('lessons')} →</a></p>`; return; }
   document.getElementById('side').innerHTML = `<div class="mark">Aru</div><p class="ver">${t('side_ver')}</p><p>${t('side_p')}</p>
   <p style="font-weight:800;margin-top:20px">${t('side_try')}</p><ul>${['side_0','side_1','side_2','side_3','side_4'].map((k,i)=>`<li>${ic(['scissors','hanger','palette','camera','chat'][i])}<span>${t(k)}</span></li>`).join('')}</ul>`;
 }
