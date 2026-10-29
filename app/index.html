@@ -1439,7 +1439,11 @@ const VMAP={теплый:['тёплый','жылы','warm'],холодный:['�
 const VW = x => { const m=VMAP[String(x||'').toLowerCase().replace(/ё/g,'е').trim()]; return m?m[L]:String(x||''); };
 const whyOf = a => (L===1 && a.why_kk) ? a.why_kk : (L===2 && a.why_en) ? a.why_en : (a.why||'');
 // разбор на казахском/английском: если в нём ещё нет перевода — один раз просим сервер дописать
-function ensureI18n(){ const a=AN(); if(!REAL()||!a||L===0||state.i18nBusy||(a.why_kk&&a.why_en)) return; state.i18nBusy=true;
+function analysisNeedsI18n(a){
+  const missing=v=>typeof v!=='string'||!v.trim()||/^#[0-9a-f]{3,8}$/i.test(v.trim());
+  return !a || missing(a.why_kk) || missing(a.why_en) || ['best_colors','avoid_colors','hair_shades','hair_avoid','lips'].some(k=>(a[k]||[]).some(c=>c&&typeof c==='object'&&(missing(c.name_kk)||missing(c.name_en))));
+}
+function ensureI18n(){ const a=AN(); if(!REAL()||!a||L===0||state.i18nBusy||!analysisNeedsI18n(a)) return; state.i18nBusy=true;
   aiApi('i18n').then(d=>{ if(d&&d.ok&&d.analysis&&state.ai){ state.ai.analysis=Object.assign({},state.ai.analysis,d.analysis); render(); } }).finally(()=>{ setTimeout(()=>{state.i18nBusy=false;},60000); }); }
 function realHero(){
   const a=AN(), face=(state.ai&&state.ai.face)||state.photos.face;
