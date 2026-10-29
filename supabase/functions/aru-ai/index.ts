@@ -148,12 +148,18 @@ Reply with strict JSON only:
 "makeup_note":${T3},
 "tips":[${T3} x6]}`;
 const chatColorName = (c: any, lang: string) => String((lang === "kk" ? c?.name_kk : lang === "en" ? c?.name_en : c?.name) || c?.name || c?.name_en || "");
-const CHAT_PROMPT = (a: any, answers: any, history: any[], q: string, lang: string) => `You are Aru, a warm and practical personal stylist for this woman. Answer in ${lang === "kk" ? "Kazakh" : lang === "en" ? "English" : "Russian"}, 2-5 short sentences, always address her politely as "вы" (in Kazakh "сіз"), no greetings like "Привет", concrete: which garments, which of HER colours (use her colour names), metal, shoes, hair or makeup. No body-type labels. If the question is not about style, gently bring it back to style.
+const chatLanguageOk = (text: unknown, lang: string) => {
+  if (typeof text !== "string" || !text.trim()) return false;
+  if (lang === "en") return /[a-z]/i.test(text) && !/[Ѐ-ӿ]/u.test(text);
+  if (lang === "kk") return /[әғқңөұүһі]/i.test(text);
+  return /[а-яё]/i.test(text);
+};
+const CHAT_PROMPT = (a: any, answers: any, history: any[], q: string, lang: string) => `You are Aru, a warm and practical personal stylist for this woman. Answer in ${lang === "kk" ? "Kazakh" : lang === "en" ? "English" : "Russian"}, 2-5 short sentences, ${lang === "en" ? 'Address her politely as "you".' : lang === "kk" ? 'Address her politely as "сіз".' : 'Address her politely as "вы".'} no greetings like "Привет", concrete: which garments, which of HER colours (use her colour names), metal, shoes, hair or makeup. No body-type labels. If the question is not about style, gently bring it back to style.
 Her colour analysis: ${JSON.stringify({ season: a?.season, undertone: a?.undertone, contrast: a?.contrast, metal: a?.metal, best_colors: (a?.best_colors ?? []).map((c: any) => chatColorName(c, lang)), avoid_colors: (a?.avoid_colors ?? []).map((c: any) => chatColorName(c, lang)), lips: (a?.lips ?? []).map((c: any) => chatColorName(c, lang)) })}.
 Her questionnaire: ${JSON.stringify(answers ?? {})}.
 Conversation so far: ${JSON.stringify((history ?? []).slice(-6))}.
 Her question: ${JSON.stringify(q)}.
-Reply with strict JSON only: {"text":"answer","colors":["exact names of 1-3 of her best colours you recommend"]}`;
+OUTPUT LANGUAGE: ${lang === "kk" ? "Kazakh" : lang === "en" ? "English" : "Russian"}. This overrides the language of the questionnaire, analysis and conversation history. Do not copy earlier replies in another language. ${lang === "en" ? "The text must contain no Russian or Kazakh sentences and no Cyrillic characters." : ""}\nReply with strict JSON only: {"text":"answer in the required output language","colors":["exact names of 1-3 of her best colours you recommend"]}`;
 const ITEM_CATS = ["clothes", "shoes", "bags", "jewelry", "makeup"];
 function itemsPrompt(cat: string, a: any) {
   const g = a?.guide ?? {};
@@ -392,14 +398,15 @@ Deno.serve(async (req) => {
       const since = new Date(Date.now() - 3600e3).toISOString();
       const { count } = await db.from("usage_log").select("id", { count: "exact", head: true }).eq("user_id", uid).eq("kind", "chat").gte("created_at", since);
       if ((count ?? 0) >= 40) return json({ ok: false, reason: "rate" });
+      const chatLang = b.lang === "en" ? "en" : b.lang === "kk" || b.lang === "kz" ? "kk" : "ru";
       const hist = Array.isArray(b.history) ? b.history.slice(-6).map((m: any) => ({ me: !!m?.me, text: clean(m?.text, 400) })) : [];
       for (const model of TEXT_MODELS) {
-        const { status, d } = await gemini(model, [{ text: CHAT_PROMPT(an.result, prof?.answers, hist, q, String(b.lang ?? "ru")) }], { responseMimeType: "application/json", temperature: 0.5 }, 40000);
+        const { status, d } = await gemini(model, [{ text: CHAT_PROMPT(an.result, prof?.answers, hist, q, chatLang) }], { responseMimeType: "application/json", temperature: 0.5 }, 40000);
         if (isQuota(status, d)) return json({ ok: false, reason: "billing" });
         const txt = d?.candidates?.[0]?.content?.parts?.map((p: any) => p.text ?? "").join("") ?? "";
         try {
           const r = JSON.parse(txt);
-          if (!r?.text) continue;
+          if (!chatLanguageOk(r?.text, chatLang)) continue;
           const names = (Array.isArray(r.colors) ? r.colors : []).map((x: any) => String(x).trim().toLowerCase());
           const colors = (an.result?.best_colors ?? []).filter((c: any) => names.some((n: string) => [c?.name, c?.name_en, c?.name_kk].some((v: any) => typeof v === "string" && v.trim().toLowerCase() === n))).slice(0, 3);
           await db.from("usage_log").insert({ user_id: uid, kind: "chat" });
