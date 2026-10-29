@@ -1809,7 +1809,7 @@ SCREENS.profile = () => {
   <div class="card"><h3 class="h" style="font-size:20px">${t('style_my')}</h3><p class="tiny muted" style="margin-top:4px">${t('style_sub')}</p>${styleSlots()}</div>
 
   <div class="menu">
-    <a class="menu-a" href="../guide/" target="_blank" rel="noopener">${ic('sparkle')} ${t('lessons')}</a>
+    <a class="menu-a" href="../guide/?lang=${['ru','kk','en'][L]}" target="_blank" rel="noopener">${ic('sparkle')} ${t('lessons')}</a>
     <button data-act="cover">${ic('home')} ${t('to_cover')}</button>
     <button data-act="passport">${ic('download')} ${t('passport')}</button>
     <button data-act="redo">${ic('refresh')} ${t('redo')}</button>
@@ -1822,7 +1822,7 @@ SCREENS.profile = () => {
 /* ---------- side panel & passport ---------- */
 function renderSide(){
   if(REAL()){ document.getElementById('side').innerHTML = `<div class="mark">Aru</div><p class="ver">${t('side_ver')}</p><p>${t('side_p_r')}</p>
-  <p style="font-weight:800;margin-top:20px">${t('side_try')}</p><ul>${['side_r0','side_r1','side_r2','side_r3','side_r4'].map((k,i)=>`<li>${ic(['palette','scissors','hanger','camera','chat'][i])}<span>${t(k)}</span></li>`).join('')}</ul><p style="margin-top:18px"><a href="../guide/" target="_blank" rel="noopener" style="font-weight:800;color:var(--rose)">${t('lessons')} →</a></p>`; return; }
+  <p style="font-weight:800;margin-top:20px">${t('side_try')}</p><ul>${['side_r0','side_r1','side_r2','side_r3','side_r4'].map((k,i)=>`<li>${ic(['palette','scissors','hanger','camera','chat'][i])}<span>${t(k)}</span></li>`).join('')}</ul><p style="margin-top:18px"><a href="../guide/?lang=${['ru','kk','en'][L]}" target="_blank" rel="noopener" style="font-weight:800;color:var(--rose)">${t('lessons')} →</a></p>`; return; }
   document.getElementById('side').innerHTML = `<div class="mark">Aru</div><p class="ver">${t('side_ver')}</p><p>${t('side_p')}</p>
   <p style="font-weight:800;margin-top:20px">${t('side_try')}</p><ul>${['side_0','side_1','side_2','side_3','side_4'].map((k,i)=>`<li>${ic(['scissors','hanger','palette','camera','chat'][i])}<span>${t(k)}</span></li>`).join('')}</ul>`;
 }
