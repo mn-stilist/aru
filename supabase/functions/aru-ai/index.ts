@@ -168,7 +168,8 @@ function itemsPrompt(cat: string, a: any) {
   return base + "Make-up products: lipsticks in " + (g.lips_ok ?? []).map(col).join(", ") + "; a blush compact in " + (g.blush ?? []).map(col).join(", ") + "; an eyeshadow palette with " + (g.eyes ?? []).map(col).join(", ") + "; a soft brush.";
 }
 const COLOR_LISTS = ["best_colors", "avoid_colors", "hair_shades", "hair_avoid", "lips"];
-const needsI18n = (a: any) => !a?.why_kk || !a?.why_en || COLOR_LISTS.some((k) => (a?.[k] ?? []).some((c: any) => c && typeof c === "object" && !c.name_kk));
+const missingTranslation = (v: unknown) => typeof v !== "string" || !v.trim() || /^#[0-9a-f]{3,8}$/i.test(v.trim());
+const needsI18n = (a: any) => !a || missingTranslation(a.why_kk) || missingTranslation(a.why_en) || COLOR_LISTS.some((k) => (a?.[k] ?? []).some((c: any) => c && typeof c === "object" && (missingTranslation(c.name_kk) || missingTranslation(c.name_en))));
 // Перевод разбора на казахский и английский: объяснение цветотипа и названия всех цветов
 async function addI18n(a: any) {
   const names = [...new Set(COLOR_LISTS.flatMap((k) => (a?.[k] ?? []).map((c: any) => String(c?.name ?? "")).filter(Boolean)))];
@@ -183,14 +184,15 @@ Reply with strict JSON only: {"why_kk":"...","why_en":"...","names":[["<Russian 
     const txt = d?.candidates?.[0]?.content?.parts?.map((p: any) => p.text ?? "").join("") ?? "";
     try {
       const r = JSON.parse(txt);
-      if (!r?.why_kk || !Array.isArray(r.names)) continue;
+      if (missingTranslation(r?.why_kk) || missingTranslation(r?.why_en) || !Array.isArray(r.names)) continue;
       const map: Record<string, [string, string]> = {};
       for (const n of r.names) if (Array.isArray(n) && n[0]) map[String(n[0]).trim().toLowerCase()] = [String(n[1] ?? ""), String(n[2] ?? "")];
+      if (names.some((name) => { const pair = map[name.trim().toLowerCase()]; return !pair || pair.some(missingTranslation); })) continue;
       for (const k of COLOR_LISTS) for (const c of (a?.[k] ?? [])) {
         if (!c || typeof c !== "object") continue;
         const m = map[String(c.name ?? "").trim().toLowerCase()];
         if (m?.[0]) c.name_kk = m[0];
-        if (!c.name_en && m?.[1]) c.name_en = m[1];
+        if (missingTranslation(c.name_en) && m?.[1]) c.name_en = m[1];
       }
       a.why_kk = String(r.why_kk); if (r.why_en) a.why_en = String(r.why_en);
       return true;
