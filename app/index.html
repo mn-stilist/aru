@@ -1850,7 +1850,7 @@ function renderPassport(){
       <p>${(g.shoe_shapes||[]).concat(g.bag_shapes||[]).map(x=>esc(tr(T3(x)))).join(' · ')}</p>
       <h2>${t('s_makeup')}</h2>${sw3((g.lips_ok||[]).concat(g.blush||[]).concat(g.eyes||[]))}${g.makeup_note?`<p>${esc(LT(g.makeup_note))}</p>`:''}
       <h2>${t('tips_t')}</h2><ul>${(g.tips||[]).map(li).join('')}</ul>`; })():''}
-    ${pics.length?`<h2>${t('s_hair')} · ${t('s_looks')}</h2>${pics.map(x=>`<div class="passport-preview"><p><b>${x.key==='custom'?t('own_look').replace(/^✍\s*/,'')+(x.text?': «'+esc(x.text)+'»':''):x.key==='photo'?t('by_photo_lbl')+(x.text?': «'+esc(x.text)+'»':''):(x.kind==='hair'?HN(x.key):ON(x.key))}</b></p>${x.kind==='hair'&&x.key!=='custom'&&x.key!=='photo'?HD(x.key):''}<img src="${x.url}" style="width:100%;border-radius:8px"></div>`).join('')}`:''}`;
+    ${pics.length?`<h2>${t('s_hair')} · ${t('s_looks')}</h2>${pics.map(x=>`<div class="passport-preview"><p><b>${x.key==='custom'?t('own_look').replace(/^✍\s*/,''):x.key==='photo'?t('by_photo_lbl'):(x.kind==='hair'?HN(x.key):ON(x.key))}</b></p>${x.kind==='hair'&&x.key!=='custom'&&x.key!=='photo'?HD(x.key):''}<img src="${x.url}" style="width:100%;border-radius:8px"></div>`).join('')}`:''}`;
     return; }
   document.getElementById('passport').innerHTML = `<h1>Aru</h1><p><b>${t('passport_t')}</b>: ${t('user_name')}</p>
   <h2>${t('your_type')}: ${t('soft_autumn')}</h2><p>${t('sa_desc')}</p>
