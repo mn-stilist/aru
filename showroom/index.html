@@ -98,7 +98,22 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;padding:0 16px 30px
 <div class="modal" id="modal"><div class="box"><button class="x" data-close aria-label="close">×</button><div id="vid" style="width:100%;height:100%"></div></div></div>
 <script src="data.js"></script>
 <script>
-let L = 0; try{ L = +(localStorage.getItem('aru_sr_lang')||0)||0; }catch(e){}
+let L = 0;
+try{
+  const requested=new URLSearchParams(location.search).get('lang');
+  const codes={ru:0,kk:1,kz:1,en:2};
+  const app=JSON.parse(localStorage.getItem('aru_proto_v1')||'null');
+  const saved=localStorage.getItem('aru_sr_lang');
+  const candidate=requested!=null&&Object.hasOwn(codes,requested)?codes[requested]:app&&Number.isInteger(app.L)?app.L:saved!=null?Number(saved):0;
+  L=[0,1,2].includes(candidate)?candidate:0;
+}catch(e){}
+function saveShowroomLanguage(){
+  try{
+    localStorage.setItem('aru_sr_lang',L);
+    const app=JSON.parse(localStorage.getItem('aru_proto_v1')||'{}');
+    app.L=L; localStorage.setItem('aru_proto_v1',JSON.stringify(app));
+  }catch(e){}
+}
 const S = {
   h1:['Женщины <em>всех возрастов</em> — в своих цветах','Барлық жастағы әйелдер — <em>өз түстерінде</em>','Women of <em>every age</em> — in their own colours'],
   lead:['Выберите героиню и повод — и тяните линию по фото: серый образ на глазах становится её собственным. Все образы подобраны под её цветотип.','Кейіпкер мен жағдайды таңдап, суреттегі сызықты тартыңыз: сұр бейне көз алдыңызда өз бейнесіне айналады. Барлық бейне оның түс типіне сай.','Pick a woman and an occasion, then drag the line across the photo: the dull look turns into her own. Every look is matched to her colour type.'],
@@ -144,7 +159,7 @@ function render(){
 }
 document.addEventListener('click',e=>{
   const g=e.target.closest('[data-lang],[data-who],[data-look],[data-ba],[data-video],[data-close]'); if(!g) return;
-  if(g.dataset.lang){ L=+g.dataset.lang; try{localStorage.setItem('aru_sr_lang',L);}catch(err){} }
+  if(g.dataset.lang){ L=+g.dataset.lang; saveShowroomLanguage(); }
   if(g.dataset.who){ cur=g.dataset.who; look=SR.find(x=>x.id===cur).looks[0].id; ba='after'; try{history.replaceState(null,'','#'+cur);}catch(err){} }
   if(g.dataset.look){ look=g.dataset.look; ba='after'; }
   if(g.dataset.ba){ ba=g.dataset.ba; }
