@@ -553,6 +553,11 @@ const S = {
   near_type:["Вы на границе, близко к цветотипу:","Сіз шекарадасыз, мына түс типіне жақын:","You are on the border, close to:"],
   ai_working:["Aru смотрит на ваше фото…","Aru суретіңізге қарап жатыр…","Aru is looking at your photo…"],
   ai_tryon:["Примерить на мне","Маған киіп көру","Try it on me"],
+  shop_item:["Вещь из магазина","Дүкендегі киім","Shop item"],
+  shop_style:["Похожий образ","Ұқсас бейне","Similar look"],
+  shop_sub:["Сфотографируйте вещь в магазине или загрузите фото / скриншот из интернет-магазина. Aru постарается сохранить её цвет, рисунок и фасон на вашем фото.","Дүкендегі киімді суретке түсіріңіз немесе интернет-дүкеннен фото / скриншот жүктеңіз. Aru оның түсін, өрнегін және пішімін сіздің суретіңізде сақтауға тырысады.","Photograph a shop item or upload a photo / screenshot from an online store. Aru will try to preserve its colour, pattern and cut on your photo."],
+  shop_note:["Если вещей несколько, укажите нужную: например, только синий жакет. Лучше фото одной вещи, без меню и надписей.","Бірнеше киім болса, керегін көрсетіңіз: мысалы, тек көк пиджак. Мәзірсіз және жазусыз бір киімнің фотосы жақсырақ.","If several items are shown, name the one to try, e.g. only the blue jacket. A clear single-item photo without menus or text works best."],
+  shop_limit:["Это ИИ-визуализация: детали могут отличаться. Размер, точную посадку и качество ткани по фото определить нельзя.","Бұл — ЖИ бейнесі: бөлшектері өзгеше болуы мүмкін. Фото арқылы өлшемді, дәл қонымын және мата сапасын анықтау мүмкін емес.","This is an AI visualisation: details may differ. A photo cannot establish size, exact fit or fabric quality."],
   byphoto_h:["Примерить по фото","Фото бойынша киіп көру","Try on from a photo"],
   byphoto_look_sub:["Фото от подруги, из Instagram, Pinterest или с витрины — Aru покажет вас в таком же стиле. Лицо и цвета — ваши.","Құрбыңыз жіберген, Instagram, Pinterest не витринадағы фото — Aru сізді дәл осындай стильде көрсетеді. Бет пен түстер — сіздікі.","A photo from a friend, Instagram, Pinterest or a shop window — Aru shows you in the same style. Your face, your colours."],
   byphoto_hair_sub:["Понравилась причёска на фото? Aru покажет её на вас с трёх сторон.","Фотодағы шаш үлгісі ұнады ма? Aru оны сізге үш жақтан көрсетеді.","Like a hairstyle in a photo? Aru shows it on you from three angles."],
@@ -1493,9 +1498,11 @@ function photoBlock(kind){
   const r=state.ref&&state.ref[kind], busy=state.aiBusy===kind+':photo', left=state.sub?state.sub.tryons_left:'';
   const got=((state.ai&&state.ai.tryons)||[]).filter(x=>x.kind===kind&&x.key==='photo');
   const note=(state.refNote&&state.refNote[kind])||'';
+  const shop=kind==='look'&&state.photoMode!=='style';
   return `<div class="card byphoto">
-    <div class="bp-head"><span class="bp-ic">${ic('camera',22)}</span><div><h3 class="h">${t('byphoto_h')} <em>${t('new_badge')}</em></h3><p class="tiny muted">${t(kind==='hair'?'byphoto_hair_sub':'byphoto_look_sub')}</p></div></div>
-    ${r?`<div class="bp-ref"><img src="${r.small}" alt=""><div><textarea class="text-in" id="refNote" data-kind="${kind}" rows="3" maxlength="300" placeholder="${t(kind==='hair'?'byphoto_hair_ph':'byphoto_look_ph')}">${esc(note)}</textarea>
+    <div class="bp-head"><span class="bp-ic">${ic('camera',22)}</span><div><h3 class="h">${t('byphoto_h')} <em>${t('new_badge')}</em></h3><p class="tiny muted">${t(kind==='hair'?'byphoto_hair_sub':shop?'shop_sub':'byphoto_look_sub')}</p></div></div>
+    ${kind==='look'?`<div class="chips" style="margin:12px 0"><button class="chip ${shop?'on':''}" data-act="photomode" data-arg="garment" aria-pressed="${shop}" ${busy?'disabled':''}>${t('shop_item')}</button><button class="chip ${!shop?'on':''}" data-act="photomode" data-arg="style" aria-pressed="${!shop}" ${busy?'disabled':''}>${t('shop_style')}</button></div><p class="tiny muted">${t('shop_limit')}</p>`:''}
+    ${r?`<div class="bp-ref"><img src="${r.small}" alt=""><div><textarea class="text-in" id="refNote" data-kind="${kind}" rows="3" maxlength="300" placeholder="${t(kind==='hair'?'byphoto_hair_ph':shop?'shop_note':'byphoto_look_ph')}">${esc(note)}</textarea>
         <label class="bp-other"><input type="file" accept="image/*" data-file="ref_${kind}">${ic('refresh',14)} ${t('byphoto_other')}</label></div></div>
       <button class="btn primary" style="width:100%;margin-top:12px" data-act="aiphoto" data-arg="${kind}" ${busy?'disabled':''}>${ic('sparkle',18)} ${busy?t('ai_tryon_wait'):t('ai_tryon')}</button>
       <p class="small muted" style="text-align:center;margin-top:6px">${t('ai_tryon_n',{n:left})}</p><p class="tiny muted" style="text-align:center">${t('byphoto_hint')}</p>`
@@ -2044,8 +2051,9 @@ const ACT = {
   redo:()=>{ state.step=0; state.prev=[]; state.screen='onboard'; render(); },
   delphotos:async()=>{ if(REAL() && !confirm(t('del_confirm'))) return; state.photos={face:null,body:null}; PHOTO_HI={face:null,body:null}; if(REAL()){ const d=await aiApi('delete_photos'); if(!d.ok){ toast(why(d.reason)); return; } await loadAI(); } render(); toast(t('photos_deleted')); },
   aitry:a=>{ const [k,key]=a.split('|'); doTryon(k,key); },
+  photomode:a=>{ if(state.aiBusy) return; state.photoMode=a==='style'?'style':'garment'; render(); },
   aiphoto:async a=>{ const r=state.ref&&state.ref[a]; if(!r){ toast(t('byphoto_pick')); return; } if(state.aiBusy) return; const note=((state.refNote&&state.refNote[a])||'').trim();
-    state.aiBusy=a+':photo'; render(); const d=await aiApi('tryon',{kind:a,key:'photo',text:note,ref:r.hi}); state.aiBusy=null;
+    state.aiBusy=a+':photo'; render(); const d=await aiApi('tryon',{kind:a,key:'photo',text:note,ref:r.hi,photo_mode:a==='look'?(state.photoMode==='style'?'style':'garment'):undefined}); state.aiBusy=null;
     if(d.ok){ state.ai=state.ai||{tryons:[]}; state.ai.tryons=[{id:d.id,kind:a,key:'photo',text:d.text,url:d.url}, ...(state.ai.tryons||[])]; if(state.sub){ state.sub.tryons_used=d.tryons_used; state.sub.tryons_left=(d.tryons_left!=null?d.tryons_left:Math.max(0,d.tryons_limit-d.tryons_used)); } }
     render(); if(!d.ok) toast(why(d.reason)); },
   aicustom:a=>{ const txt=((state.customTxt&&state.customTxt[a])||'').trim(); if(txt.length<3){ toast(t('own_need')); return; } doTryon(a,'custom',txt); },
