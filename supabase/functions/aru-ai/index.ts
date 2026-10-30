@@ -104,6 +104,14 @@ function photoLookPrompt(a: any, answers: any, note: string, her: number) {
     (note ? `Her note about the reference (follow it): "${note}". ` : "") + dislikeLine(answers) +
     "Make it look like something a well-dressed woman would really wear today: no trousers or leggings under a dress or skirt, no costume or caricature, perfect fit, premium fabrics, no logos or brand names. Natural soft daylight, realistic photo, no text.";
 }
+// Preserve the selected product instead of adapting a reference to a personal palette.
+function shopItemPrompt(note: string, her: number) {
+  return FACE_RULE + REF_RULE(her) +
+    "Virtual clothing try-on of the actual product in the LAST image on the client. Preserve the product's original colour, print, pattern scale, cut, length, neckline, sleeves, fabric appearance, seams, fastenings and visible details as faithfully as possible. Do NOT recolour it to her palette, restyle, redesign or substitute a similar garment. " +
+    "If the reference shows a single item, replace only the matching clothing category and keep her other clothing where visible, adding only neutral essentials if needed. If it shows a complete outfit, reproduce the visible outfit unless her note selects only one item. Ignore shop UI, price tags, hangers, mannequins and background text. Never transfer another model's identity. " +
+    (note ? `Product selection / client note: "${note}". Keep original product details unless she explicitly requests a change. ` : "") +
+    "Keep her body proportions, age, face and hairstyle. Show one realistic full-length front view with the complete head, feet and outfit visible against a neutral light grey background. Adapt clothing drape naturally to her existing body; do not slim her. This is an approximate visualisation, never add size, fit or fabric-quality claims. Natural daylight, no added text or watermarks.";
+}
 function photoHairPrompt(note: string, her: number) {
   return FACE_RULE + REF_RULE(her) +
     "Create one wide image made of three side-by-side head-and-shoulders photos of her against a plain soft light grey studio background: left — head turned to the left with a happy smile, middle — three-quarter view to the right glancing at the camera over her shoulder, right — looking slightly up and to the side, joyful expression. " +
@@ -479,9 +487,9 @@ Deno.serve(async (req) => {
       const styleImgs = useStyles ? (await Promise.all((prof?.style_paths ?? []).filter(Boolean).slice(0, MAX_STYLES).map((x: string) => readFile(x)))).filter(Boolean) as string[] : [];
       const sl = styleLine(imgs.length, styleImgs.length);
       let prompt = key === "photo"
-        ? (kind === "hair" ? photoHairPrompt(text, imgs.length) : photoLookPrompt(an.result, prof?.answers, text, imgs.length))
+        ? (kind === "hair" ? photoHairPrompt(text, imgs.length) : (b.photo_mode === "garment" ? shopItemPrompt(text, imgs.length) : photoLookPrompt(an.result, prof?.answers, text, imgs.length)))
         : kind === "hair" ? hairPrompt(key, an.result, prof?.answers, text, sl, color) : lookPrompt(key, an.result, prof?.answers, text, sl);
-      if (color && kind === "look") prompt += ` IMPORTANT: make the main garment (dress, or jacket/top) in the colour "${color}", keep the rest of the outfit harmonious with it.`;
+      if (color && kind === "look" && !(key === "photo" && b.photo_mode === "garment")) prompt += ` IMPORTANT: make the main garment (dress, or jacket/top) in the colour "${color}", keep the rest of the outfit harmonious with it.`;
       const refImg = refBytes ? [{ inline_data: { mime_type: "image/jpeg", data: encodeBase64(refBytes) } }] : [];
       const parts = [...imgs, ...styleImgs.map((d) => ({ inline_data: { mime_type: "image/jpeg", data: d } })), ...refImg, { text: prompt }];
       let last: any = null;
