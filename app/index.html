@@ -1790,6 +1790,7 @@ function ask(q){
   setTimeout(()=>{ const a=answer(q); state.typing=false; state.chat.push({me:false,text:a.text,sw:a.sw}); render(); }, 900);
 }
 
+S.renewal_terms=["При ежемесячной подписке Gumroad списывает оплату автоматически до отмены. Стандартная цена — $29 в месяц. Точную сумму и дату следующего списания, а также отмену продления смотрите в «Управлять подпиской».","Ай сайынғы жазылым тоқтатылғанға дейін Gumroad төлемді автоматты түрде алады. Стандартты баға — айына $29. Келесі төлемнің нақты сомасы мен күнін көру немесе ұзартуды тоқтату үшін «Жазылымды басқару» бөліміне өтіңіз.","Gumroad monthly subscriptions renew automatically until cancelled. The standard price is $29 per month. See Manage subscription for your exact next charge amount and date, or to cancel renewal."];
 SCREENS.profile = () => {
   const sv=(REAL()&&state.ai)||{}, p={face:state.photos.face||sv.face||null, body:state.photos.body||sv.body||null}, any=p.face||p.body;
   return `<section class="pad">
@@ -1801,7 +1802,7 @@ SCREENS.profile = () => {
     <li><span>${t('sub_status')}</span><b>${t('st_'+(state.sub.status||'expired'))||state.sub.status}</b></li>
     <li><span>${t('paid_until')}</span><b>${state.sub.paid_until?fmtDate(new Date(state.sub.paid_until)):'—'}</b></li>
     <li><span>${t('tryons_left')}</span><b>${state.sub.extra_tryons?Math.max(0,state.sub.tryons_left-state.sub.extra_tryons):state.sub.tryons_left} / ${state.sub.tryons_limit}</b></li>${state.sub.extra_tryons?`<li><span>${t('extra_bought')}</span><b>${state.sub.extra_tryons}</b></li>`:''}</ul>
-    <div class="row" style="gap:10px;margin-top:12px;flex-wrap:wrap"><button class="btn ghost sm" style="flex:1" data-act="go" data-arg="membership">${t('manage_sub')}</button><button class="btn gold sm" style="flex:1" data-act="moretry">${ic('plus',16)} ${t('more_tries')}</button></div><button class="btn primary sm" style="width:100%;margin-top:10px" data-act="logout">${ic('logout',18)} ${t('logout')}</button></div>`
+    <p class="small muted" style="margin-top:14px;line-height:1.6">${t('renewal_terms')}</p>\n    <div class="row" style="gap:10px;margin-top:12px;flex-wrap:wrap"><button class="btn ghost sm" style="flex:1" data-act="go" data-arg="membership">${t('manage_sub')}</button><button class="btn gold sm" style="flex:1" data-act="moretry">${ic('plus',16)} ${t('more_tries')}</button></div><button class="btn primary sm" style="width:100%;margin-top:10px" data-act="logout">${ic('logout',18)} ${t('logout')}</button></div>`
   :`<div class="card"><p class="small muted">${ic('sparkle',16)} ${t('demo_mode')}</p></div>`}
   ${REAL()?realParams():''}<div class="card" ${REAL()?'style="display:none"':''}><h3 class="h" style="font-size:20px;margin-bottom:4px">${t('my_params')}</h3><ul class="kv">
     <li><span>${t('your_type')}</span><b>${t('soft_autumn')}</b></li><li><span>${t('undertone')}</span><b>${t('warm')}</b></li>
