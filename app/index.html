@@ -2098,7 +2098,8 @@ document.addEventListener('change', e=>{
 
 const recoveryHash = new URLSearchParams(location.hash.slice(1));
 if(recoveryHash.get('type')==='recovery'||recoveryHash.has('error_code')){
-  location.replace('reset.html?lang='+['ru','kk','en'][L]+location.hash);
+  const recoveryLang=new URLSearchParams(location.search).get('lang');
+  location.replace('reset.html?lang='+(['ru','kk','en'].includes(recoveryLang)?recoveryLang:['ru','kk','en'][L])+location.hash);
 }else{ load(); render(); }
 </script>
 </body>
