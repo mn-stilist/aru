@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ru">
 <head>
+<script src="../lock.js"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Aru — личный стилист</title>
@@ -1816,7 +1817,7 @@ SCREENS.profile = () => {
     <li><span>${t('face_shape')}</span><b>${t('oval')}</b></li><li><span>${t('body_type')}</span><b>${t('hourglass')}</b></li>
     <li><span>${t('eyes_c')}</span><b>${t('hazel')}</b></li><li><span>${t('hair_nat')}</span><b>${t('hair_nat_v')}</b></li>
     <li><span>${t('age_v')}</span><b>28</b></li><li><span>${t('height_v')}</span><b>${state.quiz.height} ${t('cm')}</b></li></ul></div>
-  <div class="card"><div class="row" style="justify-content:space-between"><h3 class="h" style="font-size:20px">${t('language')}</h3>${langPills()}</div></div>
+  <div class="card solo-hide"><div class="row" style="justify-content:space-between"><h3 class="h" style="font-size:20px">${t('language')}</h3>${langPills()}</div></div>
   <div class="card"><h3 class="h" style="font-size:20px">${t('my_photos')}</h3>
     ${any?`<div class="photos">${['face','body'].map(k=>`<div>${p[k]?`<img src="${p[k]}" alt="">`:ic('user')}</div>`).join('')}</div><p class="tiny muted" style="margin-top:8px">${t(REAL()?'photos_private':'photos_session')}</p>`:`<p class="small muted" style="margin-top:6px">${ic('lock',16)} ${t(REAL()?'photos_removed':'no_photos')}</p>`}</div>
   <div class="card"><h3 class="h" style="font-size:20px">${t('style_my')}</h3><p class="tiny muted" style="margin-top:4px">${t('style_sub')}</p>${styleSlots()}</div>
@@ -2106,10 +2107,11 @@ document.addEventListener('change', e=>{
 });
 
 const recoveryHash = new URLSearchParams(location.hash.slice(1));
+if(window.ARU_LOCK!=null) L=window.ARU_LOCK;
 if(recoveryHash.get('type')==='recovery'||recoveryHash.has('error_code')){
   const recoveryLang=new URLSearchParams(location.search).get('lang');
   location.replace('reset.html?lang='+(['ru','kk','en'].includes(recoveryLang)?recoveryLang:['ru','kk','en'][L])+location.hash);
-}else{ load(); render(); }
+}else{ load(); if(window.ARU_LOCK!=null) L=window.ARU_LOCK; render(); }
 </script>
 </body>
 </html>

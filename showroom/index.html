@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ru">
 <head>
+<script src="../lock.js"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Aru Showroom</title>
@@ -106,6 +107,7 @@ try{
   const saved=localStorage.getItem('aru_sr_lang');
   const candidate=requested!=null&&Object.hasOwn(codes,requested)?codes[requested]:app&&Number.isInteger(app.L)?app.L:saved!=null?Number(saved):0;
   L=[0,1,2].includes(candidate)?candidate:0;
+  if(window.ARU_LOCK!=null) L=window.ARU_LOCK;
 }catch(e){}
 function saveShowroomLanguage(){
   try{

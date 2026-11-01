@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ru">
 <head>
+<script src="../lock.js"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Уроки Aru — как пользоваться личным стилистом</title>
@@ -101,6 +102,7 @@ let guideLang='ru';
 try{const stored=JSON.parse(localStorage.getItem('aru_proto_v1')||'{}');guideLang=['ru','kk','en'][stored.L]||'ru';}catch(e){}
 const requestedLang=validLang(new URLSearchParams(location.search).get('lang'));
 if(requestedLang) guideLang=requestedLang;
+if(window.ARU_LOCK!=null) guideLang=['ru','kk','en'][window.ARU_LOCK];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function guideData(lang){return lang==='ru'?L:L.map((x,i)=>({...x,...GUIDE_LOCALES[lang].lessons[i],img:x.img.map(([f,c,w],j)=>[f,GUIDE_LOCALES[lang].lessons[i].captions[j],w])}));}
 function renderGuide(){
